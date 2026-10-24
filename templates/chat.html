@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Student Chatbot | CampusAI Assistant{% endblock %}
+
+{% block extra_head %}
+<meta name="initial-query" content="{{ initial_query }}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-layout-wrapper">
+  <!-- Chat Sidebar (Desktop & Mobile Drawer) -->
+  <aside class="chat-sidebar" id="chatSidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-bot-info">
+        <div class="bot-status-avatar">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <span class="online-dot"></span>
+        </div>
+        <div>
+          <h3 class="sidebar-bot-title">CampusAI</h3>
+          <span class="sidebar-bot-sub">College Virtual Assistant</span>
+        </div>
+      </div>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">&times;</button>
+    </div>
+
+    <!-- Engine Mode Pill -->
+    <div class="sidebar-engine-box">
+      <div class="engine-badge {% if ai_active %}ai-on{% else %}faq-on{% endif %}">
+        <span class="engine-dot"></span>
+        <span class="engine-title">{% if ai_active %}Gemini AI Active{% else %}Knowledge Base Matcher{% endif %}</span>
+      </div>
+      <p class="engine-description">
+        {% if ai_active %}
+          Enhanced with Google Gemini AI for natural conversational responses, strictly grounded in verified college data.
+        {% else %}
+          Operating in offline mode using optimized SQLite keyword & semantic FAQ matching with verified answers.
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Suggested Topics / Quick Prompts -->
+    <div class="sidebar-topics">
+      <h4 class="sidebar-section-title">Common Topics</h4>
+      
+      <div class="sidebar-topic-group">
+        <span class="topic-group-header">🎓 Admissions & Courses</span>
+        <button class="topic-chip-btn" data-query="What courses does the college offer?">Offered Courses</button>
+        <button class="topic-chip-btn" data-query="How can I apply for admission?">Admission Process</button>
+        <button class="topic-chip-btn" data-query="What are the eligibility criteria for BCA/BBA?">Eligibility Criteria</button>
+      </div>
+
+      <div class="sidebar-topic-group">
+        <span class="topic-group-header">💳 Fees & Scholarships</span>
+        <button class="topic-chip-btn" data-query="What are the college fees?">Fee Structure</button>
+        <button class="topic-chip-btn" data-query="Can college fees be paid in installments?">Installment Policy</button>
+        <button class="topic-chip-btn" data-query="Are there any merit scholarships available?">Scholarships</button>
+      </div>
+
+      <div class="sidebar-topic-group">
+        <span class="topic-group-header">📅 Exams & Campus</span>
+        <button class="topic-chip-btn" data-query="When are the semester examinations?">Exam Timetables</button>
+        <button class="topic-chip-btn" data-query="What facilities are available on campus?">Campus Facilities</button>
+        <button class="topic-chip-btn" data-query="What are the library timings and rules?">Library Hours</button>
+      </div>
+    </div>
+
+    <!-- Sidebar Bottom Actions -->
+    <div class="sidebar-footer">
+      <button class="btn btn-outline btn-sm btn-block" id="clearChatBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        <span>Clear Conversation</span>
+      </button>
+      <a href="{{ url_for('faqs_page') }}" class="sidebar-faq-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>View FAQ Directory</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Sidebar Overlay for mobile -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Main Chat Section -->
+  <div class="chat-main-area">
+    <!-- Chat Header -->
+    <div class="chat-header-bar">
+      <div class="header-left">
+        <button class="chat-sidebar-toggle-btn" id="chatSidebarToggleBtn" aria-label="Toggle topics sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="chat-header-profile">
+          <div class="header-avatar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            <span class="status-pulse-dot"></span>
+          </div>
+          <div>
+            <h2 class="header-chat-title">CampusAI Assistant</h2>
+            <div class="header-status-sub">
+              <span>Always Online • 24/7 Verified College Guidance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <a href="{{ url_for('faqs_page') }}" class="btn btn-ghost btn-sm header-link-btn" title="View FAQs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span class="hide-mobile">FAQs</span>
+        </a>
+        <button class="btn btn-outline btn-sm header-clear-btn" id="headerClearBtn" title="Reset Chat">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          <span class="hide-mobile">Reset</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="chat-messages-container" id="chatMessages" role="log" aria-live="polite">
+      <!-- Welcome Message from CampusAI -->
+      <div class="message-wrapper assistant-wrapper" id="welcomeMessage">
+        <div class="avatar-bubble bot-avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div class="message-content-block">
+          <div class="message-meta">
+            <span class="message-author">CampusAI</span>
+            <span class="message-time">Just now</span>
+            <span class="message-badge verified-badge">Verified System</span>
+          </div>
+          <div class="message-bubble bot-bubble">
+            <p>👋 Welcome to <strong>{{ college_name }}</strong>'s student assistant! I am here to help you 24/7 with instant information.</p>
+            <p>You can ask me anything about:</p>
+            <ul>
+              <li><strong>Admissions & Eligibility</strong> (BBA, BCA, B.Com, Deadlines)</li>
+              <li><strong>Fees & Installments</strong> (Tuition amounts, Payment modes)</li>
+              <li><strong>Academic Schedules</strong> (Exam dates, Results, Timetables)</li>
+              <li><strong>Campus Facilities</strong> (Library hours, Hostels, Computer labs)</li>
+              <li><strong>College Office Timings & Contacts</strong></li>
+            </ul>
+            <p>What would you like to know today?</p>
+          </div>
+          <!-- Initial Quick Chips -->
+          <div class="message-suggestions-bar">
+            <button class="chip-btn" data-query="What courses does the college offer?">Offered courses</button>
+            <button class="chip-btn" data-query="How can I apply for admission?">Apply for admission</button>
+            <button class="chip-btn" data-query="What are the college fees?">College fees</button>
+            <button class="chip-btn" data-query="When are the examinations?">Exam schedules</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing Indicator (Hidden by default) -->
+    <div class="typing-indicator-bar" id="typingIndicator" style="display: none;">
+      <div class="avatar-bubble bot-avatar mini">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
+      <div class="typing-bubble">
+        <span class="typing-text">CampusAI is thinking</span>
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggested Chips Floating Shelf -->
+    <div class="chat-chips-shelf" id="dynamicChipsShelf">
+      <div class="chips-container" id="dynamicChipsContainer">
+        <!-- Dynamically injected suggestions -->
+      </div>
+    </div>
+
+    <!-- Input Box & Controls -->
+    <div class="chat-input-wrapper">
+      <form class="chat-input-form" id="chatForm">
+        <div class="input-controls-box">
+          <textarea 
+            id="chatInput" 
+            class="chat-textarea" 
+            placeholder="Type your college question here (e.g. When is the admission deadline?)..." 
+            rows="1" 
+            maxlength="600" 
+            aria-label="Student message input"
+            required></textarea>
+          
+          <div class="input-actions-bar">
+            <span class="char-counter" id="charCounter">0/600</span>
+            <button type="submit" class="send-message-btn" id="sendBtn" aria-label="Send message">
+              <span>Send</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="input-disclaimer-note">
+        <span>CampusAI provides verified answers based on official college records. For confidential student records or disputes, please visit the Administrative Office.</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

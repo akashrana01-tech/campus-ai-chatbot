@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Frequently Asked Questions | CampusAI Knowledge Base{% endblock %}
+
+{% block content %}
+<section class="faq-page-section">
+  <!-- FAQ Header -->
+  <div class="faq-hero-banner">
+    <div class="site-container text-center">
+      <span class="section-subtitle">Verified College Knowledge Base</span>
+      <h1 class="faq-page-title">Frequently Asked Questions</h1>
+      <p class="faq-page-desc">
+        Find fast answers to all official college policies, schedules, course curriculums, and fees.
+      </p>
+
+      <!-- Live Search Box -->
+      <div class="faq-search-wrapper">
+        <div class="faq-search-bar">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input 
+            type="text" 
+            id="faqSearchInput" 
+            class="faq-search-input" 
+            placeholder="Search keywords: 'fees', 'bca eligibility', 'library timings', 'exam'..." 
+            value="{{ search_query }}"
+            aria-label="Search FAQs">
+          <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Clear search" style="{% if not search_query %}display: none;{% endif %}">
+            &times;
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-container faq-content-container">
+    <!-- Category Filter Pills -->
+    <div class="faq-categories-bar" id="categoryFilterBar">
+      <a href="{{ url_for('faqs_page', category='All') }}" 
+         class="category-pill {% if selected_category == 'All' %}active{% endif %}" 
+         data-category="All">
+        <span>All Questions</span>
+        <span class="count-badge">{{ faqs | length }}</span>
+      </a>
+
+      {% for cat in categories %}
+        <a href="{{ url_for('faqs_page', category=cat.name) }}" 
+           class="category-pill {% if selected_category == cat.name %}active{% endif %}" 
+           data-category="{{ cat.name }}">
+          <span>{{ cat.name }}</span>
+          <span class="count-badge">{{ cat.count }}</span>
+        </a>
+      {% endfor %}
+    </div>
+
+    <!-- Active Search Filter Indicator Banner -->
+    <div class="active-filter-alert" id="searchFilterAlert" style="display: none;">
+      <span>Showing matching results for "<strong id="searchKeywordLabel"></strong>"</span>
+      <button type="button" id="resetFiltersBtn" class="btn btn-ghost btn-sm">Reset</button>
+    </div>
+
+    <!-- FAQ Accordion List -->
+    <div class="faq-accordion-list" id="faqAccordionList">
+      {% for faq in faqs %}
+        <div class="faq-item-card" data-category="{{ faq.category }}" data-question="{{ faq.question | lower }}" data-answer="{{ faq.answer | lower }}" id="faq-card-{{ faq.id }}">
+          <button class="faq-header-btn" aria-expanded="false" aria-controls="faq-ans-{{ faq.id }}">
+            <div class="faq-question-meta">
+              <span class="faq-cat-badge badge-{{ faq.category | lower }}">{{ faq.category }}</span>
+              <h3 class="faq-question-title">{{ faq.question }}</h3>
+            </div>
+            <div class="faq-toggle-chevron">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </button>
+
+          <div class="faq-answer-collapse" id="faq-ans-{{ faq.id }}" style="display: none;">
+            <div class="faq-answer-body">
+              <div class="faq-answer-text">
+                {{ faq.answer | replace('\n', '<br>') | safe }}
+              </div>
+              <div class="faq-card-footer">
+                <span class="faq-timestamp">Last verified: {{ faq.updated_at.strftime('%b %d, %Y') if faq.updated_at else 'Recent' }}</span>
+                <a href="{{ url_for('chat_page') }}?q={{ faq.question | urlencode }}" class="btn btn-outline btn-sm ask-in-chat-btn">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Ask in Chatbot</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div class="faq-empty-state" id="faqEmptyState" style="{% if faqs %}display: none;{% endif %}">
+      <div class="empty-icon-wrap">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </div>
+      <h3 class="empty-title">No matching FAQs found</h3>
+      <p class="empty-desc">
+        We couldn't find any verified FAQ matching your search terms. 
+        Don't worry — our 24/7 AI Chatbot can analyze your question or help connect you with the college office!
+      </p>
+      <div class="empty-actions">
+        <a href="{{ url_for('chat_page') }}" id="emptyChatBtn" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Ask CampusAI Assistant Directly</span>
+        </a>
+        <a href="{{ url_for('faqs_page', category='All') }}" class="btn btn-secondary">
+          <span>Show All FAQs</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Help Banner -->
+    <div class="faq-help-banner">
+      <div class="help-banner-content">
+        <div class="help-icon">💡</div>
+        <div>
+          <h4>Can't find what you are looking for?</h4>
+          <p>The student assistant chatbot is constantly updated by the college administrative office.</p>
+        </div>
+      </div>
+      <a href="{{ url_for('chat_page') }}" class="btn btn-primary btn-sm">Launch Assistant</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // FAQ accordion & live client-side search logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('faqSearchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+    const items = Array.from(document.querySelectorAll('.faq-item-card'));
+    const emptyState = document.getElementById('faqEmptyState');
+    const searchAlert = document.getElementById('searchFilterAlert');
+    const keywordLabel = document.getElementById('searchKeywordLabel');
+    const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+
+    // Accordion Toggle
+    document.querySelectorAll('.faq-header-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        const card = button.closest('.faq-item-card');
+        const answer = card.querySelector('.faq-answer-collapse');
+
+        button.setAttribute('aria-expanded', !expanded);
+        card.classList.toggle('active', !expanded);
+        answer.style.display = expanded ? 'none' : 'block';
+      });
+    });
+
+    // Realtime Search Filter
+    function filterFAQs() {
+      const query = (searchInput.value || '').trim().toLowerCase();
+      let matchCount = 0;
+
+      clearBtn.style.display = query ? 'block' : 'none';
+
+      if (query) {
+        searchAlert.style.display = 'flex';
+        keywordLabel.textContent = query;
+      } else {
+        searchAlert.style.display = 'none';
+      }
+
+      items.forEach(card => {
+        const q = card.getAttribute('data-question') || '';
+        const a = card.getAttribute('data-answer') || '';
+        const cat = (card.getAttribute('data-category') || '').toLowerCase();
+
+        const matches = q.includes(query) || a.includes(query) || cat.includes(query);
+        card.style.display = matches ? 'block' : 'none';
+        if (matches) matchCount++;
+      });
+
+      emptyState.style.display = matchCount === 0 ? 'block' : 'none';
+      const emptyChatBtn = document.getElementById('emptyChatBtn');
+      if (emptyChatBtn && query) {
+        emptyChatBtn.href = `/chat?q=${encodeURIComponent(query)}`;
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', filterFAQs);
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        filterFAQs();
+        searchInput.focus();
+      });
+    }
+
+    if (resetFiltersBtn) {
+      resetFiltersBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        filterFAQs();
+      });
+    }
+  });
+</script>
+{% endblock %}

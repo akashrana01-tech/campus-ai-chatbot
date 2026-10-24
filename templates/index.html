@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}CampusAI | Your College. Your Questions. Instant Answers.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-glow-blob hero-blob-1"></div>
+  <div class="hero-glow-blob hero-blob-2"></div>
+
+  <div class="site-container hero-container">
+    <div class="hero-content">
+      <div class="hero-tag-badge">
+        <span class="badge-icon">✨</span>
+        <span>24/7 AI-Powered Student Assistance</span>
+      </div>
+
+      <h1 class="hero-heading">
+        Your College. <br>
+        Your Questions. <br>
+        <span class="gradient-text">Instant Answers.</span>
+      </h1>
+
+      <p class="hero-subtext">
+        Welcome to <strong>{{ college_name }}</strong>'s automated student assistant. 
+        Get instant, verified answers to questions about admissions, fees, courses, 
+        exam dates, and campus facilities without standing in queues.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="{{ url_for('chat_page') }}" class="btn btn-primary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Start Chatting</span>
+        </a>
+        <a href="{{ url_for('faqs_page') }}" class="btn btn-secondary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Explore FAQs</span>
+        </a>
+      </div>
+
+      <!-- Trust & stats pill bar -->
+      <div class="hero-stats-bar">
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Always Online</span>
+        </div>
+        <div class="stat-separator"></div>
+        <div class="stat-item">
+          <span class="stat-number">{{ total_faqs }}+</span>
+          <span class="stat-label">Verified FAQs</span>
+        </div>
+        <div class="stat-separator"></div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Fact-Grounded</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Interactive Chatbot Preview Showcase -->
+    <div class="hero-preview-wrapper">
+      <div class="hero-chat-card">
+        <div class="preview-card-header">
+          <div class="header-status-group">
+            <span class="preview-dot red"></span>
+            <span class="preview-dot yellow"></span>
+            <span class="preview-dot green"></span>
+          </div>
+          <div class="preview-bot-profile">
+            <div class="bot-avatar-mini">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <span class="bot-name-mini">CampusAI Assistant</span>
+          </div>
+          <span class="preview-live-tag">Live Preview</span>
+        </div>
+
+        <div class="preview-chat-body">
+          <div class="preview-message bot">
+            <div class="message-meta-line">
+              <span class="msg-sender">CampusAI</span>
+              <span class="msg-time">Just now</span>
+            </div>
+            <div class="msg-bubble bot-bubble">
+              👋 Hi there! I'm your college assistant. How can I help you today? Ask me about fees, exams, eligibility, or facilities!
+            </div>
+          </div>
+
+          <div class="preview-message user">
+            <div class="message-meta-line right">
+              <span class="msg-time">1m ago</span>
+              <span class="msg-sender">Student</span>
+            </div>
+            <div class="msg-bubble user-bubble">
+              What are the college fees for BCA / SYBBA?
+            </div>
+          </div>
+
+          <div class="preview-message bot">
+            <div class="message-meta-line">
+              <span class="msg-sender">CampusAI</span>
+              <span class="msg-tag-verified">Verified FAQ</span>
+            </div>
+            <div class="msg-bubble bot-bubble">
+              Approximate annual tuition for BCA / SYBBA (CA) is <strong>$1,500 (approx. Rs. 55,000 / year)</strong>. Fees can also be paid in two equal installments before midterm examinations!
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick clickable question pills in preview -->
+        <div class="preview-chips-bar">
+          <span class="chips-label">Try asking:</span>
+          <a href="{{ url_for('chat_page') }}?q=What+courses+does+the+college+offer%3F" class="preview-chip">🎓 Offered courses</a>
+          <a href="{{ url_for('chat_page') }}?q=When+are+the+examinations%3F" class="preview-chip">📅 Exam dates</a>
+          <a href="{{ url_for('chat_page') }}?q=How+can+I+apply+for+admission%3F" class="preview-chip">📝 Admissions</a>
+        </div>
+
+        <!-- Interactive launch input -->
+        <form action="{{ url_for('chat_page') }}" method="GET" class="preview-input-box">
+          <input type="text" name="q" placeholder="Type a college question (e.g., library timings)..." aria-label="Ask a question">
+          <button type="submit" class="preview-send-btn" aria-label="Submit query">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Grid Section -->
+<section class="section features-section" id="features">
+  <div class="site-container">
+    <div class="section-header text-center">
+      <span class="section-subtitle">Intelligent Architecture</span>
+      <h2 class="section-title">Designed for Modern Student Needs</h2>
+      <p class="section-description">
+        Built from the ground up to replace long administrative waiting times with reliable, instant answers.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Card 1 -->
+      <div class="feature-card">
+        <div class="feature-icon-box icon-indigo">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3 class="feature-title">Instant 24/7 Answers</h3>
+        <p class="feature-text">
+          No waiting for office opening hours. Get immediate responses to urgent inquiries anytime, day or night.
+        </p>
+        <span class="feature-link">Always ready &rarr;</span>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="feature-card">
+        <div class="feature-icon-box icon-blue">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3 class="feature-title">Academic & Exam Schedules</h3>
+        <p class="feature-text">
+          Instant updates on semester timetables, internal assessment dates, hall ticket downloads, and holidays.
+        </p>
+        <span class="feature-link">Never miss a deadline &rarr;</span>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="feature-card">
+        <div class="feature-icon-box icon-emerald">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 class="feature-title">Zero Hallucinations Policy</h3>
+        <p class="feature-text">
+          CampusAI is strictly grounded in verified college records. If an answer isn't in our verified database, we direct you to the right department.
+        </p>
+        <span class="feature-link">Accurate & trustworthy &rarr;</span>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="feature-card">
+        <div class="feature-icon-box icon-amber">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3 class="feature-title">Comprehensive Campus Info</h3>
+        <p class="feature-text">
+          Centralized information for courses (BBA, BCA, B.Com), fee structures, payment installments, library, hostels, and labs.
+        </p>
+        <span class="feature-link">All in one place &rarr;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="section how-it-works-section">
+  <div class="site-container">
+    <div class="section-header text-center">
+      <span class="section-subtitle">Simplified Student Workflow</span>
+      <h2 class="section-title">How CampusAI Delivers Answers</h2>
+      <p class="section-description">A seamless multi-stage pipeline ensuring fast, verified, and safe information retrieval.</p>
+    </div>
+
+    <div class="steps-grid">
+      <!-- Step 1 -->
+      <div class="step-card">
+        <div class="step-badge">Step 1</div>
+        <div class="step-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3 class="step-title">Ask Naturally</h3>
+        <p class="step-text">Type your question in natural English — whether asking about fees, admissions, exam schedules, or library timings.</p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-card">
+        <div class="step-badge">Step 2</div>
+        <div class="step-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+        </div>
+        <h3 class="step-title">Smart NLP & Knowledge Search</h3>
+        <p class="step-text">Our backend normalizes the query and searches our SQLite database with intelligent keyword and semantic matching.</p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-card">
+        <div class="step-badge">Step 3</div>
+        <div class="step-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3 class="step-title">Verified Response</h3>
+        <p class="step-text">Receive clear, structured answers with suggested next steps. If unknown, you get direct office contact details.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Questions Quick-Access Section -->
+<section class="section popular-questions-section">
+  <div class="site-container">
+    <div class="section-header text-center">
+      <span class="section-subtitle">Common Enquiries</span>
+      <h2 class="section-title">Popular Student Questions</h2>
+      <p class="section-description">Click any question below to immediately open the assistant with the answer.</p>
+    </div>
+
+    <div class="popular-grid">
+      {% for faq in popular_faqs %}
+        <a href="{{ url_for('chat_page') }}?q={{ faq.question | urlencode }}" class="popular-question-card">
+          <div class="card-category-badge">{{ faq.category }}</div>
+          <h3 class="card-question-text">{{ faq.question }}</h3>
+          <div class="card-bottom-row">
+            <span class="ask-pill">Ask Assistant</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-8">
+      <a href="{{ url_for('faqs_page') }}" class="btn btn-secondary btn-md">
+        <span>Browse All {{ total_faqs }} Frequently Asked Questions</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- About & Contact Section -->
+<section class="section about-section" id="about">
+  <div class="site-container">
+    <div class="about-card">
+      <div class="about-content">
+        <span class="section-subtitle">Academic Project Overview</span>
+        <h2 class="about-title">About the CampusAI Assistant</h2>
+        <p class="about-text">
+          CampusAI is an enterprise-grade academic assistant created as a <strong>SYBBA (Computer Applications) Semester III</strong> 
+          capstone project. It bridges the communication gap between college administration and thousands of enrolled students 
+          by offering guaranteed 24/7 informational support.
+        </p>
+
+        <div class="about-features-list">
+          <div class="about-list-item">
+            <span class="check-icon">✓</span>
+            <div><strong>Dual Engine Resilience</strong>: Runs smoothly with Google Gemini AI or 100% offline using optimized FAQ matching.</div>
+          </div>
+          <div class="about-list-item">
+            <span class="check-icon">✓</span>
+            <div><strong>Admin Control Panel</strong>: Allows authorized college administrators to update fees, deadlines, and notices in real-time.</div>
+          </div>
+          <div class="about-list-item">
+            <span class="check-icon">✓</span>
+            <div><strong>No Misinformation</strong>: Fallback mechanisms ensure no fictitious dates or fees are ever presented to students.</div>
+          </div>
+        </div>
+
+        <div class="about-actions">
+          <a href="{{ url_for('chat_page') }}" class="btn btn-primary">Try CampusAI Now</a>
+          <a href="{{ url_for('admin_login_page') }}" class="btn btn-outline">Staff / Admin Login</a>
+        </div>
+      </div>
+
+      <div class="about-card-info">
+        <h3 class="info-card-heading">College Contact Desk</h3>
+        <ul class="info-card-list">
+          <li>
+            <strong>Location:</strong>
+            <span>{{ college_address }}</span>
+          </li>
+          <li>
+            <strong>Office Phone:</strong>
+            <span>{{ college_phone }}</span>
+          </li>
+          <li>
+            <strong>Official Email:</strong>
+            <span>{{ college_email }}</span>
+          </li>
+          <li>
+            <strong>Inquiry Timings:</strong>
+            <span>{{ college_hours }}</span>
+          </li>
+        </ul>
+        <div class="info-card-note">
+          <span class="badge-icon">ℹ️</span>
+          <span>Sample data shown on this portal represents demonstrative college information for evaluation purposes.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
