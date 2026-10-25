@@ -1,253 +1,94 @@
-# CampusAI - AI College Assistant Chatbot Website
+# CareerPilot AI - Intelligent Career Guidance & Preparation Platform
 
-> **Academic Project**: SYBBA (Computer Applications) Semester III  
-> **Topic**: AI-Powered Virtual Assistant & College Knowledge Base System  
-> **Tech Stack**: Python (Flask), SQLite, SQLAlchemy, HTML5, CSS3, Modern JavaScript, Google Gemini AI (Optional)
-
----
-
-## 1. Project Overview
-
-**CampusAI** is a modern, responsive web application designed to help prospective and enrolled college students find instant, verified answers to their questions 24 hours a day, 7 days a week.
-
-Students frequently need quick details regarding:
-- **Admissions & Eligibility**: Criteria for BBA, BCA / SYBBA (CA), B.Com, cutoff lists, required documents.
-- **Courses & Semesters**: Detailed subject curriculums, syllabuses, practical labs, and graduation requirements.
-- **College Fees & Payment**: Annual tuition breakdowns, installment options, payment methods, and merit scholarships.
-- **Examinations & Timetables**: Mid-term and end-semester dates, hall ticket downloads, and grading rules.
-- **Campus Facilities**: Central digital library hours, computer labs, hostels, cafeteria, sports complex, and Wi-Fi.
-- **Office Timings & Contact Details**: Administrative hours, contact emails, emergency helplines, and department desks.
-
-### 🛡️ Zero Hallucinations Policy
-CampusAI is strictly grounded in official college records stored in an SQLite database. If a question is outside the verified knowledge base (or if an AI provider fails), the system **never invents** fees, dates, or regulations. Instead, it politely informs the student and provides direct contact information for the **College Administration Office**.
+> **Academic Project Report Implementation**  
+> **Institution**: G H Raisoni International Skill Tech University, Pune-412207  
+> **Course**: Bachelor of Computer Applications (Science) — SYBCA, Semester IV  
+> **Academic Year**: 2025-26 (Evaluation Year 2026-27)  
+> **Submitted By**: **Prerna Fartade** (BC1013) & **Shubham Panchal** (BC1029)  
+> **Under the Guidance of**: **Prof. Vaishnavi Lokhande**
 
 ---
 
-## 2. Architecture & Technology Stack
+## 1. Project Overview & Abstract
 
-| Component | Technology | Description |
-|-----------|------------|-------------|
-| **Frontend** | HTML5, CSS3, Vanilla JavaScript | Responsive startup-grade UI, CSS custom properties, glassmorphism, animated typing indicator, accessible semantic HTML. |
-| **Backend** | Python 3.10+, Flask 3.x | Lightweight, clean REST API endpoints, session security, CSRF protection, and rate limiting. |
-| **Database** | SQLite + SQLAlchemy ORM | Local, zero-configuration relational database storing FAQs, admin accounts, and student chat logs. |
-| **AI Integration** | Google Gemini API (`google-genai` SDK) | Grounded LLM service layer using `gemini-3.8-flash` with system prompt grounding. |
-| **NLP & Fallback** | Python Similarity Matcher | Multi-signal token overlap, domain synonym expansion, and Levenshtein similarity. Operates 100% offline without any API key. |
+In today's fast-changing and competitive tech world, selecting the right career path is challenging for computer science and applications students. Traditional career counseling often lacks personalization, data-driven insights, and integrated tools.
 
----
-
-## 3. Project Directory Structure
-
-```
-ai-college-assistant/
-├── app.py                   # Application factory, page routes, and REST API endpoints
-├── config.py                # Environment and configuration settings
-├── models.py                # SQLAlchemy models (FAQ, Admin, ChatMessage, QueryLog)
-├── seed_data.py             # Database initialization and 20 demo college FAQs
-├── create_admin.py          # Secure CLI tool to create administrator accounts
-├── run_tests.py             # Automated test suite runner (23 unit & integration tests)
-├── requirements.txt         # Python package dependencies
-├── .env.example             # Example environment variable template
-├── .env                     # Local environment configuration
-├── .gitignore               # Git ignore rules for virtualenv, database, and cache
-├── services/
-│   ├── __init__.py
-│   ├── chatbot.py           # Conversational orchestrator, greeting detection & logging
-│   ├── faq_service.py       # Normalized text preprocessing, synonyms & similarity scoring
-│   └── ai_service.py        # Google Gemini AI integration with strict grounding
-├── templates/
-│   ├── base.html            # Shared header, navbar, footer, and toast notification container
-│   ├── index.html           # Modern landing page with interactive preview & popular questions
-│   ├── chat.html            # Full-featured student chat interface with dynamic chips & sidebar
-│   ├── faqs.html            # Searchable FAQ accordion directory with category filtering
-│   ├── admin_login.html     # Secure administrator login with demo credential quick-fill
-│   └── admin_dashboard.html # Admin panel for FAQ CRUD operations and student query analytics
-├── static/
-│   ├── css/
-│   │   └── style.css        # Premium custom CSS styling (Navy & Indigo theme)
-│   └── js/
-│       ├── main.js          # Shared UI helpers (toasts, mobile menu, copy-to-clipboard)
-│       └── chat.js          # Chatbot controller (session management, auto-scroll, chips)
-└── tests/
-    ├── __init__.py
-    ├── test_app.py          # Page status and health check tests
-    ├── test_faqs.py         # FAQ listing, category filter, and search tests
-    ├── test_chatbot.py      # Known questions, unknown fallback, and AI failure tests
-    └── test_admin.py        # Authentication, session protection, and FAQ CRUD tests
-```
+**CareerPilot AI** is developed as a unified, comprehensive student platform that integrates:
+1. **Career Guidance & Roadmaps**: Analyzes student skills, identifies skill gaps, and generates step-by-step learning roadmaps (e.g. Web Developer, Java Software Engineer, Data Scientist, Cloud & DevOps).
+2. **Step-by-Step Resume Builder**: A 4-step wizard with real-time live preview matching student profiles, supporting instant PDF print-ready export.
+3. **Interview Preparation**: Practice aptitude and technical multiple-choice questions in **C, C++, Java, HTML, Python, and SQL** with instant evaluation, score tracking, and detailed explanations.
+4. **Job Recommendation Engine**: Automatically matches user skills against real industry job openings with calculated match percentages.
+5. **AI Career Advisor**: An integrated conversational counselor for answering career, salary, and placement queries.
 
 ---
 
-## 4. Setup and Installation (macOS Terminal)
+## 2. Normalized Database Design (3NF)
 
-Follow these exact steps to run the project on macOS:
+Implements the exact 3NF relational schema documented in Pages 11–13 of the project report:
 
-### Step 1: Open Terminal and Navigate to Project
+- `users` (`user_id`, `name`, `email`, `password_hash`, `role`, `created_at`)
+- `skills` (`skill_id`, `skill_name`)
+- `user_skills` (`user_id`, `skill_id`)
+- `career_roles` (`career_id`, `career_name`, `description`, `required_skills`, `roadmap_json`)
+- `user_career_preference` (`user_id`, `career_id`)
+- `resumes` (`resume_id`, `user_id`, `resume_content`, `created_at`)
+- `jobs` (`job_id`, `career_id`, `job_title`, `company_name`, `location`, `required_skills`, `salary_range`)
+- `interview_tests` (`test_id`, `user_id`, `subject`, `score`, `total_questions`, `result`, `test_date`)
+- `job_recommendations` (`recommendation_id`, `user_id`, `job_id`, `match_score`)
+
+---
+
+## 3. Pre-Seeded Demonstration Accounts
+
+For viva, external examination, and live evaluation, the database comes pre-seeded with the student authors and project guide:
+
+| Role | Name | Email | Password | Pre-loaded Data |
+|---|---|---|---|---|
+| **Student** | **Prerna Fartade (BC1013)** | `prerna@gmail.com` | `Prerna@123` | BCA, 9.18 CGPA, Vaccicare+ project, HTML/JS/React skills, 3 test scores |
+| **Student** | **Shubham Panchal (BC1029)** | `shubham@gmail.com` | `Shubham@123` | BCA, Java/C++/Python skills, 90% Java test score |
+| **Project Guide** | **Prof. Vaishnavi Lokhande** | `guide@raisoni.edu` | `Admin@123` | Admin dashboard access, student directory, test audit log |
+
+*(1-Click Demo Login buttons are provided on the login page for instant examiner sign-in).*
+
+---
+
+## 4. Quick Launch Instructions (macOS Terminal)
+
 ```bash
+# 1. Navigate to project directory
 cd "/Users/kanishksingh/Downloads/momo ai chat bot "
-```
 
-### Step 2: Initialize Virtual Environment
-```bash
-python3 -m venv --system-site-packages .venv
+# 2. Activate virtual environment
 source .venv/bin/activate
-```
 
-### Step 3: Install Required Dependencies
-```bash
-pip install -r requirements.txt
-```
+# 3. Run automated test suite (11 unit/integration tests)
+python run_tests.py
 
-### Step 4: Configure Environment Variables
-Copy `.env.example` to `.env` (already done by default):
-```bash
-cp .env.example .env
-```
-
-*(Optional)* If you have a Google Gemini API key, add it inside `.env`:
-```ini
-GEMINI_API_KEY=your_actual_gemini_api_key_here
-GEMINI_MODEL=gemini-3.8-flash
-```
-> **Note**: If `GEMINI_API_KEY` is left blank, the application automatically runs in **100% offline Knowledge Base mode**, using internal NLP and database matching with zero degradation of functionality.
-
-### Step 5: Initialize and Seed the Database
-Populate the SQLite database with the default administrator and 20 verified demo college FAQs:
-```bash
-python seed_data.py
-```
-*Output:*
-```
-[✓] Seeded default administrator account: admin / Admin@123
-[✓] Seeded 20 demo FAQs across all categories.
-[✓] Database initialization and seeding complete.
-```
-
-### Step 6: Start the Flask Web Server
-```bash
+# 4. Start Flask server
 python app.py
 ```
-Open your browser and navigate to: **`http://127.0.0.1:5000`**
+Open **`http://127.0.0.1:5000`** in your browser.
 
 ---
 
-## 5. Default Demonstration Credentials
+## 5. Deployment on Render
 
-For ease of testing and presentation, the following default administrator account is pre-configured:
-
-| Role | Username / Email | Password | Access URL |
-|------|-------------------|----------|------------|
-| **Administrator** | `admin` (or `admin@campusai.edu`) | `Admin@123` | [http://127.0.0.1:5000/admin/login](http://127.0.0.1:5000/admin/login) |
-
-*You can also use the convenient "Auto-fill Demo Credentials" button on the login screen.*
-
-### Creating Additional Admin Accounts
-You can securely create custom administrator accounts using the included CLI tool:
-```bash
-python create_admin.py --username staff1 --email staff1@campusai.edu --password SecurePassword@123
-```
+This repository is ready to deploy directly on [Render.com](https://render.com):
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `gunicorn app:app`
+- **Plan**: Free ($0/month)
+- **Environment Variables**:
+  - `SECRET_KEY`: `careerpilot-production-secret-2026`
+  - `FLASK_ENV`: `production`
 
 ---
 
-## 6. Running the Automated Test Suite
+## 6. Page Routes Overview
 
-The project includes a comprehensive automated test suite verifying all 23 key requirements:
-
-```bash
-python run_tests.py
-```
-
-Or run via pytest:
-```bash
-pytest -v
-```
-
-### Test Coverage Highlights:
-- **Landing Page & Route Tests**: Tests status codes (200), header rendering, and `/api/health`.
-- **FAQ Retrieval & Search Tests**: Tests full listing, category filtering (`?category=Fees`), and keyword search (`?q=admission`).
-- **Admin Authentication Tests**: Successful login, wrong password rejection (401), and unauthorized route redirection.
-- **Admin CRUD Operations**: Tests creating a new FAQ, editing questions/answers, and deleting with immediate database persistence.
-- **Chatbot Known Question Matching**: Verifies correct FAQ retrieval for fees, admissions, and exam timetables.
-- **Chatbot Unknown Fallback**: Verifies polite fallback without hallucinating on out-of-scope queries (e.g. "Can I land a rocket on campus?").
-- **AI Resilience Test**: Verifies that when the AI service experiences connection timeouts, the chatbot seamlessly falls back to local FAQ matching without user disruption.
-
----
-
-## 7. Key Features Walkthrough
-
-### A. Landing Page (`/`)
-- Professional hero banner with gradient accents and live statistics.
-- Interactive chatbot preview card allowing users to try sample questions.
-- Feature grid explaining 24/7 availability, verified answers, and privacy.
-- Popular questions cards with 1-click links to the chatbot.
-- College contact details in the footer.
-
-### B. Student Chatbot (`/chat`)
-- Real-time conversational interface with welcome banner and message bubbles.
-- Dynamic suggestion chips that update according to query topics.
-- Side drawer with quick access to common categories (Admissions, Fees, Exams, Facilities).
-- Animated typing indicator while processing.
-- "Copy Answer" button on every assistant message.
-- URL parameter support: accessing `/chat?q=What+are+the+fees` automatically runs the query!
-
-### C. Searchable FAQ Directory (`/faqs`)
-- Real-time instant search bar with live character-by-character filtering.
-- Category filter pills with count badges (All, Admissions, Courses, Fees, Examinations, Facilities, General).
-- Expandable accordions with verified stamps and category badges.
-- Direct "Ask in Chatbot" button next to every FAQ.
-- Friendly empty state when no matching question is found.
-
-### D. Admin Dashboard (`/admin/dashboard`)
-- KPI summary cards (Total FAQs, Total Categories, Total Queries Logged, AI Mode).
-- Full FAQ Management Table with live search and category dropdown filters.
-- Add FAQ Modal, Edit FAQ Modal, and Delete Confirmation Modal.
-- Live Real-Time Student Query Log tracking all incoming questions and their resolution source.
-- Immediate reflection: Any FAQ created, edited, or deleted in the admin dashboard is immediately updated in the student chatbot.
-
----
-
-## 8. REST API Reference
-
-| Endpoint | Method | Authentication | Description |
-|----------|--------|----------------|-------------|
-| `/api/health` | GET | Public | Health status check and FAQ count. |
-| `/api/faqs` | GET | Public | Returns list of FAQs with optional `?category=` filter. |
-| `/api/faqs/search` | GET | Public | Search FAQs by keyword `?q=` and optional `?category=`. |
-| `/api/chat` | POST | Public (Rate-limited) | Receives `{"message": "...", "session_id": "..."}`, returns response, source, and suggestions. |
-| `/api/admin/login` | POST | Public (Rate-limited) | Authenticates administrator with username/email and password. |
-| `/api/admin/logout` | POST | Admin Session | Ends active admin session. |
-| `/api/admin/stats` | GET | Admin Session | Returns counts, category stats, and query logs. |
-| `/api/admin/faqs` | POST | Admin Session + CSRF | Creates a new FAQ entry. |
-| `/api/admin/faqs/<id>` | PUT | Admin Session + CSRF | Updates an existing FAQ entry. |
-| `/api/admin/faqs/<id>` | DELETE | Admin Session + CSRF | Permanently deletes an FAQ entry. |
-
----
-
-## 9. Security & Best Practices
-
-1. **Password Security**: Passwords are never stored in plaintext; hashed using `werkzeug.security.generate_password_hash` with secure PBKDF2 salt.
-2. **CSRF Protection**: State-changing requests (`POST`, `PUT`, `DELETE`) require a valid session CSRF token sent via `X-CSRFToken` header.
-3. **Session Hardening**: Cookies configured with `HttpOnly=True` and `SameSite=Lax`.
-4. **Rate Limiting**: Built-in memory sliding window limiter prevents abuse of login attempts and chat queries.
-5. **XSS Prevention**: Safe text node rendering in JavaScript (`textContent`) and HTML escaping in Jinja templates prevent script injection.
-6. **No API Key Leaks**: All AI communications occur strictly on the Python backend; frontend never has access to secret keys.
-
----
-
-## 10. Troubleshooting
-
-- **Database file locked or unable to open**:
-  Ensure the `instance/` folder exists in your project root (`mkdir -p instance`). The application automatically creates this on boot.
-- **Port 5000 already in use (macOS AirPlay)**:
-  On macOS Monterey or newer, AirPlay Receiver uses port 5000. You can disable AirPlay Receiver in *System Settings > General > AirDrop & AirPlay*, or run Flask on port 5001:
-  ```bash
-  python -c "from app import app; app.run(port=5001, debug=True)"
-  ```
-- **Virtual Environment Activation**:
-  If commands fail with `ModuleNotFoundError: flask`, ensure your virtual environment is active:
-  ```bash
-  source .venv/bin/activate
-  ```
-
----
-
-*Developed for the SYBBA (Computer Applications) Semester III Project Demonstration.*
+- **Home Screen (`/`)**: Hero banner, core module cards, and university project credits.
+- **Career Guidance (`/guidance`)**: Timeline roadmap (Step 1 to Step 4), skill gap analyzer, and AI Counselor chat.
+- **Resume Builder (`/resume`)**: 4-step wizard form, live formatted resume sheet preview, and Print Preview.
+- **Interview Prep (`/interview`)**: Interactive MCQ quizzes for C, C++, Java, HTML, Python, and SQL.
+- **Job Recommendations (`/jobs`)**: Skill matching against industry opportunities.
+- **Student Dashboard (`/dashboard`)**: Student test history, saved resume snapshot, and job matches.
+- **Admin Dashboard (`/admin`)**: Faculty control panel with enrolled students directory and test submissions.

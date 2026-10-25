@@ -1,511 +1,119 @@
 {% extends "base.html" %}
 
-{% block title %}Administrator Dashboard | CampusAI Control Center{% endblock %}
+{% block title %}Administrator & Project Guide Dashboard | CareerPilot AI{% endblock %}
 
 {% block content %}
-<div class="admin-dashboard-layout">
-  <!-- Dashboard Top Header Bar -->
-  <div class="dashboard-header-bar">
-    <div class="site-container dashboard-header-inner">
-      <div>
-        <div class="admin-badge-pill">
-          <span class="pulse-dot-green"></span>
-          <span>Logged in as <strong>{{ current_admin }}</strong></span>
-        </div>
-        <h1 class="dashboard-heading">Administrative Control Center</h1>
-        <p class="dashboard-subtext">Manage college knowledge base records, edit official answers, and review student chatbot queries.</p>
-      </div>
-
-      <div class="dashboard-top-actions">
-        <button class="btn btn-primary" id="openAddFaqModalBtn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span>Add New FAQ</span>
-        </button>
-        <a href="{{ url_for('chat_page') }}" target="_blank" class="btn btn-outline" title="Test chatbot in new tab">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span>Test Chatbot</span>
-        </a>
-        <a href="{{ url_for('admin_logout') }}" class="btn btn-ghost" title="End admin session">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          <span>Logout</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <div class="site-container dashboard-main-container">
-    <!-- Stat KPI Cards Row -->
-    <div class="dashboard-kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-icon icon-indigo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <div class="kpi-info">
-          <span class="kpi-value" id="kpiTotalFaqs">{{ total_faqs }}</span>
-          <span class="kpi-label">Total Verified FAQs</span>
+<section class="page-content-wrapper">
+  <div class="site-container">
+    <!-- Admin Header -->
+    <div class="dashboard-user-banner">
+      <div class="user-main-info">
+        <div class="large-avatar-circle admin">VL</div>
+        <div>
+          <div class="flex-align-gap mb-1">
+            <h1 class="user-greeting-title">Project Guide / Admin Control Panel</h1>
+            <span class="user-role-badge admin">Academic Faculty</span>
+          </div>
+          <p class="user-sub-details">
+            {{ current_user.name }} • <strong>{{ institution }}</strong> • BCA (Science)
+          </p>
         </div>
       </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon icon-blue">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        </div>
-        <div class="kpi-info">
-          <span class="kpi-value">{{ categories | length }}</span>
-          <span class="kpi-label">Active Categories</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon icon-emerald">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="kpi-info">
-          <span class="kpi-value" id="kpiTotalQueries">{{ total_queries }}</span>
-          <span class="kpi-label">Student Queries Logged</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon {% if ai_active %}icon-amber{% else %}icon-slate{% endif %}">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
-        <div class="kpi-info">
-          <span class="kpi-value text-sm">{{ ai_status }}</span>
-          <span class="kpi-label">AI Engine Mode</span>
-        </div>
+      <div class="user-action-buttons">
+        <a href="{{ url_for('jobs_page') }}" class="btn btn-outline btn-sm">View Job Portal</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-ghost btn-sm">Logout</a>
       </div>
     </div>
 
-    <!-- Main Navigation Tabs -->
-    <div class="dashboard-tabs-bar">
-      <button class="dash-tab-btn active" id="tabBtnFaqs" data-target="faqsSection">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        <span>FAQ Management</span>
-      </button>
-      <button class="dash-tab-btn" id="tabBtnLogs" data-target="logsSection">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
-        <span>Student Query Logs ({{ recent_logs | length }})</span>
-      </button>
+    <!-- KPI Row -->
+    <div class="dashboard-kpi-row mt-6">
+      <div class="card metric-kpi-card">
+        <span class="kpi-num">{{ total_users }}</span>
+        <span class="kpi-lbl">Registered Students</span>
+      </div>
+      <div class="card metric-kpi-card">
+        <span class="kpi-num">{{ total_tests }}</span>
+        <span class="kpi-lbl">Total Mock Tests Taken</span>
+      </div>
+      <div class="card metric-kpi-card">
+        <span class="kpi-num">{{ total_jobs }}</span>
+        <span class="kpi-lbl">Active Industry Jobs</span>
+      </div>
+      <div class="card metric-kpi-card">
+        <span class="kpi-num">{{ resumes | length }}</span>
+        <span class="kpi-lbl">Generated Resumes</span>
+      </div>
     </div>
 
-    <!-- SECTION 1: FAQ MANAGEMENT -->
-    <section class="dashboard-section" id="faqsSection">
-      <!-- Search & Filters Toolbar -->
-      <div class="table-toolbar">
-        <div class="toolbar-search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="adminTableSearch" placeholder="Filter questions or answers by keyword..." aria-label="Filter FAQs">
-        </div>
-
-        <div class="toolbar-category-filter">
-          <label for="adminCategorySelect" class="sr-only">Filter by Category</label>
-          <select id="adminCategorySelect" class="form-select">
-            <option value="All">All Categories</option>
-            <option value="Admissions">Admissions</option>
-            <option value="Courses">Courses</option>
-            <option value="Fees">Fees</option>
-            <option value="Examinations">Examinations</option>
-            <option value="Facilities">Facilities</option>
-            <option value="General">General</option>
-          </select>
-        </div>
+    <!-- Student Test Performance Table -->
+    <div class="card mt-8">
+      <div class="card-header-clean">
+        <h3 class="clean-title">Student Technical Test Submissions</h3>
+        <span class="badge-icon">📝</span>
       </div>
-
-      <!-- FAQ Table -->
-      <div class="table-card">
-        <div class="table-responsive">
-          <table class="data-table" id="faqsTable">
-            <thead>
+      <div class="table-responsive">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Test ID</th>
+              <th>Student Name</th>
+              <th>Subject</th>
+              <th>Score</th>
+              <th>Result</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in tests %}
               <tr>
-                <th style="width: 60px;">ID</th>
-                <th style="width: 140px;">Category</th>
-                <th>Question & Answer Details</th>
-                <th style="width: 120px;">Updated</th>
-                <th style="width: 140px; text-align: right;">Actions</th>
+                <td>#{{ t.test_id }}</td>
+                <td><strong>{{ t.user.name if t.user else 'Student' }}</strong></td>
+                <td>{{ t.subject }}</td>
+                <td>{{ t.score }}%</td>
+                <td>
+                  <span class="test-status-pill {% if t.result == 'Pass' %}pass{% else %}fail{% endif %}">
+                    {{ t.result }}
+                  </span>
+                </td>
+                <td class="text-xs text-slate">{{ t.test_date.strftime('%Y-%m-%d %H:%M') if t.test_date else '' }}</td>
               </tr>
-            </thead>
-            <tbody id="faqsTableBody">
-              {% for faq in faqs %}
-                <tr class="faq-row" data-id="{{ faq.id }}" data-category="{{ faq.category }}" data-question="{{ faq.question | lower }}" data-answer="{{ faq.answer | lower }}">
-                  <td class="cell-id">#{{ faq.id }}</td>
-                  <td>
-                    <span class="faq-cat-badge badge-{{ faq.category | lower }}">{{ faq.category }}</span>
-                  </td>
-                  <td>
-                    <div class="faq-table-question"><strong>{{ faq.question }}</strong></div>
-                    <div class="faq-table-answer-preview">{{ faq.answer | truncate(140) }}</div>
-                  </td>
-                  <td class="cell-date">
-                    {{ faq.updated_at.strftime('%Y-%m-%d') if faq.updated_at else 'N/A' }}
-                  </td>
-                  <td class="cell-actions" style="text-align: right;">
-                    <button class="btn btn-outline btn-xs edit-faq-btn" 
-                            data-id="{{ faq.id }}"
-                            data-category="{{ faq.category }}"
-                            data-question="{{ faq.question }}"
-                            data-answer="{{ faq.answer }}"
-                            title="Edit FAQ">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                      <span>Edit</span>
-                    </button>
-                    <button class="btn btn-danger-outline btn-xs delete-faq-btn" 
-                            data-id="{{ faq.id }}" 
-                            data-question="{{ faq.question }}"
-                            title="Delete FAQ">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                      <span>Delete</span>
-                    </button>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-    </section>
+    </div>
 
-    <!-- SECTION 2: STUDENT QUERY LOGS -->
-    <section class="dashboard-section" id="logsSection" style="display: none;">
-      <div class="section-subbanner">
-        <h3>Recent Real-time Student Interactions</h3>
-        <p>Anonymous real-time log of queries submitted to the student chatbot and their matching outcome.</p>
+    <!-- Enrolled Students Table -->
+    <div class="card mt-8">
+      <div class="card-header-clean">
+        <h3 class="clean-title">Enrolled Students Directory</h3>
+        <span class="badge-icon">👥</span>
       </div>
-
-      <div class="table-card">
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
+      <div class="table-responsive">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Skills Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
               <tr>
-                <th style="width: 70px;">Log ID</th>
-                <th>Student Query</th>
-                <th>Matched Resolution</th>
-                <th style="width: 130px;">Outcome</th>
-                <th style="width: 140px;">Timestamp</th>
+                <td>#{{ u.user_id }}</td>
+                <td><strong>{{ u.name }}</strong></td>
+                <td>{{ u.email }}</td>
+                <td><span class="status-pill status-indigo">{{ u.role }}</span></td>
+                <td>{{ u.skills | length }} registered skills</td>
               </tr>
-            </thead>
-            <tbody>
-              {% if recent_logs %}
-                {% for log in recent_logs %}
-                  <tr>
-                    <td class="cell-id">#{{ log.id }}</td>
-                    <td class="font-medium text-navy">"{{ log.query_text }}"</td>
-                    <td class="text-slate text-sm">{{ log.response_text | truncate(100) }}</td>
-                    <td>
-                      {% if log.status == 'ai' %}
-                        <span class="status-badge badge-ai">Gemini AI</span>
-                      {% elif log.status == 'faq' %}
-                        <span class="status-badge badge-faq">Verified FAQ</span>
-                      {% elif log.status == 'greeting' %}
-                        <span class="status-badge badge-greeting">Chit-Chat</span>
-                      {% else %}
-                        <span class="status-badge badge-fallback">Office Referral</span>
-                      {% endif %}
-                    </td>
-                    <td class="cell-date">{{ log.created_at.strftime('%b %d, %H:%M') if log.created_at else '' }}</td>
-                  </tr>
-                {% endfor %}
-              {% else %}
-                <tr>
-                  <td colspan="5" class="text-center py-8 text-slate">No student queries recorded yet.</td>
-                </tr>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-    </section>
-  </div>
-</div>
-
-<!-- ========================================== -->
-<!-- MODAL: ADD FAQ                             -->
-<!-- ========================================== -->
-<div class="modal-backdrop" id="addFaqModal" style="display: none;">
-  <div class="modal-card">
-    <div class="modal-header">
-      <h3 class="modal-title">Add New College FAQ</h3>
-      <button class="modal-close-btn" id="closeAddModalBtn">&times;</button>
-    </div>
-    <form id="addFaqForm">
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="addCategory" class="form-label">Category</label>
-          <select id="addCategory" class="form-select" required>
-            <option value="Admissions">Admissions</option>
-            <option value="Courses">Courses</option>
-            <option value="Fees">Fees</option>
-            <option value="Examinations">Examinations</option>
-            <option value="Facilities">Facilities</option>
-            <option value="General" selected>General</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="addQuestion" class="form-label">Question</label>
-          <input type="text" id="addQuestion" class="form-input" placeholder="e.g. What is the fee refund policy?" required maxlength="255">
-        </div>
-
-        <div class="form-group">
-          <label for="addAnswer" class="form-label">Official Answer</label>
-          <textarea id="addAnswer" class="form-textarea" rows="5" placeholder="Provide accurate, detailed information to be verified by students..." required></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" id="cancelAddModalBtn">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="saveAddFaqBtn">Save to Database</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- ========================================== -->
-<!-- MODAL: EDIT FAQ                            -->
-<!-- ========================================== -->
-<div class="modal-backdrop" id="editFaqModal" style="display: none;">
-  <div class="modal-card">
-    <div class="modal-header">
-      <h3 class="modal-title">Edit College FAQ #<span id="editFaqIdLabel"></span></h3>
-      <button class="modal-close-btn" id="closeEditModalBtn">&times;</button>
-    </div>
-    <form id="editFaqForm">
-      <input type="hidden" id="editFaqId">
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="editCategory" class="form-label">Category</label>
-          <select id="editCategory" class="form-select" required>
-            <option value="Admissions">Admissions</option>
-            <option value="Courses">Courses</option>
-            <option value="Fees">Fees</option>
-            <option value="Examinations">Examinations</option>
-            <option value="Facilities">Facilities</option>
-            <option value="General">General</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="editQuestion" class="form-label">Question</label>
-          <input type="text" id="editQuestion" class="form-input" required maxlength="255">
-        </div>
-
-        <div class="form-group">
-          <label for="editAnswer" class="form-label">Official Answer</label>
-          <textarea id="editAnswer" class="form-textarea" rows="5" required></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" id="cancelEditModalBtn">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="saveEditFaqBtn">Update FAQ</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- ========================================== -->
-<!-- MODAL: DELETE CONFIRMATION                 -->
-<!-- ========================================== -->
-<div class="modal-backdrop" id="deleteFaqModal" style="display: none;">
-  <div class="modal-card modal-card-sm">
-    <div class="modal-header">
-      <h3 class="modal-title text-danger">Confirm Deletion</h3>
-      <button class="modal-close-btn" id="closeDeleteModalBtn">&times;</button>
-    </div>
-    <div class="modal-body">
-      <p>Are you sure you want to permanently delete this FAQ record?</p>
-      <div class="delete-preview-box">
-        <strong id="deleteQuestionTitle"></strong>
-      </div>
-      <p class="text-sm text-danger mt-3">This action will immediately remove this answer from the student chatbot.</p>
-    </div>
-    <div class="modal-footer">
-      <input type="hidden" id="deleteFaqId">
-      <button type="button" class="btn btn-outline" id="cancelDeleteModalBtn">Cancel</button>
-      <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete Record</button>
     </div>
   </div>
-</div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    // Tab Switching
-    const tabBtnFaqs = document.getElementById('tabBtnFaqs');
-    const tabBtnLogs = document.getElementById('tabBtnLogs');
-    const faqsSection = document.getElementById('faqsSection');
-    const logsSection = document.getElementById('logsSection');
-
-    tabBtnFaqs.addEventListener('click', () => {
-      tabBtnFaqs.classList.add('active');
-      tabBtnLogs.classList.remove('active');
-      faqsSection.style.display = 'block';
-      logsSection.style.display = 'none';
-    });
-
-    tabBtnLogs.addEventListener('click', () => {
-      tabBtnLogs.classList.add('active');
-      tabBtnFaqs.classList.remove('active');
-      faqsSection.style.display = 'none';
-      logsSection.style.display = 'block';
-    });
-
-    // Table Filter & Search
-    const searchInput = document.getElementById('adminTableSearch');
-    const categorySelect = document.getElementById('adminCategorySelect');
-    const rows = Array.from(document.querySelectorAll('.faq-row'));
-
-    function filterTable() {
-      const q = (searchInput.value || '').trim().toLowerCase();
-      const cat = categorySelect.value;
-
-      rows.forEach(row => {
-        const rowQ = row.getAttribute('data-question') || '';
-        const rowA = row.getAttribute('data-answer') || '';
-        const rowCat = row.getAttribute('data-category') || '';
-
-        const matchesQuery = !q || rowQ.includes(q) || rowA.includes(q);
-        const matchesCategory = cat === 'All' || rowCat.toLowerCase() === cat.toLowerCase();
-
-        row.style.display = (matchesQuery && matchesCategory) ? '' : 'none';
-      });
-    }
-
-    searchInput.addEventListener('input', filterTable);
-    categorySelect.addEventListener('change', filterTable);
-
-    // Modals
-    const addModal = document.getElementById('addFaqModal');
-    const editModal = document.getElementById('editFaqModal');
-    const deleteModal = document.getElementById('deleteFaqModal');
-
-    // Open Add Modal
-    document.getElementById('openAddFaqModalBtn').addEventListener('click', () => {
-      document.getElementById('addFaqForm').reset();
-      addModal.style.display = 'flex';
-    });
-
-    document.getElementById('closeAddModalBtn').addEventListener('click', () => addModal.style.display = 'none');
-    document.getElementById('cancelAddModalBtn').addEventListener('click', () => addModal.style.display = 'none');
-
-    // Handle Add Form Submission
-    document.getElementById('addFaqForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const question = document.getElementById('addQuestion').value.trim();
-      const answer = document.getElementById('addAnswer').value.trim();
-      const category = document.getElementById('addCategory').value;
-
-      try {
-        const res = await fetch('/api/admin/faqs', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-          },
-          body: JSON.stringify({ question, answer, category })
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          addModal.style.display = 'none';
-          showToast('FAQ successfully added to knowledge base!', 'success');
-          setTimeout(() => window.location.reload(), 800);
-        } else {
-          showToast(data.error || 'Failed to add FAQ', 'error');
-        }
-      } catch (err) {
-        showToast('Error connecting to server', 'error');
-      }
-    });
-
-    // Handle Edit Click
-    document.querySelectorAll('.edit-faq-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        const cat = btn.getAttribute('data-category');
-        const q = btn.getAttribute('data-question');
-        const a = btn.getAttribute('data-answer');
-
-        document.getElementById('editFaqId').value = id;
-        document.getElementById('editFaqIdLabel').textContent = id;
-        document.getElementById('editCategory').value = cat;
-        document.getElementById('editQuestion').value = q;
-        document.getElementById('editAnswer').value = a;
-
-        editModal.style.display = 'flex';
-      });
-    });
-
-    document.getElementById('closeEditModalBtn').addEventListener('click', () => editModal.style.display = 'none');
-    document.getElementById('cancelEditModalBtn').addEventListener('click', () => editModal.style.display = 'none');
-
-    // Handle Edit Form Submission
-    document.getElementById('editFaqForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const id = document.getElementById('editFaqId').value;
-      const question = document.getElementById('editQuestion').value.trim();
-      const answer = document.getElementById('editAnswer').value.trim();
-      const category = document.getElementById('editCategory').value;
-
-      try {
-        const res = await fetch(`/api/admin/faqs/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-          },
-          body: JSON.stringify({ question, answer, category })
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          editModal.style.display = 'none';
-          showToast('FAQ updated successfully!', 'success');
-          setTimeout(() => window.location.reload(), 800);
-        } else {
-          showToast(data.error || 'Failed to update FAQ', 'error');
-        }
-      } catch (err) {
-        showToast('Error connecting to server', 'error');
-      }
-    });
-
-    // Handle Delete Click
-    document.querySelectorAll('.delete-faq-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        const q = btn.getAttribute('data-question');
-
-        document.getElementById('deleteFaqId').value = id;
-        document.getElementById('deleteQuestionTitle').textContent = `FAQ #${id}: "${q}"`;
-        deleteModal.style.display = 'flex';
-      });
-    });
-
-    document.getElementById('closeDeleteModalBtn').addEventListener('click', () => deleteModal.style.display = 'none');
-    document.getElementById('cancelDeleteModalBtn').addEventListener('click', () => deleteModal.style.display = 'none');
-
-    // Confirm Delete
-    document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-      const id = document.getElementById('deleteFaqId').value;
-      try {
-        const res = await fetch(`/api/admin/faqs/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRFToken': csrfToken
-          }
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          deleteModal.style.display = 'none';
-          showToast(`FAQ #${id} deleted successfully.`, 'info');
-          setTimeout(() => window.location.reload(), 800);
-        } else {
-          showToast(data.error || 'Failed to delete FAQ', 'error');
-        }
-      } catch (err) {
-        showToast('Error connecting to server', 'error');
-      }
-    });
-  });
-</script>
+</section>
 {% endblock %}

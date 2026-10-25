@@ -14,7 +14,7 @@ sys.path.insert(0, str(BASE_DIR))
 
 if __name__ == "__main__":
     print("=" * 70)
-    print("CampusAI Automated Test Suite (SYBBA CA Semester III Project)")
+    print("CareerPilot AI Automated Test Suite (G H Raisoni University - BCA Science)")
     print("=" * 70)
 
     loader = unittest.TestLoader()

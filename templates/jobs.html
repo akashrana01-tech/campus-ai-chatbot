@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Job Recommendations | CareerPilot AI{% endblock %}
+
+{% block content %}
+<section class="page-content-wrapper">
+  <div class="site-container">
+    <div class="page-header-clean mb-6">
+      <span class="sub-badge">Opportunity Discovery</span>
+      <h1 class="page-heading">Intelligent Job Recommendations</h1>
+      <p class="page-subheading">
+        Jobs matched against your skill profile with automated relevance scoring and requirements comparison.
+      </p>
+    </div>
+
+    <div class="jobs-grid">
+      {% for item in recommendations %}
+        <div class="card job-card">
+          <div class="job-card-top">
+            <div>
+              <span class="job-company">{{ item.job.company_name }}</span>
+              <h2 class="job-title">{{ item.job.job_title }}</h2>
+              <div class="job-meta-row">
+                <span class="meta-item">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span>{{ item.job.location }}</span>
+                </span>
+                <span class="meta-item">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  <span>{{ item.job.experience_level }}</span>
+                </span>
+                <span class="meta-item">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  <span>{{ item.job.salary_range }}</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Match Score Badge -->
+            <div class="match-score-badge">
+              <span class="score-val">{{ item.match_score | round | int }}%</span>
+              <span class="score-lbl">Skill Match</span>
+            </div>
+          </div>
+
+          <div class="job-skills-section">
+            <h4 class="skills-sub-title">Required Competencies:</h4>
+            <div class="skills-tags-row">
+              {% for s in item.job.required_skills %}
+                <span class="job-skill-tag {% if s in item.matched_skills %}matched{% endif %}">
+                  {% if s in item.matched_skills %}✓ {% endif %}{{ s }}
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="job-card-bottom">
+            <button class="btn btn-primary btn-sm apply-btn" onclick="applyJob('{{ item.job.job_title }}', '{{ item.job.company_name }}')">
+              <span>Apply / View Role</span>
+            </button>
+            <a href="{{ url_for('resume_builder_page') }}" class="btn btn-outline btn-sm">
+              <span>Customize Resume for this Job</span>
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function applyJob(title, company) {
+    showToast(`Application simulated for ${title} at ${company}!`, 'success');
+  }
+</script>
+{% endblock %}

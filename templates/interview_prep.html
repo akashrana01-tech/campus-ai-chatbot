@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Preparation & Mock Tests | CareerPilot AI{% endblock %}
+
+{% block content %}
+<section class="page-content-wrapper">
+  <div class="site-container">
+    <div class="page-header-clean mb-6">
+      <span class="sub-badge">Assessment & Readiness Module</span>
+      <h1 class="page-heading">Technical Interview Preparation</h1>
+      <p class="page-subheading">
+        Practice curated multiple-choice questions in C, C++, Java, HTML, Python, and SQL with instant scoring and explanations.
+      </p>
+
+      <!-- Subject Tabs -->
+      <div class="subject-tabs-bar">
+        {% for sub in subjects %}
+          <a href="{{ url_for('interview_prep_page', subject=sub) }}" 
+             class="subject-pill-btn {% if selected_subject.upper() == sub.upper() %}active{% endif %}">
+            <span>{{ sub }} MCQs</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="interview-grid">
+      <!-- Test Container -->
+      <div class="test-main-column">
+        <div class="card test-card">
+          <div class="test-header">
+            <div>
+              <span class="test-badge">{{ selected_subject }} Technical Test</span>
+              <h2 class="test-title">Topic: {{ selected_subject }} Core Concepts & Problem Solving</h2>
+            </div>
+            <div class="test-meta-info">
+              <span>{{ questions | length }} Questions</span>
+              <span>•</span>
+              <span>Pass Criterion: 60%</span>
+            </div>
+          </div>
+
+          <!-- Quiz Form -->
+          <form id="quizForm" class="quiz-form">
+            <input type="hidden" id="quizSubject" value="{{ selected_subject }}">
+
+            <div class="questions-list">
+              {% for q in questions %}
+                <div class="question-item" data-qid="{{ q.id }}">
+                  <div class="question-head">
+                    <span class="q-number">Q{{ loop.index }}.</span>
+                    <h3 class="q-text">{{ q.question }}</h3>
+                  </div>
+
+                  <div class="options-group">
+                    {% for opt in q.options %}
+                      <label class="option-label" for="q_{{ q.id }}_{{ loop.index0 }}">
+                        <input type="radio" 
+                               id="q_{{ q.id }}_{{ loop.index0 }}" 
+                               name="q_{{ q.id }}" 
+                               value="{{ loop.index0 }}">
+                        <span class="opt-letter">{{ ['A', 'B', 'C', 'D'][loop.index0] }}</span>
+                        <span class="opt-text">{{ opt }}</span>
+                      </label>
+                    {% endfor %}
+                  </div>
+
+                  <!-- Explanation box (revealed after submission) -->
+                  <div class="explanation-box" id="exp_{{ q.id }}" style="display: none;"></div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="quiz-submit-bar">
+              <button type="submit" class="btn btn-primary btn-lg" id="submitTestBtn">
+                <span>Submit Assessment</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </button>
+            </div>
+          </form>
+
+          <!-- Score Result Banner (Hidden initially) -->
+          <div class="test-result-card" id="testResultCard" style="display: none;">
+            <div class="result-badge-circle" id="resultCircle">
+              <span class="result-score-val" id="resultScoreText">0%</span>
+              <span class="result-score-lbl">Score</span>
+            </div>
+            <div class="result-summary-text">
+              <h3 class="result-status-heading" id="resultHeading">Pass</h3>
+              <p id="resultFeedback">You demonstrated strong proficiency in this technical domain.</p>
+              <div class="result-stats-row">
+                <span>Correct: <strong id="correctCount">0</strong> / <strong id="totalCount">0</strong></span>
+                <span>•</span>
+                <span id="savedDbStatus" class="text-emerald">✓ Result saved to your profile</span>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" id="retakeTestBtn">Retake Test</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Recent Scores -->
+      <div class="test-sidebar-column">
+        <div class="card test-history-card">
+          <div class="card-header-clean">
+            <h3 class="clean-title">Your Recent Test Scores</h3>
+            <span class="badge-icon">📊</span>
+          </div>
+
+          <div class="history-table-wrap">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Score</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="testHistoryBody">
+                {% for t in recent_tests %}
+                  <tr>
+                    <td><strong>{{ t.subject }}</strong></td>
+                    <td>{{ t.score }}%</td>
+                    <td>
+                      <span class="test-status-pill {% if t.result == 'Pass' %}pass{% else %}fail{% endif %}">
+                        {{ t.result }}
+                      </span>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="3" class="text-slate text-sm text-center py-4">No test submissions yet.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card test-tips-card mt-6">
+          <h4 class="font-bold text-navy mb-2">Campus Placement Tips</h4>
+          <ul class="text-sm text-slate space-y-2">
+            <li>• Scoring &ge; 80% on multiple subjects unlocks higher-tier job recommendations.</li>
+            <li>• Re-attempt topics with &lt; 60% score before technical interview rounds.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('quizForm');
+    const submitBtn = document.getElementById('submitTestBtn');
+    const resultCard = document.getElementById('testResultCard');
+    const resultScoreText = document.getElementById('resultScoreText');
+    const resultHeading = document.getElementById('resultHeading');
+    const resultFeedback = document.getElementById('resultFeedback');
+    const correctCount = document.getElementById('correctCount');
+    const totalCount = document.getElementById('totalCount');
+    const retakeBtn = document.getElementById('retakeTestBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const subject = document.getElementById('quizSubject').value;
+      const answers = {};
+
+      document.querySelectorAll('.question-item').forEach(item => {
+        const qid = item.getAttribute('data-qid');
+        const selected = item.querySelector(`input[name="q_${qid}"]:checked`);
+        if (selected) {
+          answers[qid] = parseInt(selected.value);
+        }
+      });
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Evaluating Answers...</span>';
+
+      try {
+        const res = await fetch('/api/interview/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subject, answers })
+        });
+
+        const data = await res.json();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Submit Assessment</span>';
+
+        if (data.success) {
+          // Display result
+          resultCard.style.display = 'flex';
+          resultScoreText.textContent = `${data.score}%`;
+          correctCount.textContent = data.correct_count;
+          totalCount.textContent = data.total_questions;
+
+          if (data.result === 'Pass') {
+            resultHeading.textContent = 'Assessment Passed! 🎉';
+            resultHeading.style.color = '#047857';
+            resultFeedback.textContent = 'Excellent performance! Your knowledge meets technical campus screening requirements.';
+          } else {
+            resultHeading.textContent = 'Needs Practice';
+            resultHeading.style.color = '#b45309';
+            resultFeedback.textContent = 'Review the detailed explanations below to strengthen your understanding.';
+          }
+
+          // Highlight choices and show explanations
+          data.detailed_results.forEach(qRes => {
+            const expBox = document.getElementById(`exp_${qRes.id}`);
+            if (expBox) {
+              expBox.style.display = 'block';
+              expBox.innerHTML = `
+                <div class="exp-title">Explanation:</div>
+                <div class="exp-text">${qRes.explanation}</div>
+              `;
+            }
+
+            const item = document.querySelector(`.question-item[data-qid="${qRes.id}"]`);
+            if (item) {
+              const labels = item.querySelectorAll('.option-label');
+              labels.forEach((lbl, idx) => {
+                if (idx === qRes.correct_choice) {
+                  lbl.classList.add('correct');
+                } else if (idx === qRes.user_choice && !qRes.is_correct) {
+                  lbl.classList.add('wrong');
+                }
+              });
+            }
+          });
+
+          // Smooth scroll to results
+          resultCard.scrollIntoView({ behavior: 'smooth' });
+          showToast(`Test evaluated! Score: ${data.score}% (${data.result})`, 'success');
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Submit Assessment</span>';
+        showToast('Error evaluating test', 'error');
+      }
+    });
+
+    retakeBtn.addEventListener('click', () => {
+      window.location.reload();
+    });
+  });
+</script>
+{% endblock %}

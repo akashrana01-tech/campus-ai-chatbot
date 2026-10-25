@@ -1,9 +1,9 @@
 import os
-import time
+import json
 import secrets
 from functools import wraps
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Any
 
 from flask import (
     Flask,
@@ -13,86 +13,60 @@ from flask import (
     session,
     redirect,
     url_for,
-    abort
+    Response
 )
-from werkzeug.security import check_password_hash
 
 from config import Config
-from models import db, FAQ, Admin, ChatMessage, QueryLog
-from services.faq_service import FAQService
-from services.chatbot import ChatbotService
-from services.ai_service import AIService
-
-# In-memory simple rate limiter: ip -> [(timestamp, count)]
-_rate_limits: Dict[str, list] = {}
-
-
-def check_rate_limit(key: str, max_requests: int = 30, window_seconds: int = 60) -> bool:
-    """Returns True if within rate limit, False if limit exceeded."""
-    now = time.time()
-    timestamps = _rate_limits.get(key, [])
-    # Keep only timestamps in current window
-    valid_timestamps = [t for t in timestamps if now - t < window_seconds]
-    if len(valid_timestamps) >= max_requests:
-        _rate_limits[key] = valid_timestamps
-        return False
-    valid_timestamps.append(now)
-    _rate_limits[key] = valid_timestamps
-    return True
+from models import (
+    db,
+    User,
+    Skill,
+    CareerRole,
+    Job,
+    Resume,
+    InterviewTest,
+    JobRecommendation
+)
+from services.career_service import CareerService, DEFAULT_ROADMAPS
+from services.interview_service import InterviewService
+from services.ai_advisor import AIAdvisorService
 
 
-def admin_required(f):
-    """Decorator to protect admin routes."""
+def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        admin_id = session.get("admin_id")
-        if not admin_id:
+        if not session.get("user_id"):
             if request.path.startswith("/api/"):
-                return jsonify({"error": "Unauthorized access. Please log in as an administrator."}), 401
-            return redirect(url_for("admin_login_page", next=request.path))
-        
-        # Verify admin still exists
-        admin = Admin.query.get(admin_id)
-        if not admin:
-            session.clear()
-            if request.path.startswith("/api/"):
-                return jsonify({"error": "Admin account not found."}), 401
-            return redirect(url_for("admin_login_page"))
+                return jsonify({"error": "Authentication required. Please log in."}), 401
+            return redirect(url_for("login_page", next=request.path))
         return f(*args, **kwargs)
     return decorated_function
 
 
-def verify_csrf(f):
-    """Decorator to verify CSRF token for state-changing admin API requests."""
+def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if request.method in ["POST", "PUT", "DELETE"]:
-            # Check custom header, JSON body, or form data
-            token = (
-                request.headers.get("X-CSRFToken") or
-                (request.is_json and request.json.get("csrf_token")) or
-                request.form.get("csrf_token")
-            )
-            expected = session.get("csrf_token")
-            if not expected or token != expected:
-                return jsonify({"error": "Invalid or missing CSRF token. Please refresh and try again."}), 403
+        user_id = session.get("user_id")
+        if not user_id:
+            return redirect(url_for("login_page", next=request.path))
+        user = User.query.get(user_id)
+        if not user or user.role != "admin":
+            return redirect(url_for("dashboard_page"))
         return f(*args, **kwargs)
     return decorated_function
 
 
 def create_app(config_class=Config):
-    """Flask Application Factory."""
+    """Application factory for CareerPilot AI."""
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    # Ensure SQLite instance folder exists
+    # Ensure instance directory exists
     Path(app.config.get("DB_PATH", "instance")).parent.mkdir(parents=True, exist_ok=True)
-
     db.init_app(app)
 
-    # Instantiate services
-    ai_service = AIService()
-    chatbot_service = ChatbotService(ai_service=ai_service)
+    # Initialize AI service
+    ai_advisor = AIAdvisorService()
 
     @app.before_request
     def set_session_csrf():
@@ -100,95 +74,221 @@ def create_app(config_class=Config):
             session["csrf_token"] = secrets.token_hex(24)
 
     @app.context_processor
-    def inject_global_template_vars():
+    def inject_global_vars():
+        current_user = None
+        if session.get("user_id"):
+            current_user = User.query.get(session.get("user_id"))
         return {
-            "college_name": app.config.get("COLLEGE_NAME", "CampusAI College"),
-            "college_email": app.config.get("COLLEGE_EMAIL", "admin@campusai.edu"),
-            "college_phone": app.config.get("COLLEGE_PHONE", "+1-800-555-CAMPUS"),
-            "college_address": app.config.get("COLLEGE_ADDRESS", "100 University Ave"),
-            "college_hours": app.config.get("COLLEGE_HOURS", "Mon-Fri: 8:30 AM - 5:00 PM"),
-            "ai_active": ai_service.is_available(),
+            "current_user": current_user,
+            "project_name": app.config.get("PROJECT_NAME", "CareerPilot AI"),
+            "institution": app.config.get("INSTITUTION"),
+            "department": app.config.get("DEPARTMENT"),
+            "academic_year": app.config.get("ACADEMIC_YEAR"),
+            "students": app.config.get("STUDENTS"),
+            "guide": app.config.get("GUIDE"),
+            "ai_active": ai_advisor.is_ai_online(),
             "csrf_token": session.get("csrf_token", ""),
-            "current_admin": session.get("admin_username") if session.get("admin_id") else None,
         }
+
+    @app.route("/favicon.ico")
+    def favicon():
+        svg_icon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>"""
+        return Response(svg_icon, mimetype="image/svg+xml")
 
     # ==========================================
     # HTML Page Routes
     # ==========================================
 
-    @app.route("/favicon.ico")
-    def favicon():
-        """Serve a minimal SVG graduation cap favicon."""
-        svg_icon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>"""
-        from flask import Response
-        return Response(svg_icon, mimetype="image/svg+xml")
-
     @app.route("/")
     def index():
-        """Landing / Home page."""
-        popular_faqs = FAQ.query.limit(6).all()
-        categories = FAQService.get_categories()
-        total_faqs = FAQ.query.count()
+        """Home Screen (Report Page 24)."""
+        roles = CareerService.get_all_roles()
+        total_jobs = Job.query.count()
+        return render_template("index.html", roles=roles, total_jobs=total_jobs)
+
+    @app.route("/guidance")
+    def career_guidance_page():
+        """Career Guidance Module (Report Page 25)."""
+        roles = CareerService.get_all_roles()
+        selected_role = request.args.get("role", "Web Developer")
+        analysis = CareerService.analyze_skill_gap(
+            user_skills=["HTML", "CSS", "JavaScript"],
+            target_role_name=selected_role
+        )
         return render_template(
-            "index.html",
-            popular_faqs=popular_faqs,
-            categories=categories,
-            total_faqs=total_faqs
+            "career_guidance.html",
+            roles=roles,
+            selected_role=selected_role,
+            analysis=analysis
         )
 
-    @app.route("/chat")
-    def chat_page():
-        """Student Chatbot page."""
-        initial_query = request.args.get("q", "").strip()
-        return render_template("chat.html", initial_query=initial_query)
+    @app.route("/resume")
+    def resume_builder_page():
+        """Resume Builder Module (Report Page 25 & 26)."""
+        saved_resume = None
+        if session.get("user_id"):
+            resume_obj = Resume.query.filter_by(user_id=session.get("user_id")).order_by(Resume.resume_id.desc()).first()
+            if resume_obj:
+                saved_resume = resume_obj.get_content()
 
-    @app.route("/faqs")
-    def faqs_page():
-        """Searchable FAQ directory page."""
-        category = request.args.get("category", "All").strip()
-        search_query = request.args.get("q", "").strip()
-        categories = FAQService.get_categories()
-        faqs = FAQService.search_faqs(search_query, category=None if category == "All" else category)
+        # If no resume saved, populate with Prerna's demo data from report screenshot
+        if not saved_resume:
+            saved_resume = {
+                "personal": {
+                    "full_name": "Prerna Fartade",
+                    "title": "Frontend Developer",
+                    "email": "fartadeprerna@gmail.com",
+                    "phone": "+91 98765 43210",
+                    "location": "Pune, India",
+                    "roll_no": "BC1013"
+                },
+                "education": {
+                    "degree": "BCA in BCA (Science)",
+                    "university": "G H Raisoni International Skill Tech University, Pune",
+                    "years": "2024 - 2027",
+                    "cgpa": "9.18"
+                },
+                "skills": {
+                    "technical": ["javascript", "html", "css", "react", "c++"],
+                    "interested_fields": "web development"
+                },
+                "experience": {
+                    "level": "Fresher",
+                    "projects": "vaccicare+ (Vaccine portal with modern UI), CareerPilot AI"
+                }
+            }
+
+        return render_template("resume_builder.html", resume=saved_resume)
+
+    @app.route("/interview")
+    def interview_prep_page():
+        """Interview Preparation Module (Report Page 13 & 19)."""
+        subjects = InterviewService.get_subjects()
+        selected_subject = request.args.get("subject", "JAVA")
+        questions = InterviewService.get_test_questions(selected_subject)
+        
+        recent_tests = []
+        if session.get("user_id"):
+            recent_tests = InterviewTest.query.filter_by(user_id=session.get("user_id")).order_by(InterviewTest.test_id.desc()).limit(5).all()
+
         return render_template(
-            "faqs.html",
-            faqs=faqs,
-            categories=categories,
-            selected_category=category,
-            search_query=search_query
+            "interview_prep.html",
+            subjects=subjects,
+            selected_subject=selected_subject,
+            questions=questions,
+            recent_tests=recent_tests
         )
 
-    @app.route("/admin/login")
-    def admin_login_page():
-        """Admin login page."""
-        if session.get("admin_id"):
-            return redirect(url_for("admin_dashboard_page"))
-        return render_template("admin_login.html")
+    @app.route("/jobs")
+    def jobs_page():
+        """Job Recommendation Module (Report Page 13 & 19)."""
+        user = None
+        if session.get("user_id"):
+            user = User.query.get(session.get("user_id"))
 
-    @app.route("/admin/dashboard")
+        if user:
+            recommendations = CareerService.recommend_jobs_for_user(user)
+        else:
+            all_jobs = Job.query.all()
+            recommendations = [{
+                "job": j.to_dict(),
+                "match_score": 85.0,
+                "matched_skills": [s.strip() for s in j.required_skills.split(",")[:2]],
+                "missing_skills": [s.strip() for s in j.required_skills.split(",")[2:]]
+            } for j in all_jobs]
+
+        return render_template("jobs.html", recommendations=recommendations)
+
+    @app.route("/dashboard")
+    @login_required
+    def dashboard_page():
+        """Student Dashboard (Report Page 16)."""
+        user = User.query.get(session.get("user_id"))
+        recent_tests = InterviewTest.query.filter_by(user_id=user.user_id).order_by(InterviewTest.test_id.desc()).all()
+        saved_resume = Resume.query.filter_by(user_id=user.user_id).order_by(Resume.resume_id.desc()).first()
+        recommendations = CareerService.recommend_jobs_for_user(user)
+
+        return render_template(
+            "dashboard.html",
+            user=user,
+            recent_tests=recent_tests,
+            saved_resume=saved_resume.get_content() if saved_resume else None,
+            recommendations=recommendations[:3]
+        )
+
+    @app.route("/admin")
     @admin_required
     def admin_dashboard_page():
-        """Admin FAQ management and analytics dashboard."""
-        faqs = FAQ.query.order_by(FAQ.id.desc()).all()
-        categories = FAQService.get_categories()
-        total_faqs = len(faqs)
-        total_queries = QueryLog.query.count()
-        recent_logs = QueryLog.query.order_by(QueryLog.id.desc()).limit(15).all()
-        
+        """Admin Dashboard (Report Page 15 & 16)."""
+        users = User.query.all()
+        jobs = Job.query.all()
+        tests = InterviewTest.query.order_by(InterviewTest.test_id.desc()).limit(20).all()
+        resumes = Resume.query.order_by(Resume.resume_id.desc()).limit(20).all()
+
         return render_template(
             "admin_dashboard.html",
-            faqs=faqs,
-            categories=categories,
-            total_faqs=total_faqs,
-            total_queries=total_queries,
-            recent_logs=recent_logs,
-            ai_status="Online" if ai_service.is_available() else "Offline (FAQ Fallback)"
+            users=users,
+            jobs=jobs,
+            tests=tests,
+            resumes=resumes,
+            total_users=len(users),
+            total_jobs=len(jobs),
+            total_tests=InterviewTest.query.count()
         )
 
-    @app.route("/admin/logout")
-    def admin_logout():
-        """Log out the administrator and redirect to login."""
+    @app.route("/login", methods=["GET", "POST"])
+    def login_page():
+        """Authentication page with demo pre-fill helper."""
+        if session.get("user_id"):
+            return redirect(url_for("dashboard_page"))
+
+        error = None
+        if request.method == "POST":
+            email = request.form.get("email", "").strip()
+            password = request.form.get("password", "").strip()
+            user = User.query.filter_by(email=email).first()
+
+            if user and user.check_password(password):
+                session.permanent = True
+                session["user_id"] = user.user_id
+                session["user_name"] = user.name
+                session["user_role"] = user.role
+
+                if user.role == "admin":
+                    return redirect(url_for("admin_dashboard_page"))
+                return redirect(url_for("dashboard_page"))
+            else:
+                error = "Invalid email or password. Please verify your credentials."
+
+        return render_template("login.html", error=error)
+
+    @app.route("/register", methods=["POST"])
+    def register_user():
+        """Register new student."""
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+
+        if not name or not email or not password:
+            return render_template("login.html", register_error="All fields are required.")
+
+        if User.query.filter_by(email=email).first():
+            return render_template("login.html", register_error="An account with this email already exists.")
+
+        user = User(name=name, email=email, role="student")
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+
+        session["user_id"] = user.user_id
+        session["user_name"] = user.name
+        session["user_role"] = user.role
+        return redirect(url_for("dashboard_page"))
+
+    @app.route("/logout")
+    def logout():
         session.clear()
-        return redirect(url_for("admin_login_page"))
+        return redirect(url_for("index"))
 
     # ==========================================
     # REST API Endpoints
@@ -196,200 +296,73 @@ def create_app(config_class=Config):
 
     @app.route("/api/health", methods=["GET"])
     def api_health():
-        """Health check endpoint."""
         return jsonify({
             "status": "healthy",
-            "app": "CampusAI College Assistant",
-            "ai_active": ai_service.is_available(),
-            "faq_count": FAQ.query.count(),
+            "project": "CareerPilot AI",
+            "institution": app.config.get("INSTITUTION"),
+            "ai_active": ai_advisor.is_ai_online(),
+            "users_count": User.query.count(),
+            "jobs_count": Job.query.count()
         }), 200
 
-    @app.route("/api/faqs", methods=["GET"])
-    def api_list_faqs():
-        """List FAQs with optional category filter."""
-        category = request.args.get("category")
-        faqs = FAQService.get_all_faqs(category)
-        return jsonify({
-            "success": True,
-            "count": len(faqs),
-            "faqs": [f.to_dict() for f in faqs]
-        }), 200
-
-    @app.route("/api/faqs/search", methods=["GET"])
-    def api_search_faqs():
-        """Search FAQs by query string and optional category filter."""
-        q = request.args.get("q", "").strip()
-        category = request.args.get("category")
-        results = FAQService.search_faqs(q, category=category)
-        return jsonify({
-            "success": True,
-            "query": q,
-            "count": len(results),
-            "faqs": [f.to_dict() for f in results]
-        }), 200
-
-    @app.route("/api/chat", methods=["POST"])
-    def api_chat():
-        """Student Chat endpoint."""
-        client_ip = request.remote_addr or "127.0.0.1"
-        if not check_rate_limit(f"chat_{client_ip}", max_requests=app.config.get("CHAT_RATE_LIMIT_PER_MINUTE", 30)):
-            return jsonify({
-                "error": "Rate limit exceeded. Please wait a moment before sending more messages."
-            }), 429
-
+    @app.route("/api/guidance/analyze", methods=["POST"])
+    def api_analyze_guidance():
         data = request.get_json(silent=True) or {}
-        message = data.get("message", "").strip()
-        session_id = data.get("session_id", "").strip()
+        user_skills = data.get("skills", [])
+        target_role = data.get("target_role", "Web Developer")
+        result = CareerService.analyze_skill_gap(user_skills, target_role)
+        return jsonify({"success": True, **result}), 200
 
-        if not message:
-            return jsonify({
-                "error": "Message content cannot be empty."
-            }), 400
-
-        result = chatbot_service.process_message(message=message, session_id=session_id)
-        return jsonify({
-            "success": True,
-            **result
-        }), 200
-
-    @app.route("/api/admin/login", methods=["POST"])
-    def api_admin_login():
-        """Authenticate administrator."""
-        client_ip = request.remote_addr or "127.0.0.1"
-        if not check_rate_limit(f"login_{client_ip}", max_requests=app.config.get("LOGIN_RATE_LIMIT_PER_MINUTE", 10)):
-            return jsonify({
-                "error": "Too many failed login attempts. Please wait 1 minute."
-            }), 429
-
+    @app.route("/api/advisor/chat", methods=["POST"])
+    def api_advisor_chat():
         data = request.get_json(silent=True) or {}
-        username_or_email = data.get("username", "").strip()
-        password = data.get("password", "").strip()
+        query = data.get("query", "").strip()
+        result = ai_advisor.get_advice(query)
+        return jsonify({"success": True, **result}), 200
 
-        if not username_or_email or not password:
-            return jsonify({"error": "Please enter both username/email and password."}), 400
+    @app.route("/api/interview/questions", methods=["GET"])
+    def api_interview_questions():
+        subject = request.args.get("subject", "JAVA")
+        questions = InterviewService.get_test_questions(subject)
+        return jsonify({"success": True, "subject": subject, "questions": questions}), 200
 
-        admin = Admin.query.filter(
-            (Admin.username == username_or_email) | (Admin.email == username_or_email)
-        ).first()
-
-        if not admin or not admin.check_password(password):
-            return jsonify({"error": "Invalid credentials. Please verify username and password."}), 401
-
-        session.permanent = True
-        session["admin_id"] = admin.id
-        session["admin_username"] = admin.username
-        session["admin_email"] = admin.email
-
-        return jsonify({
-            "success": True,
-            "message": "Login successful.",
-            "admin": admin.to_dict(),
-            "redirect_url": url_for("admin_dashboard_page")
-        }), 200
-
-    @app.route("/api/admin/logout", methods=["POST"])
-    def api_admin_logout():
-        """Log out administrator."""
-        session.clear()
-        return jsonify({"success": True, "message": "Logged out successfully."}), 200
-
-    @app.route("/api/admin/stats", methods=["GET"])
-    @admin_required
-    def api_admin_stats():
-        """Return admin analytics and counts."""
-        total_faqs = FAQ.query.count()
-        total_queries = QueryLog.query.count()
-        categories = FAQService.get_categories()
-        recent_logs = QueryLog.query.order_by(QueryLog.id.desc()).limit(15).all()
-
-        return jsonify({
-            "success": True,
-            "total_faqs": total_faqs,
-            "total_queries": total_queries,
-            "categories": categories,
-            "ai_active": ai_service.is_available(),
-            "recent_logs": [log.to_dict() for log in recent_logs]
-        }), 200
-
-    @app.route("/api/admin/faqs", methods=["POST"])
-    @admin_required
-    @verify_csrf
-    def api_create_faq():
-        """Create a new FAQ record."""
+    @app.route("/api/interview/submit", methods=["POST"])
+    def api_interview_submit():
         data = request.get_json(silent=True) or {}
-        question = data.get("question", "").strip()
-        answer = data.get("answer", "").strip()
-        category = data.get("category", "General").strip()
+        subject = data.get("subject", "C")
+        answers = data.get("answers", {})
+        user_id = session.get("user_id")
 
-        if not question or not answer:
-            return jsonify({"error": "Both question and answer fields are required."}), 400
+        evaluation = InterviewService.evaluate_test(subject, answers, user_id=user_id)
+        return jsonify({"success": True, **evaluation}), 200
 
-        faq = FAQ(
-            question=question,
-            answer=answer,
-            category=category or "General"
+    @app.route("/api/resume/save", methods=["POST"])
+    def api_save_resume():
+        data = request.get_json(silent=True) or {}
+        user_id = session.get("user_id")
+
+        if not user_id:
+            # Look up or create demo user
+            prerna = User.query.filter_by(email="prerna@gmail.com").first()
+            user_id = prerna.user_id if prerna else 1
+
+        resume = Resume(
+            user_id=user_id,
+            resume_content=json.dumps(data)
         )
-        db.session.add(faq)
+        db.session.add(resume)
         db.session.commit()
 
         return jsonify({
             "success": True,
-            "message": "FAQ created successfully.",
-            "faq": faq.to_dict()
-        }), 201
-
-    @app.route("/api/admin/faqs/<int:faq_id>", methods=["PUT"])
-    @admin_required
-    @verify_csrf
-    def api_update_faq(faq_id: int):
-        """Update an existing FAQ record."""
-        faq = FAQ.query.get(faq_id)
-        if not faq:
-            return jsonify({"error": f"FAQ with ID {faq_id} not found."}), 404
-
-        data = request.get_json(silent=True) or {}
-        question = data.get("question", "").strip()
-        answer = data.get("answer", "").strip()
-        category = data.get("category", "").strip()
-
-        if not question or not answer:
-            return jsonify({"error": "Question and answer fields cannot be empty."}), 400
-
-        faq.question = question
-        faq.answer = answer
-        if category:
-            faq.category = category
-
-        db.session.commit()
-
-        return jsonify({
-            "success": True,
-            "message": "FAQ updated successfully.",
-            "faq": faq.to_dict()
+            "message": "Resume successfully saved to backend database!",
+            "resume_id": resume.resume_id
         }), 200
 
-    @app.route("/api/admin/faqs/<int:faq_id>", methods=["DELETE"])
-    @admin_required
-    @verify_csrf
-    def api_delete_faq(faq_id: int):
-        """Delete an FAQ record."""
-        faq = FAQ.query.get(faq_id)
-        if not faq:
-            return jsonify({"error": f"FAQ with ID {faq_id} not found."}), 404
-
-        db.session.delete(faq)
-        db.session.commit()
-
-        return jsonify({
-            "success": True,
-            "message": f"FAQ #{faq_id} deleted successfully."
-        }), 200
-
-    # Auto-initialize database tables and seed if database is empty
+    # Auto-seed database if empty
     with app.app_context():
         db.create_all()
-        # Seed default admin if missing
-        if Admin.query.count() == 0 or FAQ.query.count() == 0:
+        if User.query.count() == 0 or Job.query.count() == 0:
             try:
                 from seed_data import seed_database
                 seed_database(app)

@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}Step-by-Step Resume Builder | CareerPilot AI{% endblock %}
+
+{% block content %}
+<section class="page-content-wrapper">
+  <div class="site-container">
+    <div class="page-header-clean mb-6">
+      <span class="sub-badge">Career Document Studio</span>
+      <h1 class="page-heading">Step-by-Step Resume Builder</h1>
+      <p class="page-subheading">
+        Complete 4 simple steps to build your professional tech resume with instant live preview and print-ready export.
+      </p>
+    </div>
+
+    <!-- 2-Column Builder Layout (Matches Report Page 25 & 26 Screenshots) -->
+    <div class="resume-builder-grid">
+      <!-- Left Column: Step-by-Step Form Wizard (Matches Page 25 & 26) -->
+      <div class="builder-form-column">
+        <div class="card builder-form-card">
+          <div class="builder-card-top">
+            <h2 class="builder-title">Step-by-step Resume Builder</h2>
+            <p class="builder-sub">Complete 4 steps, then generate final preview and save to backend</p>
+          </div>
+
+          <!-- Step Progress Tabs (Matches Page 25 & 26 with active blue pill) -->
+          <div class="step-progress-tabs">
+            <button class="step-tab-btn active" data-step="1">Step 1</button>
+            <button class="step-tab-btn" data-step="2">Step 2</button>
+            <button class="step-tab-btn" data-step="3">Step 3</button>
+            <button class="step-tab-btn" data-step="4">Step 4</button>
+          </div>
+
+          <form id="resumeWizardForm">
+            <!-- STEP 1: Personal Details -->
+            <div class="wizard-step-pane active" id="wizardStep1">
+              <h3 class="pane-title">Step 1: Personal Information</h3>
+              <div class="form-group">
+                <label class="form-label" for="resName">Full Name</label>
+                <input type="text" id="resName" class="form-input" value="{{ resume.personal.full_name }}" placeholder="e.g. Prerna Fartade" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="resTitle">Professional Title / Target Role</label>
+                <input type="text" id="resTitle" class="form-input" value="{{ resume.personal.title }}" placeholder="e.g. Frontend Developer" required>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="resEmail">Email Address</label>
+                  <input type="email" id="resEmail" class="form-input" value="{{ resume.personal.email }}" placeholder="e.g. fartadeprerna@gmail.com" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="resPhone">Phone Number</label>
+                  <input type="text" id="resPhone" class="form-input" value="{{ resume.personal.phone }}" placeholder="+91 98765 43210">
+                </div>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="resRoll">Roll Number / Student ID</label>
+                  <input type="text" id="resRoll" class="form-input" value="{{ resume.personal.roll_no }}" placeholder="BC1013">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="resLocation">Location</label>
+                  <input type="text" id="resLocation" class="form-input" value="{{ resume.personal.location }}" placeholder="Pune, India">
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: Education Details (Matches Page 25 & 26) -->
+            <div class="wizard-step-pane" id="wizardStep2" style="display: none;">
+              <h3 class="pane-title">Step 2: Education Details</h3>
+              <div class="form-group">
+                <label class="form-label" for="resDegree">Degree & Major</label>
+                <input type="text" id="resDegree" class="form-input" value="{{ resume.education.degree }}" placeholder="e.g. BCA in BCA (Science)">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="resUni">University / College Name</label>
+                <input type="text" id="resUni" class="form-input" value="{{ resume.education.university }}" placeholder="g h raisoni international skill tech university">
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="resYears">Academic Years / Batch</label>
+                  <input type="text" id="resYears" class="form-input" value="{{ resume.education.years }}" placeholder="2024 - 2027">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="resCgpa">CGPA / Percentage</label>
+                  <input type="text" id="resCgpa" class="form-input" value="{{ resume.education.cgpa }}" placeholder="9.18">
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 3: Skills & Interested Fields (Matches Page 25 & 26) -->
+            <div class="wizard-step-pane" id="wizardStep3" style="display: none;">
+              <h3 class="pane-title">Step 3: Skills & Fields</h3>
+              <div class="form-group">
+                <label class="form-label" for="resSkills">Technical Skills (comma-separated)</label>
+                <input type="text" id="resSkills" class="form-input" value="{{ resume.skills.technical | join(', ') if resume.skills.technical is iterable else resume.skills.technical }}" placeholder="javascript, html, css, react, node.js">
+                <span class="form-hint">Type skills separated by commas (e.g. javascript, html, css, react)</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="resFields">Interested Fields / Domains</label>
+                <input type="text" id="resFields" class="form-input" value="{{ resume.skills.interested_fields }}" placeholder="web development, software engineering">
+              </div>
+            </div>
+
+            <!-- STEP 4: Projects & Experience (Matches Page 25 & 26) -->
+            <div class="wizard-step-pane" id="wizardStep4" style="display: none;">
+              <h3 class="pane-title">Step 4: Projects & Experience</h3>
+              <div class="form-group">
+                <label class="form-label" for="resProjects">Projects (descriptions)</label>
+                <textarea id="resProjects" class="form-textarea" rows="4" placeholder="vaccicare+ (Vaccine Management Portal), CareerPilot AI Platform">{{ resume.experience.projects }}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="resExp">Experience Level</label>
+                <select id="resExp" class="form-select">
+                  <option value="Fresher" {% if resume.experience.level == 'Fresher' %}selected{% endif %}>Fresher</option>
+                  <option value="Internship / 6 Months" {% if resume.experience.level != 'Fresher' %}selected{% endif %}>Internship / 6 Months</option>
+                  <option value="1+ Year Junior Developer">1+ Year Junior Developer</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Form Navigation & Save Buttons -->
+            <div class="wizard-actions-bar">
+              <button type="button" class="btn btn-outline" id="prevStepBtn" style="display: none;">Previous</button>
+              <button type="button" class="btn btn-primary" id="nextStepBtn">Next Step &rarr;</button>
+              <button type="button" class="btn btn-emerald" id="saveBackendBtn" style="display: none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span>Save to Backend</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Live Formatted Resume Preview (Matches Report Page 25 & 26 Screenshots) -->
+      <div class="resume-preview-column">
+        <div class="preview-toolbar">
+          <span class="preview-label">Live Formatted Preview</span>
+          <button type="button" class="btn btn-primary btn-sm" id="printPreviewBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span>Print Preview</span>
+          </button>
+        </div>
+
+        <!-- Printable Resume Sheet (Matches Page 26 Screenshot Exactly) -->
+        <div class="resume-sheet" id="printableResumeArea">
+          <!-- Header (Page 26) -->
+          <div class="resume-header">
+            <h1 class="preview-name" id="prevName">{{ resume.personal.full_name }}</h1>
+            <div class="preview-title" id="prevTitle">{{ resume.personal.title }}</div>
+            <div class="preview-contact-line">
+              <span id="prevEmail">{{ resume.personal.email }}</span>
+              <span>•</span>
+              <span id="prevDegreeShort">{{ resume.education.degree.split()[0] if resume.education.degree else 'BCA' }}</span>
+              <span>•</span>
+              <span id="prevLocation">{{ resume.personal.location }}</span>
+            </div>
+          </div>
+
+          <!-- Section: Education (Page 26) -->
+          <div class="resume-section">
+            <h4 class="section-heading-mono">EDUCATION</h4>
+            <div class="resume-item">
+              <div class="item-head">
+                <strong id="prevDegree">{{ resume.education.degree }}</strong>
+                <span class="item-time" id="prevYears">({{ resume.education.years }})</span>
+              </div>
+              <div class="item-sub">
+                <span id="prevUni">{{ resume.education.university }}</span>
+                <span>, CGPA: </span>
+                <strong id="prevCgpa">{{ resume.education.cgpa }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Skills (Page 26 with blue pill badges) -->
+          <div class="resume-section">
+            <h4 class="section-heading-mono">SKILLS</h4>
+            <div class="resume-skills-pills" id="prevSkillsPills">
+              <!-- Rendered via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Section: Interested Fields (Page 26) -->
+          <div class="resume-section">
+            <h4 class="section-heading-mono">INTERESTED FIELDS</h4>
+            <p class="preview-text" id="prevFields">{{ resume.skills.interested_fields }}</p>
+          </div>
+
+          <!-- Section: Experience (Page 26) -->
+          <div class="resume-section">
+            <h4 class="section-heading-mono">EXPERIENCE</h4>
+            <p class="preview-text" id="prevExp">{{ resume.experience.level }}</p>
+          </div>
+
+          <!-- Section: Projects (Page 26) -->
+          <div class="resume-section">
+            <h4 class="section-heading-mono">PROJECTS</h4>
+            <p class="preview-text font-medium" id="prevProjects">{{ resume.experience.projects }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    const tabs = document.querySelectorAll('.step-tab-btn');
+    const prevBtn = document.getElementById('prevStepBtn');
+    const nextBtn = document.getElementById('nextStepBtn');
+    const saveBtn = document.getElementById('saveBackendBtn');
+    const printBtn = document.getElementById('printPreviewBtn');
+
+    // Inputs
+    const resName = document.getElementById('resName');
+    const resTitle = document.getElementById('resTitle');
+    const resEmail = document.getElementById('resEmail');
+    const resLocation = document.getElementById('resLocation');
+    const resDegree = document.getElementById('resDegree');
+    const resUni = document.getElementById('resUni');
+    const resYears = document.getElementById('resYears');
+    const resCgpa = document.getElementById('resCgpa');
+    const resSkills = document.getElementById('resSkills');
+    const resFields = document.getElementById('resFields');
+    const resExp = document.getElementById('resExp');
+    const resProjects = document.getElementById('resProjects');
+
+    // Preview Elements
+    const prevName = document.getElementById('prevName');
+    const prevTitle = document.getElementById('prevTitle');
+    const prevEmail = document.getElementById('prevEmail');
+    const prevLocation = document.getElementById('prevLocation');
+    const prevDegree = document.getElementById('prevDegree');
+    const prevDegreeShort = document.getElementById('prevDegreeShort');
+    const prevUni = document.getElementById('prevUni');
+    const prevYears = document.getElementById('prevYears');
+    const prevCgpa = document.getElementById('prevCgpa');
+    const prevSkillsPills = document.getElementById('prevSkillsPills');
+    const prevFields = document.getElementById('prevFields');
+    const prevExp = document.getElementById('prevExp');
+    const prevProjects = document.getElementById('prevProjects');
+
+    function updatePreview() {
+      prevName.textContent = resName.value || 'Your Name';
+      prevTitle.textContent = resTitle.value || 'Software Developer';
+      prevEmail.textContent = resEmail.value || 'email@example.com';
+      prevLocation.textContent = resLocation.value || 'Pune, India';
+      prevDegree.textContent = resDegree.value || 'Bachelor of Computer Applications';
+      prevDegreeShort.textContent = (resDegree.value || 'BCA').split(' ')[0];
+      prevUni.textContent = resUni.value || 'G H Raisoni University';
+      prevYears.textContent = resYears.value ? `(${resYears.value})` : '(2024 - 2027)';
+      prevCgpa.textContent = resCgpa.value || '9.18';
+      prevFields.textContent = resFields.value || 'Web Development, Software Engineering';
+      prevExp.textContent = resExp.value || 'Fresher';
+      prevProjects.textContent = resProjects.value || 'Vaccicare+ Management System';
+
+      // Skills badges
+      prevSkillsPills.innerHTML = '';
+      const rawSkills = (resSkills.value || 'javascript, html, css, react').split(',');
+      rawSkills.forEach(s => {
+        const clean = s.trim();
+        if (clean) {
+          const pill = document.createElement('span');
+          pill.className = 'resume-pill';
+          pill.textContent = clean;
+          prevSkillsPills.appendChild(pill);
+        }
+      });
+    }
+
+    // Bind real-time update listeners
+    [resName, resTitle, resEmail, resLocation, resDegree, resUni, resYears, resCgpa, resSkills, resFields, resExp, resProjects].forEach(elem => {
+      if (elem) {
+        elem.addEventListener('input', updatePreview);
+        elem.addEventListener('change', updatePreview);
+      }
+    });
+
+    updatePreview();
+
+    function goToStep(step) {
+      currentStep = step;
+      document.querySelectorAll('.wizard-step-pane').forEach((p, idx) => {
+        p.style.display = (idx + 1 === step) ? 'block' : 'none';
+      });
+
+      tabs.forEach((t, idx) => {
+        t.classList.toggle('active', idx + 1 === step);
+      });
+
+      prevBtn.style.display = step > 1 ? 'inline-flex' : 'none';
+      if (step === totalSteps) {
+        nextBtn.style.display = 'none';
+        saveBtn.style.display = 'inline-flex';
+      } else {
+        nextBtn.style.display = 'inline-flex';
+        saveBtn.style.display = 'none';
+      }
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        goToStep(parseInt(tab.getAttribute('data-step')));
+      });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < totalSteps) goToStep(currentStep + 1);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    // Save to Backend Database
+    saveBtn.addEventListener('click', async () => {
+      const payload = {
+        personal: {
+          full_name: resName.value,
+          title: resTitle.value,
+          email: resEmail.value,
+          location: resLocation.value,
+          phone: document.getElementById('resPhone')?.value || ''
+        },
+        education: {
+          degree: resDegree.value,
+          university: resUni.value,
+          years: resYears.value,
+          cgpa: resCgpa.value
+        },
+        skills: {
+          technical: resSkills.value.split(',').map(s => s.trim()).filter(Boolean),
+          interested_fields: resFields.value
+        },
+        experience: {
+          level: resExp.value,
+          projects: resProjects.value
+        }
+      };
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span>Saving...</span>';
+
+      try {
+        const res = await fetch('/api/resume/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<span>✓ Saved to Database</span>';
+        if (data.success) {
+          showToast('Resume saved to SQLite backend!', 'success');
+        }
+      } catch (e) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<span>Save to Backend</span>';
+        showToast('Error saving resume to server', 'error');
+      }
+    });
+
+    // Print Preview
+    printBtn.addEventListener('click', () => {
+      window.print();
+    });
+  });
+</script>
+{% endblock %}
