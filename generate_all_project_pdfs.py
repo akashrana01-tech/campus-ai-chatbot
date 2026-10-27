@@ -117,7 +117,7 @@ def build_synopsis_pdf():
     meta_table = [
         [Paragraph("<b>Project Title:</b>", td), Paragraph("CampusAI: AI College Assistant Chatbot", td)],
         [Paragraph("<b>Domain:</b>", td), Paragraph("Artificial Intelligence & Web Application Development", td)],
-        [Paragraph("<b>Students:</b>", td), Paragraph("Kanishk Singh (BBA-CA-301) & Akash Rana (BBA-CA-302)", td)],
+        [Paragraph("<b>Students:</b>", td), Paragraph("Akash rana (ISTU25010120004) & Shreyash katke (ISTU25010120003)", td)],
         [Paragraph("<b>Project Guide:</b>", td), Paragraph("Prof. [Guide Name], Dept. of Computer Applications", td)],
         [Paragraph("<b>Technologies:</b>", td), Paragraph("Python 3, Flask, SQLite 3, SQLAlchemy, HTML5, CSS3, JavaScript, Gemini API", td)],
     ]
@@ -182,7 +182,7 @@ def build_synopsis_pdf():
 
     story.append(Spacer(1, 25))
     sign_table = [
-        [Paragraph("____________________________<br/><b>Student Signature</b><br/>(Kanishk Singh / Akash Rana)", center_text),
+        [Paragraph("____________________________<br/><b>Student Signature</b><br/>(Akash rana / Shreyash katke)", center_text),
          Paragraph("____________________________<br/><b>Project Guide Signature</b><br/>Prof. [Guide Name]", center_text)]
     ]
     t_sign = Table(sign_table, colWidths=[240, 247])
