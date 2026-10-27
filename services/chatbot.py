@@ -51,6 +51,26 @@ CATEGORY_SUGGESTIONS = {
         "What is the official college email address?",
         "What holidays is the college closed?",
     ],
+    "Placements": [
+        "What companies visit the college for placements?",
+        "What is the average placement salary package?",
+        "How does the placement cell support students?",
+    ],
+    "Scholarships": [
+        "What scholarships are available for students?",
+        "Can economically weaker students get fee concessions?",
+        "What is the deadline for scholarship applications?",
+    ],
+    "Hostels": [
+        "What are the hostel accommodation rules and fees?",
+        "What amenities are provided in college hostels?",
+        "Are meals included in hostel accommodation?",
+    ],
+    "Helpdesk": [
+        "How do I report a student grievance or contact anti-ragging?",
+        "Where can I get a bonafide or transfer certificate?",
+        "Who is the student mentor or counselor?",
+    ],
 }
 
 

@@ -4,31 +4,52 @@
    ========================================================== */
 
 :root {
-  /* Colors */
-  --navy-950: #0a0f1d;
-  --navy-900: #0f172a;
-  --navy-800: #1e293b;
-  --navy-700: #334155;
-  --navy-600: #475569;
-  
-  --indigo-900: #312e81;
-  --indigo-800: #3730a3;
-  --indigo-700: #4338ca;
-  --indigo-600: #4f46e5;
-  --indigo-500: #6366f1;
-  --indigo-400: #818cf8;
-  --indigo-100: #e0e7ff;
-  --indigo-50:  #eef2ff;
+  /* Group 2 - Emerald & Amber Academic Palette */
+  --emerald-950: #022c22;
+  --emerald-900: #064e3b;
+  --emerald-800: #065f46;
+  --emerald-700: #047857;
+  --emerald-600: #059669;
+  --emerald-500: #10b981;
+  --emerald-400: #34d399;
+  --emerald-300: #6ee7b7;
+  --emerald-200: #a7f3d0;
+  --emerald-100: #d1fae5;
+  --emerald-50:  #ecfdf5;
 
-  --accent-cyan: #06b6d4;
-  --accent-emerald: #10b981;
+  --navy-950: #022c22;
+  --navy-900: #064e3b;
+  --navy-800: #065f46;
+  --navy-700: #047857;
+  --navy-600: #059669;
+
+  --indigo-900: #064e3b;
+  --indigo-800: #065f46;
+  --indigo-700: #047857;
+  --indigo-600: #059669;
+  --indigo-500: #10b981;
+  --indigo-400: #34d399;
+  --indigo-300: #6ee7b7;
+  --indigo-200: #a7f3d0;
+  --indigo-100: #d1fae5;
+  --indigo-50:  #ecfdf5;
+
+  --amber-700: #b45309;
+  --amber-600: #d97706;
+  --amber-500: #f59e0b;
+  --amber-400: #fbbf24;
+  --amber-100: #fef3c7;
+  --amber-50:  #fffbeb;
+
+  --accent-amber: #d97706;
+  --accent-cyan: #0d9488;
+  --accent-emerald: #059669;
   --accent-emerald-bg: #ecfdf5;
-  --accent-amber: #f59e0b;
-  --accent-rose: #ef4444;
+  --accent-rose: #e11d48;
 
-  --bg-main: #f8fafc;
+  --bg-main: #fbfbfa;
   --bg-card: #ffffff;
-  --bg-card-subtle: #f1f5f9;
+  --bg-card-subtle: #f5f5f4;
 
   --text-main: #0f172a;
   --text-muted: #475569;
@@ -48,7 +69,8 @@
   --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
   --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
   --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.10), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
-  --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.25);
+  --shadow-glow: 0 0 25px rgba(5, 150, 105, 0.28);
+  --shadow-amber-glow: 0 0 20px rgba(217, 119, 6, 0.25);
 
   /* Radius */
   --radius-sm: 6px;
@@ -1399,8 +1421,9 @@ button, input, select, textarea {
 }
 
 .avatar-bubble.user-avatar {
-  background: linear-gradient(135deg, var(--indigo-600), var(--indigo-800));
+  background: linear-gradient(135deg, #d97706, #b45309);
   color: #ffffff;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
 }
 
 .message-content-block {
@@ -1481,17 +1504,18 @@ button, input, select, textarea {
 
 .assistant-wrapper .message-bubble {
   background: #ffffff;
-  color: var(--navy-900);
+  color: #1c1917;
   border: 1px solid var(--border-light);
+  border-top: 3.5px solid var(--emerald-600);
   border-top-left-radius: 4px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(6, 78, 59, 0.05);
 }
 
 .user-wrapper .message-bubble {
-  background: linear-gradient(135deg, var(--indigo-600), var(--indigo-700));
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
   color: #ffffff;
   border-top-right-radius: 4px;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.24);
 }
 
 .user-wrapper .message-bubble a {
@@ -2833,4 +2857,143 @@ button, input, select, textarea {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* ==========================================================
+   GROUP 2 ENHANCED CONTROLS: MIC, AUDIO, FEEDBACK, QUICK TABS
+   ========================================================== */
+.chat-quick-categories-bar {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.65rem 1.25rem;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-light);
+  scrollbar-width: none;
+}
+.chat-quick-categories-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-pill {
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #f5f5f4;
+  color: var(--navy-700);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.cat-pill:hover, .cat-pill.active {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #059669;
+}
+
+.mic-btn {
+  background: #f5f5f4;
+  border: 1px solid var(--border-light);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--navy-700);
+  transition: all var(--transition-fast);
+}
+.mic-btn:hover {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #059669;
+}
+.mic-btn.listening {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #ef4444;
+  animation: pulseMic 1.2s infinite;
+}
+@keyframes pulseMic {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.speak-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+.speak-btn:hover {
+  background: #ecfdf5;
+  color: #059669;
+}
+.speak-btn.speaking {
+  color: #d97706;
+  animation: speakPulse 1s infinite alternate;
+}
+@keyframes speakPulse {
+  from { opacity: 0.6; }
+  to { opacity: 1.0; }
+}
+
+.feedback-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+.feedback-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: var(--radius-sm);
+  transition: transform 0.15s ease;
+}
+.feedback-btn:hover {
+  transform: scale(1.25);
+}
+
+.toast-pill {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-full);
+  background: #064e3b;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(6, 78, 59, 0.3);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  animation: slideInToast 0.25s ease;
+}
+.toast-pill.toast-success {
+  background: #047857;
+}
+.toast-pill.toast-warning {
+  background: #b45309;
+}
+.toast-pill.toast-info {
+  background: #065f46;
+}
+.toast-pill.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+@keyframes slideInToast {
+  from { transform: translateY(15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

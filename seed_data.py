@@ -116,6 +116,44 @@ DEMO_FAQS = [
         "question": "Where can I find the official college holiday list and academic calendar?",
         "answer": "[DEMO RECORD] The annual Academic Calendar and gazetted holiday list are published in the 'Notices & Circulars' section on the college website and displayed on the student notice board in the main lobby. Major vacation periods include the Diwali/Autumn break (2 weeks) and Summer recess (June).",
     },
+
+    # Category: Placements
+    {
+        "category": "Placements",
+        "question": "What companies visit the college for campus recruitment and placements?",
+        "answer": "[DEMO RECORD] The college Training & Placement Cell (TPC) partners with 60+ premier recruiters including TCS, Infosys, Wipro, Capgemini, Cognizant, L&T Infotech, and ICICI Bank. Final-year students are eligible for on-campus placement drives starting in Semester V.",
+    },
+    {
+        "category": "Placements",
+        "question": "What is the average placement salary package for BBA and BCA students?",
+        "answer": "[DEMO RECORD] For the recent academic graduating batch, the highest domestic placement package reached Rs. 9.5 LPA, while the average salary package for BCA and BBA graduates stood at Rs. 4.2 LPA to Rs. 4.8 LPA. Over 85% of registered students secured job offers.",
+    },
+
+    # Category: Scholarships
+    {
+        "category": "Scholarships",
+        "question": "What scholarships and financial assistance are available for students?",
+        "answer": "[DEMO RECORD] Deserving and meritorious students can access: 1) Government Post-Matric Scholarships (SC/ST/OBC/EBC), 2) University Merit Freeship (up to 50% tuition waiver for >85% marks), 3) Single Girl Child Scholarship, and 4) Sports Quota Concessions. Applications must be submitted through the National Scholarship Portal (NSP) or the College Scholarship Desk before September 30th.",
+    },
+    {
+        "category": "Scholarships",
+        "question": "Can economically weaker students get fee concessions?",
+        "answer": "[DEMO RECORD] Yes, students from Economically Weaker Sections (EWS) with an annual family income below Rs. 2.5 Lakhs can apply for tuition fee waivers under the Institutional Welfare Fund. Contact the Student Welfare Section (Room 102) with valid income proof.",
+    },
+
+    # Category: Hostels
+    {
+        "category": "Hostels",
+        "question": "What are the hostel accommodation rules and annual charges?",
+        "answer": "[DEMO RECORD] The campus provides separate, fully furnished hostels for boys and girls. Rooms are available in 2-sharing and 3-sharing formats with 24/7 security, high-speed Wi-Fi, solar hot water, and medical aid. Annual hostel charges range from Rs. 65,000 to Rs. 85,000 including three vegetarian meals and evening snacks daily.",
+    },
+
+    # Category: Helpdesk
+    {
+        "category": "Helpdesk",
+        "question": "How do I report a student grievance or contact the anti-ragging cell?",
+        "answer": "[DEMO RECORD] The college enforces a strict zero-tolerance policy against ragging. Any harassment or grievance can be reported immediately to the Anti-Ragging Committee Helpline at +91-20-8000-RAGGING or via email to antiragging@campusai.edu. A Women's Internal Complaints Committee (ICC) and Student Grievance Redressal Portal are also operational.",
+    },
 ]
 
 
@@ -137,20 +175,23 @@ def seed_database(app: Flask):
         else:
             print("[*] Admin user already exists.")
 
-        # Seed FAQs if empty
-        current_faq_count = FAQ.query.count()
-        if current_faq_count == 0:
-            for item in DEMO_FAQS:
+        # Seed FAQs if empty or add missing ones
+        added_count = 0
+        for item in DEMO_FAQS:
+            if not FAQ.query.filter_by(question=item["question"]).first():
                 faq = FAQ(
                     category=item["category"],
                     question=item["question"],
                     answer=item["answer"],
                 )
                 db.session.add(faq)
+                added_count += 1
+        
+        if added_count > 0:
             db.session.commit()
-            print(f"[✓] Seeded {len(DEMO_FAQS)} demo FAQs across all categories.")
+            print(f"[✓] Seeded {added_count} demo FAQs across all categories.")
         else:
-            print(f"[*] Database already contains {current_faq_count} FAQs. Skipping duplicate seeding.")
+            print(f"[*] Database already contains all {len(DEMO_FAQS)} FAQs. Skipping duplicate seeding.")
 
 
 if __name__ == "__main__":
