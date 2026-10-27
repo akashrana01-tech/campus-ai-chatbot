@@ -36,9 +36,9 @@ SRC_VECTOR_PDF = "/Users/kanishksingh/.gemini/antigravity/brain/60288257-9f14-45
 PAGE_W, PAGE_H = 594.96, 841.92
 
 PAGE_FOOTER_MAP = {
-    7: 1, 8: 2, 9: 3, 10: 4, 11: 5, 12: 6, 13: 7, 14: 8, 15: 9, 16: 10,
-    17: 11, 18: 12, 19: 13, 20: 14, 21: 15, 22: 16, 23: 17, 24: 18, 25: 19, 26: 20,
-    27: 21, 28: 22, 29: 23, 30: 24, 31: 25, 32: 26, 33: 27, 34: 28, 35: 29
+    6: 1, 7: 2, 8: 3, 9: 4, 10: 5, 11: 6, 12: 7, 13: 8, 14: 9, 15: 10,
+    16: 11, 17: 12, 18: 13, 19: 14, 20: 15, 21: 16, 22: 17, 23: 18, 24: 19, 25: 20,
+    26: 21, 27: 22, 28: 23, 29: 24, 30: 25, 31: 26, 32: 27, 33: 28, 34: 29
 }
 
 DIAGRAM_HEADINGS = {
@@ -134,6 +134,8 @@ def generate_reportlab_pages(temp_pdf_path):
     tbl_cell = ParagraphStyle('TblCell', fontName='Times-Roman', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
     tbl_cell_bold = ParagraphStyle('TblCellBold', fontName='Times-Bold', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
     tbl_hdr = ParagraphStyle('TblHdr', fontName='Times-Bold', fontSize=8.5, leading=11.5, alignment=TA_CENTER, textColor=colors.white)
+    toc_cell = ParagraphStyle('TocCell', fontName='Times-Roman', fontSize=7.6, leading=9.8, alignment=TA_LEFT, textColor=colors.black)
+    toc_cell_c = ParagraphStyle('TocCellC', fontName='Times-Roman', fontSize=7.6, leading=9.8, alignment=TA_CENTER, textColor=colors.black)
 
     story = []
 
@@ -329,76 +331,54 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 5: TABLE OF CONTENT
+    # PAGE 5: TABLE OF CONTENT (Single Page Layout)
     # =========================================================================
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
     story.append(Paragraph("<b>TABLE OF CONTENT</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=12))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
 
     toc_data = [
         [Paragraph("<b>Sr No</b>", tbl_hdr), Paragraph("<b>Topic</b>", tbl_hdr), Paragraph("<b>Page No</b>", tbl_hdr)],
-        [Paragraph("1", tbl_cell), Paragraph("Introduction", tbl_cell), Paragraph("1", tbl_cell)],
-        [Paragraph("2", tbl_cell), Paragraph("Problem Definition", tbl_cell), Paragraph("2", tbl_cell)],
-        [Paragraph("3", tbl_cell), Paragraph("Existing System & Need for New System", tbl_cell), Paragraph("3", tbl_cell)],
-        [Paragraph("4", tbl_cell), Paragraph("Scope of System", tbl_cell), Paragraph("4", tbl_cell)],
-        [Paragraph("5", tbl_cell), Paragraph("Feasibility Study", tbl_cell), Paragraph("5", tbl_cell)],
-        [Paragraph("6", tbl_cell), Paragraph("Hardware Requirements", tbl_cell), Paragraph("6", tbl_cell)],
-        [Paragraph("7", tbl_cell), Paragraph("Software Requirements", tbl_cell), Paragraph("7", tbl_cell)],
-        [Paragraph("8", tbl_cell), Paragraph("Requirement Analysis", tbl_cell), Paragraph("8", tbl_cell)],
-        [Paragraph("9", tbl_cell), Paragraph("Decision Table", tbl_cell), Paragraph("9", tbl_cell)],
-        [Paragraph("10", tbl_cell), Paragraph("Decision Tree", tbl_cell), Paragraph("10", tbl_cell)],
-        [Paragraph("11", tbl_cell), Paragraph("Normalized Database Design (3NF) — Admins & Sessions Tables", tbl_cell), Paragraph("11", tbl_cell)],
-        [Paragraph("12", tbl_cell), Paragraph("College Info (FAQs) & Knowledge Base Tables", tbl_cell), Paragraph("12", tbl_cell)],
-        [Paragraph("13", tbl_cell), Paragraph("Chat History & Query Logs Tables", tbl_cell), Paragraph("13", tbl_cell)],
-        [Paragraph("14", tbl_cell), Paragraph("ER Diagram", tbl_cell), Paragraph("14", tbl_cell)],
-        [Paragraph("15", tbl_cell), Paragraph("Use Case Diagram", tbl_cell), Paragraph("15", tbl_cell)],
-        [Paragraph("16", tbl_cell), Paragraph("Class Diagram", tbl_cell), Paragraph("16", tbl_cell)],
-        [Paragraph("17", tbl_cell), Paragraph("Object Diagram", tbl_cell), Paragraph("17", tbl_cell)],
-        [Paragraph("18", tbl_cell), Paragraph("Sequence Diagram", tbl_cell), Paragraph("18", tbl_cell)]
+        [Paragraph("1", toc_cell_c), Paragraph("Introduction", toc_cell), Paragraph("1", toc_cell_c)],
+        [Paragraph("2", toc_cell_c), Paragraph("Problem Definition", toc_cell), Paragraph("2", toc_cell_c)],
+        [Paragraph("3", toc_cell_c), Paragraph("Existing System & Need for New System", toc_cell), Paragraph("3", toc_cell_c)],
+        [Paragraph("4", toc_cell_c), Paragraph("Scope of System", toc_cell), Paragraph("4", toc_cell_c)],
+        [Paragraph("5", toc_cell_c), Paragraph("Feasibility Study", toc_cell), Paragraph("5", toc_cell_c)],
+        [Paragraph("6", toc_cell_c), Paragraph("Hardware Requirements", toc_cell), Paragraph("6", toc_cell_c)],
+        [Paragraph("7", toc_cell_c), Paragraph("Software Requirements", toc_cell), Paragraph("7", toc_cell_c)],
+        [Paragraph("8", toc_cell_c), Paragraph("Requirement Analysis", toc_cell), Paragraph("8", toc_cell_c)],
+        [Paragraph("9", toc_cell_c), Paragraph("Decision Tree", toc_cell), Paragraph("9", toc_cell_c)],
+        [Paragraph("10", toc_cell_c), Paragraph("Decision Table", toc_cell), Paragraph("10", toc_cell_c)],
+        [Paragraph("11", toc_cell_c), Paragraph("Normalized Database Design (3NF) — Admins & Sessions Tables", toc_cell), Paragraph("11", toc_cell_c)],
+        [Paragraph("12", toc_cell_c), Paragraph("College Info (FAQs) & Knowledge Base Tables", toc_cell), Paragraph("12", toc_cell_c)],
+        [Paragraph("13", toc_cell_c), Paragraph("Chat History & Query Logs Tables", toc_cell), Paragraph("13", toc_cell_c)],
+        [Paragraph("14", toc_cell_c), Paragraph("ER Diagram", toc_cell), Paragraph("14", toc_cell_c)],
+        [Paragraph("15", toc_cell_c), Paragraph("Use Case Diagram", toc_cell), Paragraph("15", toc_cell_c)],
+        [Paragraph("16", toc_cell_c), Paragraph("Class Diagram", toc_cell), Paragraph("16", toc_cell_c)],
+        [Paragraph("17", toc_cell_c), Paragraph("Object Diagram", toc_cell), Paragraph("17", toc_cell_c)],
+        [Paragraph("18", toc_cell_c), Paragraph("Sequence Diagram", toc_cell), Paragraph("18", toc_cell_c)],
+        [Paragraph("19", toc_cell_c), Paragraph("Activity Diagram", toc_cell), Paragraph("19", toc_cell_c)],
+        [Paragraph("20", toc_cell_c), Paragraph("Component Diagram", toc_cell), Paragraph("20", toc_cell_c)],
+        [Paragraph("21", toc_cell_c), Paragraph("Data Flow Diagram (DFD Level 0 & Level 1)", toc_cell), Paragraph("21", toc_cell_c)],
+        [Paragraph("22", toc_cell_c), Paragraph("Home Screen UI", toc_cell), Paragraph("22", toc_cell_c)],
+        [Paragraph("23", toc_cell_c), Paragraph("Student Portal & Chatbot Assistant UI", toc_cell), Paragraph("23", toc_cell_c)],
+        [Paragraph("24", toc_cell_c), Paragraph("Admin Command Center & Management UI", toc_cell), Paragraph("24", toc_cell_c)],
+        [Paragraph("25", toc_cell_c), Paragraph("Testing & Implementation (23 Automated Test Cases)", toc_cell), Paragraph("25", toc_cell_c)],
+        [Paragraph("26", toc_cell_c), Paragraph("Drawbacks & Limitations", toc_cell), Paragraph("26", toc_cell_c)],
+        [Paragraph("27", toc_cell_c), Paragraph("Proposed Enhancements", toc_cell), Paragraph("27", toc_cell_c)],
+        [Paragraph("28", toc_cell_c), Paragraph("Conclusion", toc_cell), Paragraph("28", toc_cell_c)],
+        [Paragraph("29", toc_cell_c), Paragraph("Bibliography", toc_cell), Paragraph("29", toc_cell_c)]
     ]
-    toc_table = Table(toc_data, colWidths=[55, 360, 65])
+    toc_table = Table(toc_data, colWidths=[45, 375, 60])
     toc_table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 4),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('TOPPADDING', (0,0), (-1,-1), 1.8),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 1.8),
     ]))
     story.append(toc_table)
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 6: TABLE OF CONTENT (CONTD.)
-    # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>TABLE OF CONTENT (CONTD.)</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=12))
-
-    toc_data2 = [
-        [Paragraph("<b>Sr No</b>", tbl_hdr), Paragraph("<b>Topic</b>", tbl_hdr), Paragraph("<b>Page No</b>", tbl_hdr)],
-        [Paragraph("19", tbl_cell), Paragraph("Activity Diagram", tbl_cell), Paragraph("19", tbl_cell)],
-        [Paragraph("20", tbl_cell), Paragraph("Component Diagram", tbl_cell), Paragraph("20", tbl_cell)],
-        [Paragraph("21", tbl_cell), Paragraph("Data Flow Diagram (DFD Level 0 & Level 1)", tbl_cell), Paragraph("21", tbl_cell)],
-        [Paragraph("22", tbl_cell), Paragraph("Home Screen UI", tbl_cell), Paragraph("22", tbl_cell)],
-        [Paragraph("23", tbl_cell), Paragraph("Student Portal & Chatbot Assistant UI", tbl_cell), Paragraph("23", tbl_cell)],
-        [Paragraph("24", tbl_cell), Paragraph("Admin Command Center & Management UI", tbl_cell), Paragraph("24", tbl_cell)],
-        [Paragraph("25", tbl_cell), Paragraph("Testing & Implementation (23 Automated Test Cases)", tbl_cell), Paragraph("25", tbl_cell)],
-        [Paragraph("26", tbl_cell), Paragraph("Drawbacks & Limitations", tbl_cell), Paragraph("26", tbl_cell)],
-        [Paragraph("27", tbl_cell), Paragraph("Proposed Enhancements", tbl_cell), Paragraph("27", tbl_cell)],
-        [Paragraph("28", tbl_cell), Paragraph("Conclusion", tbl_cell), Paragraph("28", tbl_cell)],
-        [Paragraph("29", tbl_cell), Paragraph("Bibliography", tbl_cell), Paragraph("29", tbl_cell)]
-    ]
-    toc_table2 = Table(toc_data2, colWidths=[55, 360, 65])
-    toc_table2.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 6),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-    ]))
-    story.append(toc_table2)
     story.append(PageBreak())
 
     # =========================================================================
@@ -663,7 +643,33 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 15: TOPIC 9 - DECISION TABLE
+    # TOPIC 9 - DECISION TREE (Put first as requested)
+    # =========================================================================
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>DECISION TREE</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=5))
+    dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
+    if os.path.exists(dt_img):
+        story.append(RLImage(dt_img, width=470, height=295))
+    story.append(Spacer(1, 3))
+    story.append(Paragraph("Fig: Decision Tree of CampusAI Query Routing Engine", fig_caption))
+    story.append(Paragraph("<b>Explanation</b>", desc_head))
+    story.append(Paragraph(
+        "The decision tree illustrates the decision-making logic of the CampusAI query routing engine using standard Decision Tree "
+        "notation (square decision nodes D and circular chance/event nodes C). The root decision node <b>D1</b> evaluates incoming student "
+        "input. If the input is empty or invalid, branch <b>D12</b> triggers a validation prompt offering 8 domain category suggestion chips. "
+        "Valid inquiries follow branch <b>D11</b> to condition event node <b>C1</b> for lexical tokenization and Jaccard similarity scoring (S). "
+        "If <b>S >= 0.58</b> (branch <b>C11</b>, 70% probability), decision node <b>D2</b> fetches the verified SQLite record (<15ms). From "
+        "condition node <b>C2</b>, the response is delivered either with Web Speech audio read-aloud (<b>C21</b>) or as a fast-path text "
+        "response (<b>C22</b>). If <b>S < 0.58</b> (branch <b>C12</b>), decision node <b>D3</b> routes the query. For academic questions, "
+        "branch <b>D31</b> invokes the context-bounded Google Gemini 2.5 Flash API at condition node <b>C3</b>, delivering a zero-hallucination "
+        "answer (<b>C31</b>) or a graceful offline office referral (<b>C32</b>). Non-academic inquiries take branch <b>D32</b> directly to "
+        "college office contact guidance.", desc_body
+    ))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # TOPIC 10 - DECISION TABLE (Put in next page as requested)
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>DECISION TABLE</b>", h1))
@@ -701,30 +707,6 @@ def generate_reportlab_pages(temp_pdf_path):
         ('BOTTOMPADDING', (0,0), (-1,-1), 4),
     ]))
     story.append(t_dt)
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 16: TOPIC 10 - DECISION TREE
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>DECISION TREE</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
-    dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
-    if os.path.exists(dt_img):
-        story.append(RLImage(dt_img, width=430, height=430))
-    story.append(Spacer(1, 2))
-    story.append(Paragraph("Fig: Decision tree of CampusAI Query Routing Engine", fig_caption))
-    story.append(Paragraph("<b>Explanation</b>", desc_head))
-    story.append(Paragraph(
-        "The decision tree shows the path of a student through the CampusAI query answering system. The student first accesses "
-        "the chat portal and inputs an academic inquiry via keyboard or speech microphone. If the query is empty or invalid, "
-        "a validation prompt is returned. Valid queries undergo lexical tokenization, domain stop-word filtering, and synonym "
-        "expansion. The NLP engine computes the Jaccard similarity score (S) against the 26 seeded institutional FAQs. If S >= 0.45, "
-        "the authoritative SQLite record is fetched directly (<15ms). If S < 0.45, the context-bounded Google Gemini 2.5 Flash API is "
-        "invoked with strict zero-hallucination guardrails. If cloud services are unavailable, an institutional helpdesk referral "
-        "(contact@college.edu) is dispatched. Finally, the turn is persisted to chat_messages and delivered to the user with audio "
-        "text-to-speech synthesis and feedback options.", desc_body
-    ))
     story.append(PageBreak())
 
     # =========================================================================
@@ -1317,7 +1299,7 @@ def assemble_final_report(output_paths):
     reader = pypdf.PdfReader(final_pdf)
     total_p = len(reader.pages)
     print(f"[✓] Total verified pages: {total_p} (expected 35)")
-    assert total_p == 35, f"Expected 35 pages, but got {total_p} pages!"
+    assert total_p == 34, f"Expected 34 pages, but got {total_p} pages!"
 
     for out_p in output_paths[1:]:
         os.makedirs(os.path.dirname(out_p), exist_ok=True)
