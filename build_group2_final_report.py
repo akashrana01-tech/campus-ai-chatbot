@@ -38,18 +38,18 @@ PAGE_W, PAGE_H = 594.96, 841.92
 PAGE_FOOTER_MAP = {
     7: 1, 8: 2, 9: 3, 10: 4, 11: 5, 12: 6, 13: 7, 14: 8, 15: 9, 16: 10,
     17: 11, 18: 12, 19: 13, 20: 14, 21: 15, 22: 16, 23: 17, 24: 18, 25: 19, 26: 20,
-    27: 21, 28: 24, 29: 25, 30: 26, 31: 27, 32: 28, 33: 29, 34: 30, 35: 31
+    27: 21, 28: 22, 29: 23, 30: 24, 31: 25, 32: 26, 33: 27, 34: 28, 35: 29
 }
 
 DIAGRAM_HEADINGS = {
-    20: "ER DIAGRAM :",
-    21: "USE CASE DIAGRAM :",
-    22: "CLASS DIAGRAM :",
-    23: "OBJECT DIAGRAM :",
-    24: "SEQUENCE DIAGRAM :",
-    25: "ACTIVITY DIAGRAM :",
-    26: "COMPONENT DIAGRAM :",
-    27: "DATA FLOW DIAGRAM :"
+    20: "ER DIAGRAM",
+    21: "USE CASE DIAGRAM",
+    22: "CLASS DIAGRAM",
+    23: "OBJECT DIAGRAM",
+    24: "SEQUENCE DIAGRAM",
+    25: "ACTIVITY DIAGRAM",
+    26: "COMPONENT DIAGRAM",
+    27: "DATA FLOW DIAGRAM"
 }
 
 class AcademicDoubleBorderCanvas(canvas.Canvas):
@@ -123,6 +123,11 @@ def generate_reportlab_pages(temp_pdf_path):
     h1 = ParagraphStyle('H1', fontName='Times-Bold', fontSize=14.5, leading=19, alignment=TA_CENTER, textColor=colors.black, spaceAfter=8)
     h2 = ParagraphStyle('H2', fontName='Times-Bold', fontSize=11.5, leading=16, alignment=TA_CENTER, textColor=colors.black, spaceBefore=7, spaceAfter=4)
     h3 = ParagraphStyle('H3', fontName='Times-Bold', fontSize=10.5, leading=14, alignment=TA_CENTER, textColor=colors.black, spaceBefore=5, spaceAfter=3)
+
+    desc_head = ParagraphStyle('DescHead', fontName='Times-Bold', fontSize=9.5, leading=12, alignment=TA_LEFT, textColor=colors.black, spaceBefore=3, spaceAfter=2)
+    desc_body = ParagraphStyle('DescBody', fontName='Times-Roman', fontSize=8.2, leading=11.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=2)
+    desc_bullet = ParagraphStyle('DescBullet', fontName='Times-Roman', fontSize=7.8, leading=10.5, alignment=TA_JUSTIFY, leftIndent=12, firstLineIndent=-8, textColor=colors.black, spaceAfter=1.5)
+    fig_caption = ParagraphStyle('FigCaption', fontName='Times-Italic', fontSize=8.0, leading=11.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=2, spaceAfter=3)
 
     body = ParagraphStyle('Body', fontName='Times-Roman', fontSize=10.0, leading=14.8, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=6)
     bullet = ParagraphStyle('Bullet', fontName='Times-Roman', fontSize=9.5, leading=13.8, alignment=TA_JUSTIFY, leftIndent=15, firstLineIndent=-10, textColor=colors.black, spaceAfter=3)
@@ -330,14 +335,14 @@ def generate_reportlab_pages(temp_pdf_path):
         [Paragraph("19", tbl_cell), Paragraph("Activity Diagram", tbl_cell), Paragraph("19", tbl_cell)],
         [Paragraph("20", tbl_cell), Paragraph("Component Diagram", tbl_cell), Paragraph("20", tbl_cell)],
         [Paragraph("21", tbl_cell), Paragraph("Data Flow Diagram (DFD Level 0 & Level 1)", tbl_cell), Paragraph("21", tbl_cell)],
-        [Paragraph("22", tbl_cell), Paragraph("Home Screen UI", tbl_cell), Paragraph("24", tbl_cell)],
-        [Paragraph("23", tbl_cell), Paragraph("Student Portal & Chatbot Assistant UI", tbl_cell), Paragraph("25", tbl_cell)],
-        [Paragraph("24", tbl_cell), Paragraph("Admin Command Center & Management UI", tbl_cell), Paragraph("26", tbl_cell)],
-        [Paragraph("25", tbl_cell), Paragraph("Testing & Implementation (23 Automated Test Cases)", tbl_cell), Paragraph("27", tbl_cell)],
-        [Paragraph("26", tbl_cell), Paragraph("Drawbacks & Limitations", tbl_cell), Paragraph("28", tbl_cell)],
-        [Paragraph("27", tbl_cell), Paragraph("Proposed Enhancements", tbl_cell), Paragraph("29", tbl_cell)],
-        [Paragraph("28", tbl_cell), Paragraph("Conclusion", tbl_cell), Paragraph("30", tbl_cell)],
-        [Paragraph("29", tbl_cell), Paragraph("Bibliography", tbl_cell), Paragraph("31", tbl_cell)]
+        [Paragraph("22", tbl_cell), Paragraph("Home Screen UI", tbl_cell), Paragraph("22", tbl_cell)],
+        [Paragraph("23", tbl_cell), Paragraph("Student Portal & Chatbot Assistant UI", tbl_cell), Paragraph("23", tbl_cell)],
+        [Paragraph("24", tbl_cell), Paragraph("Admin Command Center & Management UI", tbl_cell), Paragraph("24", tbl_cell)],
+        [Paragraph("25", tbl_cell), Paragraph("Testing & Implementation (23 Automated Test Cases)", tbl_cell), Paragraph("25", tbl_cell)],
+        [Paragraph("26", tbl_cell), Paragraph("Drawbacks & Limitations", tbl_cell), Paragraph("26", tbl_cell)],
+        [Paragraph("27", tbl_cell), Paragraph("Proposed Enhancements", tbl_cell), Paragraph("27", tbl_cell)],
+        [Paragraph("28", tbl_cell), Paragraph("Conclusion", tbl_cell), Paragraph("28", tbl_cell)],
+        [Paragraph("29", tbl_cell), Paragraph("Bibliography", tbl_cell), Paragraph("29", tbl_cell)]
     ]
     toc_table2 = Table(toc_data2, colWidths=[55, 360, 65])
     toc_table2.setStyle(TableStyle([
@@ -355,7 +360,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 7: TOPIC 1 - INTRODUCTION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>INTRODUCTION :</b>", h1))
+    story.append(Paragraph("<b>INTRODUCTION</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     intro_p1 = (
@@ -386,7 +391,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 8: TOPIC 2 - PROBLEM DEFINITION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>PROBLEM DEFINITION :</b>", h1))
+    story.append(Paragraph("<b>PROBLEM DEFINITION</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     prob_p1 = (
@@ -409,7 +414,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 9: TOPIC 3 - EXISTING SYSTEM & NEED FOR NEW SYSTEM
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>EXISTING SYSTEM :</b>", h1))
+    story.append(Paragraph("<b>EXISTING SYSTEM & NEED FOR NEW SYSTEM</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -434,7 +439,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 10: TOPIC 4 - SCOPE OF SYSTEM
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>SCOPE OF SYSTEM :</b>", h1))
+    story.append(Paragraph("<b>SCOPE OF SYSTEM</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -457,7 +462,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 11: TOPIC 5 - FEASIBILITY STUDY
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>FEASIBILITY STUDY :</b>", h1))
+    story.append(Paragraph("<b>FEASIBILITY STUDY</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -500,7 +505,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 12: TOPIC 6 - HARDWARE REQUIREMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>HARDWARE AND SOFTWARE REQUIRMENTS :</b>", h1))
+    story.append(Paragraph("<b>HARDWARE REQUIREMENTS</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -550,7 +555,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 13: TOPIC 7 - SOFTWARE REQUIREMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>SOFTWARE REQUIREMENTS :</b>", h1))
+    story.append(Paragraph("<b>SOFTWARE REQUIREMENTS</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -588,7 +593,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 14: TOPIC 8 - REQUIREMENT ANALYSIS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>REQUIREMENT ANALYSIS :</b>", h1))
+    story.append(Paragraph("<b>REQUIREMENT ANALYSIS</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -616,7 +621,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 15: TOPIC 9 - DECISION TABLE
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>DECISION TABLE :</b>", h1))
+    story.append(Paragraph("<b>DECISION TABLE</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -656,37 +661,51 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     # PAGE 16: TOPIC 10 - DECISION TREE
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>DECISION TREE :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>DECISION TREE</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
     if os.path.exists(dt_img):
-        story.append(RLImage(dt_img, width=475, height=585))
+        story.append(RLImage(dt_img, width=430, height=430))
+    story.append(Spacer(1, 2))
+    story.append(Paragraph("Fig: Decision tree of CampusAI Query Routing Engine", fig_caption))
+    story.append(Paragraph("<b>Explanation</b>", desc_head))
+    story.append(Paragraph(
+        "The decision tree shows the path of a student through the CampusAI query answering system. The student first accesses "
+        "the chat portal and inputs an academic inquiry via keyboard or speech microphone. If the query is empty or invalid, "
+        "a validation prompt is returned. Valid queries undergo lexical tokenization, domain stop-word filtering, and synonym "
+        "expansion. The NLP engine computes the Jaccard similarity score (S) against the 26 seeded institutional FAQs. If S >= 0.45, "
+        "the authoritative SQLite record is fetched directly (<15ms). If S < 0.45, the context-bounded Google Gemini 2.5 Flash API is "
+        "invoked with strict zero-hallucination guardrails. If cloud services are unavailable, an institutional helpdesk referral "
+        "(contact@college.edu) is dispatched. Finally, the turn is persisted to chat_messages and delivered to the user with audio "
+        "text-to-speech synthesis and feedback options.", desc_body
+    ))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 17: TOPIC 11 - NORMALIZED DATABASE DESIGN (3NF) — Admins & Sessions
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>NORMALIZED DATABASE DESIGN (3NF) :</b>", h1))
+    story.append(Paragraph("<b>NORMALIZED DATABASE DESIGN (3NF)</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
-        "To ensure high relational data integrity, eliminate data anomalies (insertion, update, and deletion anomalies), and support "
-        "sub-second query lookups, the CampusAI relational database was engineered strictly in Third Normal Form (3NF).", body
+        "The relational design of the system is shown below. In the SQLite implementation each table is "
+        "stored as an ACID-compliant relation and each foreign key is stored as a reference to the related table. "
+        "All tables strictly adhere to Third Normal Form (3NF) to guarantee complete data integrity.", body
     ))
     story.append(Spacer(1, 4))
 
-    story.append(Paragraph("<b>1. ADMINS TABLE (admins) :</b>", h2))
+    story.append(Paragraph("<b>ADMINS TABLE :</b>", h2))
     adm_schema = [
-        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr), Paragraph("<b>Description</b>", tbl_hdr)],
-        [Paragraph("id", tbl_cell_bold), Paragraph("INTEGER", tbl_cell), Paragraph("PRIMARY KEY, AUTOINCREMENT", tbl_cell), Paragraph("Unique admin identifier", tbl_cell)],
-        [Paragraph("username", tbl_cell_bold), Paragraph("VARCHAR(80)", tbl_cell), Paragraph("NOT NULL, UNIQUE", tbl_cell), Paragraph("Administrative login username", tbl_cell)],
-        [Paragraph("email", tbl_cell_bold), Paragraph("VARCHAR(120)", tbl_cell), Paragraph("NOT NULL, UNIQUE", tbl_cell), Paragraph("Administrative contact email", tbl_cell)],
-        [Paragraph("password_hash", tbl_cell_bold), Paragraph("VARCHAR(255)", tbl_cell), Paragraph("NOT NULL", tbl_cell), Paragraph("PBKDF2:SHA256 salted hash", tbl_cell)],
-        [Paragraph("created_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell), Paragraph("Record timestamp", tbl_cell)]
+        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
+        [Paragraph("id", tbl_cell_bold), Paragraph("INTEGER", tbl_cell), Paragraph("PRIMARY KEY, AUTOINCREMENT", tbl_cell)],
+        [Paragraph("username", tbl_cell_bold), Paragraph("VARCHAR(80)", tbl_cell), Paragraph("NOT NULL, UNIQUE", tbl_cell)],
+        [Paragraph("email", tbl_cell_bold), Paragraph("VARCHAR(120)", tbl_cell), Paragraph("NOT NULL, UNIQUE", tbl_cell)],
+        [Paragraph("password_hash", tbl_cell_bold), Paragraph("VARCHAR(255)", tbl_cell), Paragraph("NOT NULL (stored PBKDF2:SHA256 encrypted)", tbl_cell)],
+        [Paragraph("created_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell)]
     ]
-    t_adm = Table(adm_schema, colWidths=[90, 80, 160, 150])
+    t_adm = Table(adm_schema, colWidths=[130, 110, 240])
     t_adm.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
@@ -697,15 +716,15 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(t_adm)
     story.append(Spacer(1, 8))
 
-    story.append(Paragraph("<b>2. CHAT SESSIONS TABLE (chat_sessions) :</b>", h2))
+    story.append(Paragraph("<b>CHAT_SESSIONS TABLE :</b>", h2))
     sess_schema = [
-        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr), Paragraph("<b>Description</b>", tbl_hdr)],
-        [Paragraph("session_id", tbl_cell_bold), Paragraph("VARCHAR(64)", tbl_cell), Paragraph("PRIMARY KEY", tbl_cell), Paragraph("UUID v4 session token", tbl_cell)],
-        [Paragraph("user_ip", tbl_cell_bold), Paragraph("VARCHAR(45)", tbl_cell), Paragraph("NULLABLE", tbl_cell), Paragraph("Client IP address for telemetry", tbl_cell)],
-        [Paragraph("created_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell), Paragraph("Session initiation timestamp", tbl_cell)],
-        [Paragraph("last_active", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell), Paragraph("Last activity timestamp", tbl_cell)]
+        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
+        [Paragraph("session_id", tbl_cell_bold), Paragraph("VARCHAR(64)", tbl_cell), Paragraph("PRIMARY KEY (UUID v4 token)", tbl_cell)],
+        [Paragraph("user_ip", tbl_cell_bold), Paragraph("VARCHAR(45)", tbl_cell), Paragraph("NULLABLE (Client IP address)", tbl_cell)],
+        [Paragraph("created_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell)],
+        [Paragraph("last_active", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell)]
     ]
-    t_sess = Table(sess_schema, colWidths=[90, 80, 160, 150])
+    t_sess = Table(sess_schema, colWidths=[130, 110, 240])
     t_sess.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
@@ -720,25 +739,25 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 18: TOPIC 12 - COLLEGE INFO (FAQS) TABLE
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>COLLEGE INFO (FAQS) TABLE :</b>", h1))
+    story.append(Paragraph("<b>COLLEGE INFO (FAQS) TABLE</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
-        "The <b>faqs</b> table stores authoritative institutional information. Every record is indexed by category to support "
+        "The faqs table stores authoritative institutional information. Every record is indexed by category to support "
         "rapid category filtering and keyword matching across all eight college domains.", body
     ))
-    story.append(Paragraph("<b>FAQS TABLE SCHEMA (faqs) :</b>", h2))
+    story.append(Paragraph("<b>FAQS TABLE :</b>", h2))
 
     faq_schema = [
-        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr), Paragraph("<b>Description</b>", tbl_hdr)],
-        [Paragraph("id", tbl_cell_bold), Paragraph("INTEGER", tbl_cell), Paragraph("PRIMARY KEY, AUTOINCREMENT", tbl_cell), Paragraph("Unique FAQ record ID", tbl_cell)],
-        [Paragraph("question", tbl_cell_bold), Paragraph("TEXT", tbl_cell), Paragraph("NOT NULL", tbl_cell), Paragraph("Common student inquiry text", tbl_cell)],
-        [Paragraph("answer", tbl_cell_bold), Paragraph("TEXT", tbl_cell), Paragraph("NOT NULL", tbl_cell), Paragraph("Authoritative verified answer", tbl_cell)],
-        [Paragraph("category", tbl_cell_bold), Paragraph("VARCHAR(50)", tbl_cell), Paragraph("NOT NULL, INDEXED", tbl_cell), Paragraph("Admissions, Fees, Exams, Placements...", tbl_cell)],
-        [Paragraph("created_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell), Paragraph("Creation timestamp", tbl_cell)],
-        [Paragraph("updated_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell), Paragraph("Last modification timestamp", tbl_cell)]
+        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
+        [Paragraph("id", tbl_cell_bold), Paragraph("INTEGER", tbl_cell), Paragraph("PRIMARY KEY, AUTOINCREMENT", tbl_cell)],
+        [Paragraph("category", tbl_cell_bold), Paragraph("VARCHAR(50)", tbl_cell), Paragraph("NOT NULL, INDEXED (Domain Category)", tbl_cell)],
+        [Paragraph("question", tbl_cell_bold), Paragraph("TEXT", tbl_cell), Paragraph("NOT NULL (Common student inquiry)", tbl_cell)],
+        [Paragraph("answer", tbl_cell_bold), Paragraph("TEXT", tbl_cell), Paragraph("NOT NULL (Authoritative verified answer)", tbl_cell)],
+        [Paragraph("created_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell)],
+        [Paragraph("updated_at", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell)]
     ]
-    t_faq = Table(faq_schema, colWidths=[85, 75, 160, 160])
+    t_faq = Table(faq_schema, colWidths=[120, 110, 250])
     t_faq.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
@@ -773,34 +792,34 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 19: TOPIC 13 - CHAT HISTORY TABLE
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>CHAT HISTORY TABLE :</b>", h1))
+    story.append(Paragraph("<b>CHAT HISTORY TABLE</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
-        "The <b>chat_messages</b> table maintains a complete audit log of conversational turns between students and the assistant. "
+        "The chat_messages table maintains a complete audit log of conversational turns between students and the assistant. "
         "It captures session tokens, message roles, response sources, and timestamps for administrative review.", body
     ))
-    story.append(Paragraph("<b>CHAT MESSAGES SCHEMA (chat_messages) :</b>", h2))
+    story.append(Paragraph("<b>CHAT_MESSAGES TABLE :</b>", h2))
 
     msg_schema = [
-        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr), Paragraph("<b>Description</b>", tbl_hdr)],
-        [Paragraph("id", tbl_cell_bold), Paragraph("INTEGER", tbl_cell), Paragraph("PRIMARY KEY, AUTOINCREMENT", tbl_cell), Paragraph("Unique message turn ID", tbl_cell)],
-        [Paragraph("session_id", tbl_cell_bold), Paragraph("VARCHAR(64)", tbl_cell), Paragraph("NOT NULL, INDEXED", tbl_cell), Paragraph("Foreign reference to chat session", tbl_cell)],
-        [Paragraph("role", tbl_cell_bold), Paragraph("VARCHAR(20)", tbl_cell), Paragraph("NOT NULL", tbl_cell), Paragraph("'student' or 'assistant'", tbl_cell)],
-        [Paragraph("content", tbl_cell_bold), Paragraph("TEXT", tbl_cell), Paragraph("NOT NULL", tbl_cell), Paragraph("Message text payload", tbl_cell)],
-        [Paragraph("source", tbl_cell_bold), Paragraph("VARCHAR(30)", tbl_cell), Paragraph("DEFAULT 'database'", tbl_cell), Paragraph("'database', 'ai', or 'fallback'", tbl_cell)],
-        [Paragraph("timestamp", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell), Paragraph("Turn timestamp", tbl_cell)]
+        [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
+        [Paragraph("id", tbl_cell_bold), Paragraph("INTEGER", tbl_cell), Paragraph("PRIMARY KEY, AUTOINCREMENT", tbl_cell)],
+        [Paragraph("session_id", tbl_cell_bold), Paragraph("VARCHAR(64)", tbl_cell), Paragraph("NOT NULL, FOREIGN KEY (References chat_sessions)", tbl_cell)],
+        [Paragraph("role", tbl_cell_bold), Paragraph("VARCHAR(20)", tbl_cell), Paragraph("NOT NULL ('student' or 'assistant')", tbl_cell)],
+        [Paragraph("content", tbl_cell_bold), Paragraph("TEXT", tbl_cell), Paragraph("NOT NULL (Message text payload)", tbl_cell)],
+        [Paragraph("source", tbl_cell_bold), Paragraph("VARCHAR(30)", tbl_cell), Paragraph("DEFAULT 'database' ('database', 'ai', 'fallback')", tbl_cell)],
+        [Paragraph("timestamp", tbl_cell_bold), Paragraph("DATETIME", tbl_cell), Paragraph("DEFAULT CURRENT_TIMESTAMP", tbl_cell)]
     ]
-    t_msg = Table(msg_schema, colWidths=[85, 80, 160, 155])
+    t_msg = Table(msg_schema, colWidths=[120, 110, 250])
     t_msg.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 3.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
+        ('TOPPADDING', (0,0), (-1,-1), 3),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
     story.append(t_msg)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
     story.append(Paragraph("<b>Sample Interaction Log Records :</b>", h2))
     sample_msgs = [
@@ -810,110 +829,174 @@ def generate_reportlab_pages(temp_pdf_path):
         [Paragraph("103", tbl_cell_bold), Paragraph("sess_aktu_9b81", tbl_cell), Paragraph("student", tbl_cell), Paragraph("user", tbl_cell), Paragraph("What companies visit for placements?", tbl_cell)],
         [Paragraph("104", tbl_cell_bold), Paragraph("sess_aktu_9b81", tbl_cell), Paragraph("assistant", tbl_cell), Paragraph("database", tbl_cell), Paragraph("TCS, Infosys, Wipro, Capgemini, Cognizant...", tbl_cell)]
     ]
-    t_smp_m = Table(sample_msgs, colWidths=[30, 95, 55, 60, 240])
+    t_smp_m = Table(sample_msgs, colWidths=[25, 95, 50, 55, 255])
     t_smp_m.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('TOPPADDING', (0,0), (-1,-1), 2.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
     ]))
     story.append(t_smp_m)
+    story.append(Spacer(1, 4))
+
+    story.append(Paragraph(
+        "All the tables of the design follow the Third Normal Form (3NF): every column depends only on the primary key, "
+        "repeating groups are removed and related data is linked through foreign keys.", desc_body
+    ))
+    story.append(Paragraph("<b>Keys and Relationships</b>", desc_head))
+    story.append(Paragraph("• session_id in chat_messages refers to the chat_sessions table.", desc_bullet))
+    story.append(Paragraph("• id in faqs is an auto-incrementing primary key indexed by academic category.", desc_bullet))
+    story.append(Paragraph("• One chat session contains many chat messages (1 : M); Admin user manages the FAQ knowledge base.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 20: TOPIC 14 - ER DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>ER DIAGRAM :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>ER DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     er_img = os.path.join(IMG_DIR, "campusai_er_diagram.png")
     if os.path.exists(er_img):
-        story.append(RLImage(er_img, width=480, height=480))
+        story.append(RLImage(er_img, width=440, height=385))
+    story.append(Paragraph("Fig: Entity Relationship Diagram", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The ER diagram shows the entities of the system and how they are related. ADMIN_USER is the governance entity and FAQ_KNOWLEDGE_BASE stores institutional answers across eight academic domains.", desc_body))
+    story.append(Paragraph("• ADMIN_USER manages many FAQ_KNOWLEDGE_BASE records across 8 academic categories (1 : M).", desc_bullet))
+    story.append(Paragraph("• CHAT_SESSION generates many CHAT_MESSAGE records during active student interactions (1 : M).", desc_bullet))
+    story.append(Paragraph("• CHAT_MESSAGE matches with FAQ_KNOWLEDGE_BASE records via deterministic NLP similarity scoring (M : 1).", desc_bullet))
+    story.append(Paragraph("• CHAT_MESSAGE receives FEEDBACK_LOG ratings (thumbs up / down) for accuracy audit (1 : 1).", desc_bullet))
+    story.append(Paragraph("• FAQ_KNOWLEDGE_BASE belongs to an ACADEMIC_CATEGORY for structured domain classification (M : 1).", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 21: TOPIC 15 - USE CASE DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>USE CASE DIAGRAM :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>USE CASE DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     uc_img = os.path.join(IMG_DIR, "campusai_use_case.png")
     if os.path.exists(uc_img):
-        story.append(RLImage(uc_img, width=480, height=505))
+        story.append(RLImage(uc_img, width=440, height=385))
+    story.append(Paragraph("Fig: Use Case Diagram", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The use case diagram shows how the two primary actors, Student and Administrator, interact with the CampusAI chatbot and the persistence/AI backend.", desc_body))
+    story.append(Paragraph("• Student: asks academic queries, searches FAQs, filters by 8 domains, uses voice speech input and audio read-aloud TTS, submits answer feedback, and clears chat sessions.", desc_bullet))
+    story.append(Paragraph("• Admin: authenticates with PBKDF2 password hashing, manages FAQ records (CRUD), views system telemetry KPIs, and exports chat transcripts to CSV.", desc_bullet))
+    story.append(Paragraph("• All use cases read from or write to the SQLite 3 database; generative AI fallback is handled by Google Gemini 2.5 Flash.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 22: TOPIC 16 - CLASS DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>CLASS DIAGRAM :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>CLASS DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     cls_img = os.path.join(IMG_DIR, "campusai_class_diagram.png")
     if os.path.exists(cls_img):
-        story.append(RLImage(cls_img, width=480, height=505))
+        story.append(RLImage(cls_img, width=440, height=385))
+    story.append(Paragraph("Fig: Class Diagram", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The class diagram shows the main classes of the CampusAI architecture with their attributes, methods, and relationships.", desc_body))
+    story.append(Paragraph("• Admin manages FAQ objects and exports interaction CSV logs.", desc_bullet))
+    story.append(Paragraph("• StudentUser submits queries, filters by category, and manages session state.", desc_bullet))
+    story.append(Paragraph("• ChatbotEngine normalizes query tokens, computes Jaccard similarity, and routes inquiries.", desc_bullet))
+    story.append(Paragraph("• GeminiService synthesizes context-bounded AI responses under a strict zero-hallucination policy.", desc_bullet))
+    story.append(Paragraph("• ChatMessage and FAQ define persistent relational models mapped via SQLAlchemy ORM.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 23: TOPIC 17 - OBJECT DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>OBJECT DIAGRAM :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>OBJECT DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     obj_img = os.path.join(IMG_DIR, "campusai_object_diagram.png")
     if os.path.exists(obj_img):
-        story.append(RLImage(obj_img, width=480, height=525))
+        story.append(RLImage(obj_img, width=440, height=385))
+    story.append(Paragraph("Fig: Object Diagram", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The object diagram shows a sample snapshot of the CampusAI system at runtime with concrete values during an active student consultation.", desc_body))
+    story.append(Paragraph("• user1 is an enrolled student (Akash Rana, Roll No: ISTU25010120004) interacting with the assistant in session1.", desc_bullet))
+    story.append(Paragraph("• msg1 contains the inquiry query: \"What are the fees?\", which matches faq1 (Tuition: Rs 45,000 per sem).", desc_bullet))
+    story.append(Paragraph("• feedback1 logs a positive feedback rating (+1 thumbs up) from the student for response accuracy audit.", desc_bullet))
+    story.append(Paragraph("• The slot values illustrate the active memory state of the application objects during query processing.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 24: TOPIC 18 - SEQUENCE DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>SEQUENCE DIAGRAM :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>SEQUENCE DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     seq_img = os.path.join(IMG_DIR, "campusai_sequence_diagram.png")
     if os.path.exists(seq_img):
-        story.append(RLImage(seq_img, width=480, height=525))
+        story.append(RLImage(seq_img, width=440, height=385))
+    story.append(Paragraph("Fig: Sequence Diagram", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The sequence diagram shows the step-by-step chronological order of messages between Student, Web App, Flask Server, NLP Matcher, SQLite Database, and Google Gemini API.", desc_body))
+    story.append(Paragraph("• Student enters a query via text or voice STT, triggering an asynchronous HTTP POST to /api/chat.", desc_bullet))
+    story.append(Paragraph("• The Flask server normalizes tokens and requests Jaccard similarity evaluation against the SQLite FAQ corpus.", desc_bullet))
+    story.append(Paragraph("• If score S >= 0.45, the verified SQLite answer is returned (<15ms); if score < 0.45, Gemini AI fallback is invoked.", desc_bullet))
+    story.append(Paragraph("• The interaction turn is saved to chat_messages and delivered to the browser UI with TTS audio read-aloud options.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 25: TOPIC 19 - ACTIVITY DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>ACTIVITY DIAGRAM :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>ACTIVITY DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     act_img = os.path.join(IMG_DIR, "campusai_activity_diagram.png")
     if os.path.exists(act_img):
-        story.append(RLImage(act_img, width=480, height=525))
+        story.append(RLImage(act_img, width=440, height=385))
+    story.append(Paragraph("Fig: Activity Diagram", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The activity diagram shows the flow of activities across three swimlanes: Student, Chatbot System (Engine), and Administrator.", desc_body))
+    story.append(Paragraph("• Student initiates a query, views formatted response bubbles, listens to audio synthesis, and provides feedback.", desc_bullet))
+    story.append(Paragraph("• Chatbot System executes NLP tokenization, evaluates Jaccard similarity thresholds, applies zero-hallucination guardrails, and persists logs.", desc_bullet))
+    story.append(Paragraph("• Administrator logs in securely to maintain knowledgebase records, monitor telemetry health, and export analytical CSV reports.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 26: TOPIC 20 - COMPONENT DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>COMPONENT DIAGRAM :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>COMPONENT DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     comp_img = os.path.join(IMG_DIR, "campusai_component_diagram.png")
     if os.path.exists(comp_img):
-        story.append(RLImage(comp_img, width=480, height=545))
+        story.append(RLImage(comp_img, width=440, height=385))
+    story.append(Paragraph("Fig: Component Diagram", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The component diagram shows the software components and modular dependencies of the CampusAI full-stack architecture.", desc_body))
+    story.append(Paragraph("• Frontend View Layer contains UI modules for Chat, Voice STT, Category Filters, Audio TTS, and Admin Dashboard.", desc_bullet))
+    story.append(Paragraph("• Backend Server Layer contains matching Flask controllers, NLP intent engine, Gemini adapter, and CSV export services.", desc_bullet))
+    story.append(Paragraph("• All server modules interface with the embedded SQLite 3 database; external cloud intelligence is provided by Google Gemini 2.5 Flash.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 27: TOPIC 21 - DATA FLOW DIAGRAM
     # =========================================================================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>DATA FLOW DIAGRAM (DFD LEVEL 0 & LEVEL 1) :</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>DATA FLOW DIAGRAM</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
     dfd_img = os.path.join(IMG_DIR, "campusai_dfd.png")
     if os.path.exists(dfd_img):
-        story.append(RLImage(dfd_img, width=410, height=620))
+        story.append(RLImage(dfd_img, width=435, height=395))
+    story.append(Paragraph("Fig: Data Flow Diagram (DFD Level 0 & Level 1)", fig_caption))
+    story.append(Paragraph("<b>Description</b>", desc_head))
+    story.append(Paragraph("The Data Flow Diagram models the flow of data within the CampusAI ecosystem at both Context Level and Functional Decomposition Level.", desc_body))
+    story.append(Paragraph("• Level 0 (Context Diagram): Models the overall system as a single process (0.0) exchanging query packets and verified responses with Student, Administrator, and Database.", desc_bullet))
+    story.append(Paragraph("• Level 1 DFD: Decomposes system operations into six functional processes: Ingestion, NLP Tokenization, Jaccard Match, Gemini Fallback, Response Formatting, and Admin CRUD.", desc_bullet))
+    story.append(Paragraph("• Data stores D1 to D5 maintain persistent records for User Sessions, FAQ Knowledge Base, Chat History, Feedback Logs, and Admin Accounts.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
     # PAGE 28: TOPIC 22 - HOME SCREEN UI
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>HOME SCREEN :</b>", h1))
+    story.append(Paragraph("<b>HOME SCREEN UI</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
     story.append(Paragraph(
         "The CampusAI Landing Portal (http://localhost:5000/) introduces students to the college assistant. "
@@ -922,8 +1005,9 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(Spacer(1, 4))
     ui_home = os.path.join(IMG_DIR, "campusai_ui_home.png")
     if os.path.exists(ui_home):
-        story.append(RLImage(ui_home, width=480, height=325))
-    story.append(Spacer(1, 6))
+        story.append(RLImage(ui_home, width=470, height=315))
+    story.append(Paragraph("Fig: Home Screen Interface & Category Navigation", fig_caption))
+    story.append(Spacer(1, 4))
 
     ui_home_tbl = [
         [Paragraph("<b>UI Element</b>", tbl_hdr), Paragraph("<b>Technical Implementation</b>", tbl_hdr), Paragraph("<b>User Experience Purpose</b>", tbl_hdr)],
@@ -947,7 +1031,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 29: TOPIC 23 - STUDENT PORTAL & CHATBOT INTERFACE UI
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>STUDENT PORTAL & VOICE CHAT MODULE :</b>", h1))
+    story.append(Paragraph("<b>STUDENT PORTAL & CHATBOT ASSISTANT UI</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
     story.append(Paragraph(
         "The Student Chatbot Interface (http://localhost:5000/chat) delivers instant answers, question suggestion chips, "
@@ -956,8 +1040,9 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(Spacer(1, 4))
     ui_chat = os.path.join(IMG_DIR, "campusai_ui_chat.png")
     if os.path.exists(ui_chat):
-        story.append(RLImage(ui_chat, width=480, height=325))
-    story.append(Spacer(1, 6))
+        story.append(RLImage(ui_chat, width=470, height=315))
+    story.append(Paragraph("Fig: Student Chatbot Interface & Voice Interaction", fig_caption))
+    story.append(Spacer(1, 4))
 
     ui_chat_tbl = [
         [Paragraph("<b>UI Element</b>", tbl_hdr), Paragraph("<b>Technical Implementation</b>", tbl_hdr), Paragraph("<b>User Experience Purpose</b>", tbl_hdr)],
@@ -982,7 +1067,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 30: TOPIC 24 - ADMIN COMMAND CENTER & MANAGEMENT UI
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>ADMIN COMMAND CENTER & REPORT GENERATION :</b>", h1))
+    story.append(Paragraph("<b>ADMIN COMMAND CENTER & MANAGEMENT UI</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
     story.append(Paragraph(
         "The Administrative Governance Dashboard (http://localhost:5000/admin) equips college authorities with real-time "
@@ -991,8 +1076,9 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(Spacer(1, 4))
     ui_admin = os.path.join(IMG_DIR, "campusai_ui_admin.png")
     if os.path.exists(ui_admin):
-        story.append(RLImage(ui_admin, width=480, height=325))
-    story.append(Spacer(1, 6))
+        story.append(RLImage(ui_admin, width=470, height=315))
+    story.append(Paragraph("Fig: Admin Command Center & Knowledge Base Management", fig_caption))
+    story.append(Spacer(1, 4))
 
     ui_adm_tbl = [
         [Paragraph("<b>UI Element</b>", tbl_hdr), Paragraph("<b>Technical Implementation</b>", tbl_hdr), Paragraph("<b>User Experience Purpose</b>", tbl_hdr)],
@@ -1016,7 +1102,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 31: TOPIC 25 - TESTING AND IMPLEMENTATION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>TESTING AND IMPLEMENTATION :</b>", h1))
+    story.append(Paragraph("<b>TESTING AND IMPLEMENTATION</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -1060,7 +1146,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 32: TOPIC 26 - DRAWBACKS AND LIMITATIONS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>DRAWBACKS AND LIMITATIONS :</b>", h1))
+    story.append(Paragraph("<b>DRAWBACKS AND LIMITATIONS</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -1081,7 +1167,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 33: TOPIC 27 - PROPOSED ENHANCEMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>PROPOSED ENHANCEMENTS :</b>", h1))
+    story.append(Paragraph("<b>PROPOSED ENHANCEMENTS</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
@@ -1102,26 +1188,49 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 34: TOPIC 28 - CONCLUSION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>CONCLUSION :</b>", h1))
+    story.append(Paragraph("<b>CONCLUSION</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
     story.append(Paragraph(
-        "The <b>CampusAI: Intelligent AI-Powered College Assistant Chatbot and Knowledge Base System</b> has been successfully "
-        "conceptualized, engineered, and validated as an academic semester project for BBA CA (Semester III) at G H Raisoni "
-        "International Skill Tech University, Pune.", body
+        "CampusAI: Intelligent AI-Powered College Assistant Chatbot and Knowledge Base System is a smart and user-friendly "
+        "conversational application designed to help college students, faculty, and visitors quickly obtain verified academic "
+        "information. It simplifies campus inquiries by integrating authoritative knowledge base lookup, natural language "
+        "understanding, audio voice synthesis, and real-time administrative telemetry into a unified platform. The system provides "
+        "an intuitive and reliable communication experience and possesses strong potential for future institutional enhancements.", body
+    ))
+    story.append(Paragraph(
+        "This project has the potential to benefit students, administrative staff, and prospective applicants by providing "
+        "an accessible, 24/7 digital front desk that eliminates physical counter congestion and guarantees factual accuracy "
+        "through its strict zero-hallucination guardrails.", body
     ))
     story.append(Spacer(1, 4))
 
-    story.append(Paragraph("<b>Summary of Project Achievements:</b>", h2))
-    story.append(Paragraph("• <b>Dual-Tier Architecture Success:</b> The synthesis of local deterministic NLP (Jaccard similarity scoring) with context-bounded Google Gemini LLM fallback provides sub-second response times while preventing AI hallucinations.", bullet))
-    story.append(Paragraph("• <b>100% Factual Integrity:</b> By implementing a strict Zero-Hallucination Policy, the platform guarantees that students receive only verified institutional facts regarding fees, admissions, and examinations.", bullet))
-    story.append(Paragraph("• <b>High Operational Efficiency:</b> Automated handling of repetitive inquiries frees administrative staff from routine counter inquiries, allowing them to focus on complex student welfare tasks.", bullet))
-    story.append(Paragraph("• <b>Comprehensive Software Engineering Standards:</b> Complete software engineering lifecycle demonstrated through formal UML diagrams (Use Case, Class, Object, Sequence, Activity, Component), Gane-Sarson DFDs (Levels 0, 1, 2), 3NF normalized database schema, and an automated 23-test regression suite.", bullet))
-    story.append(Spacer(1, 6))
-
+    story.append(Paragraph("<b>Summary of the Work</b>", h2))
     story.append(Paragraph(
-        "In conclusion, CampusAI demonstrates that academic institutions can deploy intelligent, highly scalable, and authoritative "
-        "AI solutions using open-source technologies, establishing an accessible digital front desk for modern universities.", body
+        "In this project, the challenges of repetitive administrative inquiries and scattered institutional notices were "
+        "studied, the requirements were thoroughly analyzed, and a complete system was engineered comprising seven modular "
+        "components, a 3NF normalized SQLite database, and complete UML engineering diagrams. The system integrates lexical "
+        "tokenization, Jaccard similarity scoring, Google Gemini 2.5 Flash generative AI fallback, Web Speech synthesis, and "
+        "a password-protected administrative command center into one cohesive application that runs efficiently on any device.", body
+    ))
+    story.append(Spacer(1, 4))
+
+    story.append(Paragraph("<b>Learning from the Project</b>", h2))
+    story.append(Paragraph(
+        "While developing this project, we learned full-stack web application development with Python and Flask, relational "
+        "database engineering with SQLite and SQLAlchemy ORM, cloud API integration with Google GenAI SDK, front-end design "
+        "with responsive CSS3 and asynchronous JavaScript fetch, UML modeling, and automated regression testing. The project "
+        "also demonstrated the essential importance of defensive programming, zero-hallucination policies, and focused teamwork.", body
+    ))
+    story.append(Spacer(1, 4))
+
+    story.append(Paragraph("<b>Challenges Faced</b>", h2))
+    story.append(Paragraph(
+        "The main challenges were curating an authoritative repository of college information across eight academic domains, "
+        "designing a normalized 3NF database schema to support interaction audit logs, tuning NLP similarity thresholds to avoid "
+        "false-positive answers, and integrating browser speech recognition with text-to-speech audio synthesis. These challenges "
+        "were systematically solved by dividing the work into modules, testing every component with automated regression suites, "
+        "and following the dedicated guidance of our project mentor, Prof. Sheela Satav.", body
     ))
     story.append(PageBreak())
 
@@ -1132,20 +1241,24 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(Paragraph("<b>BIBLIOGRAPHY</b>", h1))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
 
-    story.append(Paragraph("<b>Academic Textbooks & References:</b>", h2))
-    story.append(Paragraph("1. Sommerville, Ian. (2015). <i>Software Engineering</i> (10th Edition). Pearson Education. (UML Modeling & Requirements Engineering).", bullet))
-    story.append(Paragraph("2. Pressman, Roger S., & Maxim, Bruce R. (2019). <i>Software Engineering: A Practitioner's Approach</i> (9th Edition). McGraw-Hill Education.", bullet))
-    story.append(Paragraph("3. Elmasri, Ramez, & Navathe, Shamkant B. (2016). <i>Fundamentals of Database Systems</i> (7th Edition). Pearson. (Relational Normalization & 3NF Schema Design).", bullet))
-    story.append(Paragraph("4. Jurafsky, Daniel, & Martin, James H. (2023). <i>Speech and Language Processing</i> (3rd Edition Draft). Stanford University / Pearson. (Tokenization, Jaccard Similarity, N-grams).", bullet))
-    story.append(Paragraph("5. Grinberg, Miguel. (2018). <i>Flask Web Development: Developing Web Applications with Python</i> (2nd Edition). O'Reilly Media.", bullet))
-    story.append(Paragraph("6. Booch, Grady, Rumbaugh, James, & Jacobson, Ivar. (2005). <i>The Unified Modeling Language User Guide</i> (2nd Edition). Addison-Wesley Professional.", bullet))
-    story.append(Spacer(1, 6))
-
-    story.append(Paragraph("<b>Technical Documentation & Official Standards:</b>", h2))
-    story.append(Paragraph("7. Pallets Projects. (2024). <i>Flask Documentation (v3.1.x)</i>. Retrieved from https://flask.palletsprojects.com/", bullet))
-    story.append(Paragraph("8. SQLite Development Team. (2024). <i>SQLite Documentation: ACID Relational Database Engine</i>. Retrieved from https://www.sqlite.org/docs.html", bullet))
-    story.append(Paragraph("9. Google DeepMind. (2024). <i>Gemini API Developer Documentation: Python SDK and Structured Prompts</i>. Retrieved from https://ai.google.dev/docs", bullet))
-    story.append(Paragraph("10. World Wide Web Consortium (W3C). (2023). <i>Web Speech API Specification: SpeechRecognition and SpeechSynthesis</i>. Retrieved from https://www.w3.org/TR/speech-api/", bullet))
+    bib_items = [
+        "1. Sommerville, I. (2015). <i>Software Engineering</i> (10th ed.). Pearson Education.",
+        "2. Pressman, R. S., & Maxim, B. R. (2019). <i>Software Engineering: A Practitioner's Approach</i> (9th ed.). McGraw-Hill Education.",
+        "3. Myers, G. J., Sandler, C., & Badgett, T. (2011). <i>The Art of Software Testing</i> (3rd ed.). Wiley.",
+        "4. Elmasri, R., & Navathe, S. B. (2016). <i>Fundamentals of Database Systems</i> (7th ed.). Pearson.",
+        "5. Rumbaugh, J., Jacobson, I., & Booch, G. (2004). <i>The Unified Modeling Language Reference Manual</i> (2nd ed.). Addison-Wesley.",
+        "6. Jurafsky, D., & Martin, J. H. (2023). <i>Speech and Language Processing</i> (3rd ed.). Stanford University / Pearson.",
+        "7. Grinberg, M. (2018). <i>Flask Web Development: Developing Web Applications with Python</i> (2nd ed.). O'Reilly Media.",
+        "8. Pallets Projects. (2024). <i>Flask Documentation (v3.1.x)</i>. https://flask.palletsprojects.com",
+        "9. Python Software Foundation. (2024). <i>Python 3.11/3.12 Language Reference & Standard Library</i>. https://docs.python.org/3/",
+        "10. SQLite Development Team. (2024). <i>SQLite Documentation: ACID Relational Database Engine</i>. https://www.sqlite.org/docs.html",
+        "11. Google DeepMind. (2024). <i>Google Gemini API Documentation & GenAI Python SDK</i>. https://ai.google.dev/docs",
+        "12. World Wide Web Consortium (W3C). (2023). <i>Web Speech API Specification</i>. https://www.w3.org/TR/speech-api/",
+        "13. Werkzeug Development Team. (2024). <i>Werkzeug Security Utilities: Password Hashing</i>. https://werkzeug.palletsprojects.com",
+        "14. Mozilla Developer Network (MDN). (2024). <i>MDN Web Docs: Fetch API, CSS Grid, and DOM Manipulation</i>. https://developer.mozilla.org"
+    ]
+    for b in bib_items:
+        story.append(Paragraph(b, bullet))
 
     doc.build(story, canvasmaker=AcademicDoubleBorderCanvas)
     print(f"[✓] Generated ReportLab document: {temp_pdf_path}")
