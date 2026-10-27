@@ -650,21 +650,20 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=5))
     dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
     if os.path.exists(dt_img):
-        story.append(RLImage(dt_img, width=470, height=263))
+        story.append(RLImage(dt_img, width=475, height=243))
     story.append(Spacer(1, 3))
     story.append(Paragraph("Fig: Decision Tree of CampusAI Query Routing Engine", fig_caption))
     story.append(Paragraph("<b>Explanation</b>", desc_head))
     story.append(Paragraph(
-        "The decision tree illustrates the decision-making logic of the CampusAI query routing engine using standard Decision Tree "
-        "notation (square decision nodes D and circular chance/event nodes C). The root decision node <b>D1</b> evaluates incoming student "
-        "input. If the input is empty or invalid, branch <b>D12</b> triggers a validation prompt offering 8 domain category suggestion chips. "
-        "Valid inquiries follow branch <b>D11</b> to condition event node <b>C1</b> for lexical tokenization and Jaccard similarity scoring (S). "
-        "If <b>S >= 0.58</b> (branch <b>C11</b>, 70% probability), decision node <b>D2</b> fetches the verified SQLite record (<15ms). From "
-        "condition node <b>C2</b>, the response is delivered either with Web Speech audio read-aloud (<b>C21</b>) or as a fast-path text "
-        "response (<b>C22</b>). If <b>S < 0.58</b> (branch <b>C12</b>), decision node <b>D3</b> routes the query. For academic questions, "
-        "branch <b>D31</b> invokes the context-bounded Google Gemini 2.5 Flash API at condition node <b>C3</b>, delivering a zero-hallucination "
-        "answer (<b>C31</b>) or a graceful offline office referral (<b>C32</b>). Non-academic inquiries take branch <b>D32</b> directly to "
-        "college office contact guidance.", desc_body
+        "The decision tree illustrates the decision-making logic of the CampusAI query routing engine using textbook Decision Tree "
+        "notation (square decision nodes <b>D</b> and circular chance nodes <b>C</b>) mirroring the standard Business Jargons analytical framework. "
+        "Root decision node <b>D1</b> evaluates incoming student input: empty or invalid entries take branch <b>D12</b> to prompt the student "
+        "with 8 domain suggestion chips at zero latency, while valid inquiries take branch <b>D11</b> to chance node <b>C1</b> for tokenization "
+        "and similarity scoring. When a high match occurs (<b>C11</b>, S ≥ 0.58, 70% probability), decision node <b>D2</b> fetches the verified "
+        "SQLite record (<15ms) along branch <b>D21</b>, while duplicate queries are filtered via branch <b>D22</b>. From chance node <b>C2</b>, "
+        "responses are rendered either with Web Speech API audio read-aloud (<b>C21</b>, 60% probability) or as a silent fast-path text "
+        "bubble (<b>C22</b>, 40% probability). Inquiries missing the FAQ repository take branch <b>C12</b> (30% probability) to decision node <b>D3</b>, "
+        "which invokes the context-bounded Google Gemini 2.5 Flash API along branch <b>D31</b> to deliver a zero-hallucination response (<1.2s).", desc_body
     ))
     story.append(PageBreak())
 

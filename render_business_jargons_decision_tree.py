@@ -1,188 +1,165 @@
+import os
+os.environ['MPLCONFIGDIR'] = '/tmp/mpl_config'
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import os
 
-os.makedirs("scratch/campusai_diagrams", exist_ok=True)
-out_path = "scratch/campusai_diagrams/campusai_decision_tree.png"
+# Canvas setup - widescreen 16:9 matching Business Jargons
+fig, ax = plt.subplots(figsize=(18, 9.2), dpi=300)
+ax.set_facecolor('#ffffff')
+fig.patch.set_facecolor('#ffffff')
 
-fig, ax = plt.subplots(figsize=(14, 8.5), dpi=300)
-ax.set_xlim(0, 100)
-ax.set_ylim(0, 100)
-ax.axis("off")
+# Coordinate boundaries - generous space
+ax.set_xlim(2, 400)
+ax.set_ylim(6, 106)
+ax.axis('off')
 
-# Background
-fig.patch.set_facecolor("white")
-ax.set_facecolor("white")
+# Styling parameters
+LINE_COLOR = '#111827'       # Crisp near-black line
+LINE_WIDTH = 1.7
+NODE_EDGE = '#0f172a'
+NODE_FILL = '#ffffff'
+TITLE_COLOR = '#0f172a'     # Bold node/branch titles
+SUB_COLOR = '#374151'       # Branch subtitles/probabilities
+OUTCOME_COLOR = '#065f46'   # Greenish-slate for final output
+ACTION_COLOR = '#1e3a8a'    # Deep blue for terminal actions
 
-# Colors
-CLR_BORDER = "#1e293b"
-CLR_LINE = "#1e293b"
-CLR_TEXT = "#0f172a"
-CLR_MUTED = "#334155"
-CLR_BOX_BG = "#ffffff"
-CLR_TERM_BG = "#f8fafc"
-CLR_TERM_BORDER = "#475569"
-
-def draw_decision_square(x, y, label, size=3.6):
-    rect = patches.Rectangle((x - size/2, y - size/2), size, size,
-                             linewidth=1.8, edgecolor=CLR_BORDER,
-                             facecolor=CLR_BOX_BG, zorder=5)
+def draw_square(x, y, label, size=8.0):
+    """Draws a decision square centered at (x, y) with text label."""
+    half = size / 2.0
+    rect = patches.Rectangle(
+        (x - half, y - half), size, size,
+        facecolor=NODE_FILL, edgecolor=NODE_EDGE, linewidth=2.0, zorder=5
+    )
     ax.add_patch(rect)
-    ax.text(x, y, label, ha="center", va="center", fontsize=10, fontweight="bold", color=CLR_TEXT, zorder=6)
+    ax.text(x, y, label, ha='center', va='center', fontsize=12.5, fontweight='bold',
+            color=NODE_EDGE, zorder=6, fontfamily='sans-serif')
 
-def draw_chance_circle(x, y, label, radius=1.9):
-    circle = patches.Circle((x, y), radius, linewidth=1.8,
-                            edgecolor=CLR_BORDER, facecolor=CLR_BOX_BG, zorder=5)
+def draw_circle(x, y, label, radius=4.4):
+    """Draws a chance circle centered at (x, y) with text label."""
+    circle = patches.Circle(
+        (x, y), radius,
+        facecolor=NODE_FILL, edgecolor=NODE_EDGE, linewidth=2.0, zorder=5
+    )
     ax.add_patch(circle)
-    ax.text(x, y, label, ha="center", va="center", fontsize=10, fontweight="bold", color=CLR_TEXT, zorder=6)
+    ax.text(x, y, label, ha='center', va='center', fontsize=12.0, fontweight='bold',
+            color=NODE_EDGE, zorder=6, fontfamily='sans-serif')
 
-def draw_branch(p1, p2, label_top="", label_bottom="", ha="center", angle_offset=1.2):
-    ax.plot([p1[0], p2[0]], [p1[1], p2[1]], color=CLR_LINE, lw=1.8, zorder=3)
-    mx = (p1[0] + p2[0]) / 2.0
-    my = (p1[1] + p2[1]) / 2.0
-    if label_top:
-        ax.text(mx, my + angle_offset, label_top, ha=ha, va="bottom",
-                fontsize=8.2, fontweight="bold", color=CLR_TEXT, zorder=4)
-    if label_bottom:
-        ax.text(mx, my - angle_offset, label_bottom, ha=ha, va="top",
-                fontsize=7.6, fontstyle="italic", color=CLR_MUTED, zorder=4)
+def draw_dogleg(x_start, y_start, x_elbow, y_end, x_end):
+    """Draws diagonal then horizontal branch line."""
+    ax.plot([x_start, x_elbow], [y_start, y_end], color=LINE_COLOR, linewidth=LINE_WIDTH, zorder=3)
+    ax.plot([x_elbow, x_end], [y_end, y_end], color=LINE_COLOR, linewidth=LINE_WIDTH, zorder=3)
 
-def draw_terminal_box(x, y, title, subtitle="", w=20, h=4.4):
-    rect = patches.FancyBboxPatch((x, y - h/2), w, h, boxstyle="round,pad=0.25",
-                                  linewidth=1.4, edgecolor=CLR_TERM_BORDER, facecolor=CLR_TERM_BG, zorder=5)
-    ax.add_patch(rect)
-    ax.text(x + w/2, y + (0.8 if subtitle else 0), title, ha="center", va="center",
-            fontsize=8.0, fontweight="bold", color="#0f172a", zorder=6)
-    if subtitle:
-        ax.text(x + w/2, y - 0.9, subtitle, ha="center", va="center",
-                fontsize=7.2, fontstyle="italic", color="#475569", zorder=6)
+def draw_straight(x_start, y_start, x_end, y_end):
+    """Draws a straight horizontal line."""
+    ax.plot([x_start, x_end], [y_start, y_end], color=LINE_COLOR, linewidth=LINE_WIDTH, zorder=3)
 
-# Main Coordinates
-# Root D1
-p_D1 = (8, 50)
+# -------------------------------------------------------------------------
+# NODES COORDINATES
+# -------------------------------------------------------------------------
+# D1 at (14, 52)
+X_D1, Y_D1 = 14, 52
+draw_square(X_D1, Y_D1, 'D1', size=8.0)
 
-# C1 and D12
-p_C1 = (27, 68)
-p_term_D12 = (29, 28)
+# C1 at (98, 72)
+X_C1, Y_C1 = 98, 72
+draw_circle(X_C1, Y_C1, 'C1', radius=4.4)
 
-# Level 3: D2 & D3
-p_D2 = (46, 79)
-p_D3 = (46, 52)
+# D2 at (176, 88)
+X_D2, Y_D2 = 176, 88
+draw_square(X_D2, Y_D2, 'D2', size=8.0)
 
-# Level 4: from D2 -> C2 & D22
-p_C2 = (66, 86)
-p_term_D22 = (64, 71)
+# D3 at (176, 48)
+X_D3, Y_D3 = 176, 48
+draw_square(X_D3, Y_D3, 'D3', size=8.0)
 
-# Level 4: from D3 -> C3 & D32
-p_C3 = (66, 57)
-p_term_D32 = (64, 43)
+# C2 at (254, 96)
+X_C2, Y_C2 = 254, 96
+draw_circle(X_C2, Y_C2, 'C2', radius=4.4)
 
-# Level 5: Terminals from C2
-p_term_C21 = (88, 92)
-p_term_C22 = (88, 80)
+# -------------------------------------------------------------------------
+# BRANCHES FROM D1
+# -------------------------------------------------------------------------
+# Branch D11 -> C1 (Diagonal up to elbow, then horizontal into C1)
+draw_dogleg(X_D1 + 4.0, Y_D1, 28, Y_C1, X_C1 - 4.4)
+ax.text(30, Y_C1 + 2.2, 'D11: Valid Student Query Input', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(30, Y_C1 - 3.2, 'Length > 0 (Pre-process & Sanitize)', fontsize=9.2, color=SUB_COLOR)
 
-# Level 5: Terminals from C3
-p_term_C31 = (88, 63)
-p_term_C32 = (88, 50)
+# Branch D12 -> Terminal Action (Diagonal down to elbow, then horizontal)
+X_D12_END = 98
+draw_dogleg(X_D1 + 4.0, Y_D1, 28, 22, X_D12_END)
+ax.text(30, 22 + 2.2, 'D12: Empty / Invalid Input', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(30, 22 - 3.2, 'Cost: 0 ms / No Token Used', fontsize=9.2, color=SUB_COLOR)
+# Action at end of line
+ax.text(X_D12_END + 3, 22, 'Action:\nPrompt User & Display\n8 FAQ Category Chips', 
+        fontsize=9.5, fontweight='bold', color='#b45309', va='center', linespacing=1.3)
 
-# Branch 1: D1 -> C1
-draw_branch((p_D1[0] + 1.8, p_D1[1]), (p_C1[0] - 1.9, p_C1[1]),
-            label_top="D11: Ingest Query & Evaluate NLP",
-            label_bottom="Resource: Local Tokenization (<5ms)")
+# -------------------------------------------------------------------------
+# BRANCHES FROM C1
+# -------------------------------------------------------------------------
+# Branch C11 -> D2 (FAQ Match)
+draw_dogleg(X_C1 + 4.4, Y_C1, 114, Y_D2, X_D2 - 4.0)
+ax.text(116, Y_D2 + 2.2, 'C11: FAQ Match (S ≥ 0.58)', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(116, Y_D2 - 3.2, 'Probability: 0.70 (SQLite Hit)', fontsize=9.2, color=SUB_COLOR)
 
-# Branch 2: D1 -> D12
-draw_branch((p_D1[0] + 1.8, p_D1[1]), p_term_D12,
-            label_top="D12: Empty / Invalid Input",
-            label_bottom="Condition: len(query) < 2")
+# Branch C12 -> D3 (FAQ Miss)
+draw_dogleg(X_C1 + 4.4, Y_C1, 114, Y_D3, X_D3 - 4.0)
+ax.text(116, Y_D3 + 2.2, 'C12: FAQ Miss (S < 0.58)', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(116, Y_D3 - 3.2, 'Probability: 0.30 (Fallback Path)', fontsize=9.2, color=SUB_COLOR)
 
-# From C1 -> D2
-draw_branch((p_C1[0] + 1.9, p_C1[1]), (p_D2[0] - 1.8, p_D2[1]),
-            label_top="C11: Direct DB Match (Jaccard S >= 0.58)",
-            label_bottom="Probability / Score: 0.70")
+# -------------------------------------------------------------------------
+# BRANCHES FROM D3
+# -------------------------------------------------------------------------
+# Branch D31 -> Terminal Action (Route to Gemini AI)
+X_D31_END = 260
+draw_straight(X_D3 + 4.0, Y_D3, X_D31_END, Y_D3)
+ax.text(X_D3 + 6, Y_D3 + 2.2, 'D31: Route to Gemini 2.5 Flash API', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(X_D3 + 6, Y_D3 - 3.2, 'Context-Bounded Prompt (<1.2s Latency)', fontsize=9.2, color=SUB_COLOR)
+# Terminal action at end of D31
+ax.text(X_D31_END + 3, Y_D3, 'Terminal Action:\nGenerate Verified Academic Answer\n(<1.2s, Zero Hallucination Mode)',
+        fontsize=9.5, fontweight='bold', color=ACTION_COLOR, va='center', linespacing=1.3)
 
-# From C1 -> D3
-draw_branch((p_C1[0] + 1.9, p_C1[1]), (p_D3[0] - 1.8, p_D3[1]),
-            label_top="C12: Low Overlap (Score S < 0.58)",
-            label_bottom="Probability: 0.30")
+# -------------------------------------------------------------------------
+# BRANCHES FROM D2
+# -------------------------------------------------------------------------
+# Branch D21 -> C2 (Serve Verified FAQ)
+draw_dogleg(X_D2 + 4.0, Y_D2, 192, Y_C2, X_C2 - 4.4)
+ax.text(194, Y_C2 + 2.2, 'D21: Serve Local Verified FAQ', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(194, Y_C2 - 3.2, 'Fetch SQLite Record (<15ms)', fontsize=9.2, color=SUB_COLOR)
 
-# From D2 -> C2
-draw_branch((p_D2[0] + 1.8, p_D2[1]), (p_C2[0] - 1.9, p_C2[1]),
-            label_top="D21: Fetch Authoritative Record",
-            label_bottom="Sub-second Lookup (<15ms)")
+# Branch D22 -> Terminal Action (Duplicate Query Filter)
+X_D22_END = 260
+draw_dogleg(X_D2 + 4.0, Y_D2, 192, 68, X_D22_END)
+ax.text(194, 68 + 2.2, 'D22: Duplicate / Spam Filter', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(194, 68 - 3.2, 'Cost: 0 ms / No Reprocessing', fontsize=9.2, color=SUB_COLOR)
+# Terminal action at end of D22
+ax.text(X_D22_END + 3, 68, 'Terminal Action:\nLog Student Interaction &\nSuppress Redundant Queries',
+        fontsize=9.5, fontweight='bold', color='#475569', va='center', linespacing=1.3)
 
-# From D2 -> D22
-draw_branch((p_D2[0] + 1.8, p_D2[1]), p_term_D22,
-            label_top="D22: Inactive Session",
-            label_bottom="Condition: Idle > 15m")
+# -------------------------------------------------------------------------
+# BRANCHES FROM C2
+# -------------------------------------------------------------------------
+# Branch C21 -> Terminal Outcome (Audio Read-Aloud)
+X_C21_END = 318
+draw_dogleg(X_C2 + 4.4, Y_C2, 268, 102, X_C21_END)
+ax.text(270, 102 + 2.2, 'C21: Voice Read-Aloud', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(270, 102 - 3.2, 'Probability: 0.60', fontsize=9.2, color=SUB_COLOR)
+# Outcome at end of line (equivalent to "Annual Cash Flow: 30 Million")
+ax.text(X_C21_END + 4, 102, 'Output Result:\nInstant Chat Bubble +\nWeb Speech Voice Output',
+        fontsize=9.5, fontweight='bold', color=OUTCOME_COLOR, va='center', linespacing=1.3)
 
-# From C2 -> C21
-draw_branch((p_C2[0] + 1.9, p_C2[1]), p_term_C21,
-            label_top="C21: Voice Read-Aloud Enabled",
-            label_bottom="Probability: 0.65")
+# Branch C22 -> Terminal Outcome (Silent / Text-Only)
+X_C22_END = 318
+draw_dogleg(X_C2 + 4.4, Y_C2, 268, 84, X_C22_END)
+ax.text(270, 84 + 2.2, 'C22: Silent / Text Mode', fontsize=10.5, fontweight='bold', color=TITLE_COLOR)
+ax.text(270, 84 - 3.2, 'Probability: 0.40', fontsize=9.2, color=SUB_COLOR)
+# Outcome at end of line (equivalent to "Annual Cash Flow: 20 Million")
+ax.text(X_C22_END + 4, 84, 'Output Result:\nFast-Path Text Bubble\n(<15ms Latency, 0 Token Cost)',
+        fontsize=9.5, fontweight='bold', color=OUTCOME_COLOR, va='center', linespacing=1.3)
 
-# From C2 -> C22
-draw_branch((p_C2[0] + 1.9, p_C2[1]), p_term_C22,
-            label_top="C22: Silent Text Response",
-            label_bottom="Probability: 0.35")
-
-# From D3 -> C3
-draw_branch((p_D3[0] + 1.8, p_D3[1]), (p_C3[0] - 1.9, p_C3[1]),
-            label_top="D31: Invoke Gemini 2.5 Flash AI",
-            label_bottom="Guardrail: Strict Zero-Hallucination")
-
-# From D3 -> D32
-draw_branch((p_D3[0] + 1.8, p_D3[1]), p_term_D32,
-            label_top="D32: Standard Helpdesk Referral",
-            label_bottom="Condition: Non-Academic Query")
-
-# From C3 -> C31
-draw_branch((p_C3[0] + 1.9, p_C3[1]), p_term_C31,
-            label_top="C31: API Online & Context Verified",
-            label_bottom="Probability: 0.85")
-
-# From C3 -> C32
-draw_branch((p_C3[0] + 1.9, p_C3[1]), p_term_C32,
-            label_top="C32: API Timeout / Network Offline",
-            label_bottom="Probability: 0.15")
-
-# Draw Nodes
-draw_decision_square(p_D1[0], p_D1[1], "D1")
-draw_chance_circle(p_C1[0], p_C1[1], "C1")
-draw_decision_square(p_D2[0], p_D2[1], "D2")
-draw_decision_square(p_D3[0], p_D3[1], "D3")
-draw_chance_circle(p_C2[0], p_C2[1], "C2")
-draw_chance_circle(p_C3[0], p_C3[1], "C3")
-
-# Draw Terminal Boxes
-draw_terminal_box(p_term_D12[0], p_term_D12[1], "D12: Validation Prompt", "Action: Suggest 8 Domain Chips", w=19, h=4.2)
-draw_terminal_box(p_term_D22[0], p_term_D22[1], "D22: Close Session", "Action: Reset Chat State", w=17, h=4.0)
-draw_terminal_box(p_term_D32[0], p_term_D32[1], "D32: Office Referral", "Action: Display College Contact", w=18, h=4.0)
-
-draw_terminal_box(p_term_C21[0], p_term_C21[1], "Verified Answer + TTS Audio", "Output: 100% Authoritative SQLite Record", w=22, h=4.4)
-draw_terminal_box(p_term_C22[0], p_term_C22[1], "Verified Text Answer", "Output: Instant Fast-Path Delivery (<15ms)", w=22, h=4.4)
-draw_terminal_box(p_term_C31[0], p_term_C31[1], "Context-Bounded AI Answer", "Output: Zero-Hallucination Gemini Answer", w=22, h=4.4)
-draw_terminal_box(p_term_C32[0], p_term_C32[1], "Deterministic Helpdesk Referral", "Output: contact@college.edu Guidance", w=22, h=4.4)
-
-# Professional Legend Box (Top-Left)
-leg_w, leg_h = 28, 11
-leg_rect = patches.FancyBboxPatch((4, 85), leg_w, leg_h, boxstyle="round,pad=0.3",
-                                  linewidth=1.2, edgecolor="#64748b", facecolor="#f8fafc", zorder=6)
-ax.add_patch(leg_rect)
-ax.text(5.5, 93.5, "Standard Decision Tree Legend:", fontsize=8.8, fontweight="bold", color="#0f172a", zorder=7)
-
-# Square symbol in legend
-ax.add_patch(patches.Rectangle((6, 88.5), 2.4, 2.4, linewidth=1.4, edgecolor=CLR_BORDER, facecolor="#ffffff", zorder=7))
-ax.text(7.2, 89.7, "D", ha="center", va="center", fontsize=8.0, fontweight="bold", color=CLR_TEXT, zorder=8)
-ax.text(9.5, 89.7, "= Decision Node", ha="left", va="center", fontsize=8.0, color="#1e293b", zorder=7)
-
-# Circle symbol in legend
-ax.add_patch(patches.Circle((19.5, 89.7), 1.3, linewidth=1.4, edgecolor=CLR_BORDER, facecolor="#ffffff", zorder=7))
-ax.text(19.5, 89.7, "C", ha="center", va="center", fontsize=8.0, fontweight="bold", color=CLR_TEXT, zorder=8)
-ax.text(21.8, 89.7, "= Chance / Event Node", ha="left", va="center", fontsize=8.0, color="#1e293b", zorder=7)
-
+# Save high-res
 plt.tight_layout()
-plt.savefig(out_path, bbox_inches="tight", dpi=300)
-plt.close()
-print("[✓] Successfully rendered Business Jargons style Decision Tree to:", out_path)
+output_img = 'scratch/campusai_diagrams/campusai_decision_tree.png'
+plt.savefig(output_img, bbox_inches='tight', dpi=300)
+print('Successfully saved', output_img)
