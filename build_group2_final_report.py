@@ -71,7 +71,7 @@ class AcademicDoubleBorderCanvas(canvas.Canvas):
     def draw_page_decorations(self):
         self.saveState()
         # Double Line Border on every page
-        self.setStrokeColor(colors.HexColor("#064e3b"))
+        self.setStrokeColor(colors.black)
         self.setLineWidth(1.5)
         self.rect(28, 28, PAGE_W - 56, PAGE_H - 56, fill=0, stroke=1)
         self.setLineWidth(0.6)
@@ -138,111 +138,156 @@ def generate_reportlab_pages(temp_pdf_path):
     story = []
 
     # =========================================================================
-    # PAGE 1: TITLE / COVER PAGE
+    # PAGE 1: TITLE / COVER PAGE (Matches University Reference Image Exactly)
     # =========================================================================
-    story.append(Spacer(1, 15))
-    story.append(Paragraph("A<br/>Project report on", center_text))
-    story.append(Spacer(1, 12))
-    story.append(Paragraph("<b>CampusAI: Intelligent AI-Powered College Assistant Chatbot and Knowledge Base System</b>", title_main))
-    story.append(Spacer(1, 16))
-    story.append(Paragraph("Submitted To :", center_bold))
-    story.append(Spacer(1, 4))
-    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/>PUNE-412207", center_text))
-    story.append(Spacer(1, 10))
-
     logo_path = os.path.join(BASE_DIR, "scratch/pdf2_images/page_1_0_X6.png")
     if os.path.exists(logo_path):
-        story.append(RLImage(logo_path, width=160, height=45))
-        story.append(Spacer(1, 14))
+        story.append(RLImage(logo_path, width=175, height=52))
+        story.append(Spacer(1, 35))
+    else:
+        story.append(Spacer(1, 45))
 
-    story.append(Paragraph("For: <b>BBA CA (Semester III)</b>", center_bold))
-    story.append(Spacer(1, 14))
-    story.append(Paragraph("Submitted By :", center_bold))
-    story.append(Spacer(1, 4))
-    story.append(Paragraph("<b>Akash rana (ISTU25010120004)</b><br/><b>Shreyash katke (ISTU25010120003)</b>", center_text))
-    story.append(Spacer(1, 14))
-    story.append(Paragraph("Under the Guidance of :", center_bold))
-    story.append(Spacer(1, 4))
-    story.append(Paragraph("<b>Prof. Sheela Satav</b>", center_text))
-    story.append(Spacer(1, 18))
-    story.append(Paragraph("<b>DEPARTMENT OF COMPUTER APPLICATIONS</b>", center_bold))
-    story.append(Paragraph("G H RAISONI INTERNATIONAL SKILL TECH UNIVERSITY, PUNE<br/>Academic Year: 2025–2026", center_text))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 2: CERTIFICATE OF APPROVAL
-    # =========================================================================
-    story.append(Spacer(1, 15))
-    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/>PUNE-412207", center_text))
-    story.append(Spacer(1, 10))
-    if os.path.exists(logo_path):
-        story.append(RLImage(logo_path, width=150, height=42))
-        story.append(Spacer(1, 12))
-
-    story.append(Paragraph("<b>CERTIFICATE</b>", title_main))
-    story.append(Spacer(1, 14))
-
-    cert_text = (
-        "This is to certify that <b>Mr. Akash rana (Roll No: ISTU25010120004)</b> and "
-        "<b>Mr. Shreyash katke (Roll No: ISTU25010120003)</b>, students of <b>SY BBA CA</b>, "
-        "have satisfactorily completed their Project entitled <b>“CampusAI: An Intelligent AI-Powered "
-        "College Assistant Chatbot and Knowledge Base System”</b> and submitted this project report in "
-        "partial fulfillment of the requirements for the award of the degree of <b>BBA CA</b> for the "
-        "academic Year <b>2025-26</b>.<br/><br/>"
-        "This project embodies original engineering work carried out under our supervision and guidance. "
-        "To the best of our knowledge, the matter presented in this report has not been submitted to any "
-        "other University or Institute for the award of any degree or diploma."
-    )
-    story.append(Paragraph(cert_text, body))
-    story.append(Spacer(1, 45))
-
-    sig_data = [
-        [Paragraph("<b>Prof. Sheela Satav</b><br/>Project Internal Guide", center_text), Paragraph("<b>Head of Department</b><br/>Dept of Computer Applications", center_text)],
-        [Spacer(1, 35), Spacer(1, 35)],
-        [Paragraph("<b>External Examiner</b><br/>University Appointed", center_text), Paragraph("<b>Principal / Director</b><br/>G H Raisoni ISTU, Pune", center_text)]
-    ]
-    t_sig = Table(sig_data, colWidths=[240, 240])
-    t_sig.setStyle(TableStyle([('ALIGN', (0,0), (-1,-1), 'CENTER'), ('VALIGN', (0,0), (-1,-1), 'TOP')]))
-    story.append(t_sig)
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 3: ACKNOWLEDGEMENT
-    # =========================================================================
-    story.append(Spacer(1, 15))
-    story.append(Paragraph("<b>ACKNOWLEDGEMENT</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=14))
-
-    ack_p1 = (
-        "A successful software project is the result of focused teamwork, dedicated research, and the collective "
-        "guidance of experienced mentors. We express our profound sense of gratitude and sincere thanks to our esteemed "
-        "project guide, <b>Prof. Sheela Satav</b>, for her invaluable technical insights, constant encouragement, and critical "
-        "feedback throughout the conceptualization, architecture design, and development of CampusAI."
-    )
-    story.append(Paragraph(ack_p1, body))
-    story.append(Spacer(1, 8))
-
-    ack_p2 = (
-        "We are deeply indebted to our respected <b>Head of the Department of Computer Applications</b>, and the honorable "
-        "<b>Principal and Director of G H Raisoni International Skill Tech University, Pune</b>, for providing world-class computing "
-        "infrastructure, laboratory resources, and an encouraging academic environment."
-    )
-    story.append(Paragraph(ack_p2, body))
-    story.append(Spacer(1, 8))
-
-    ack_p3 = (
-        "We also extend our heartfelt appreciation to all faculty members, technical lab assistants, and our fellow classmates "
-        "for their constructive suggestions, cooperative spirit, and active participation during user acceptance testing of "
-        "the chatbot interface."
-    )
-    story.append(Paragraph(ack_p3, body))
+    story.append(Paragraph("A<br/>Project report on", center_text))
     story.append(Spacer(1, 30))
 
-    sub_table = Table([
-        [Paragraph("", center_text), Paragraph("<b>Akash rana (ISTU25010120004)</b><br/><b>Shreyash katke (ISTU25010120003)</b><br/>SY BBA CA (Semester III)", right_text)]
-    ], colWidths=[200, 280])
-    sub_table.setStyle(TableStyle([('ALIGN', (1,0), (1,0), 'RIGHT')]))
-    story.append(sub_table)
+    title_cover = ParagraphStyle('TitleCover', fontName='Times-Bold', fontSize=22, leading=28, alignment=TA_CENTER, textColor=colors.black)
+    story.append(Paragraph("<u>Campus AI Chatbot</u>", title_cover))
+    story.append(Spacer(1, 45))
+
+    story.append(Paragraph("<b>Submitted To :</b>", center_text))
+    story.append(Spacer(1, 14))
+    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/><b>PUNE-412207</b>", center_bold))
+    story.append(Spacer(1, 40))
+
+    story.append(Paragraph("For: <b>BBA CA</b>", center_text))
+    story.append(Spacer(1, 40))
+
+    story.append(Paragraph("<b>Submitted By :</b>", center_text))
+    story.append(Spacer(1, 14))
+    story.append(Paragraph("<b>Akash Rana (ISTU25010120004)</b><br/><b>Shreyash Katke (ISTU25010120003)</b>", center_bold))
+    story.append(Spacer(1, 40))
+
+    story.append(Paragraph("<b>Semester III</b><br/><b>Year 2026-27</b>", center_bold))
+    story.append(Spacer(1, 40))
+
+    story.append(Paragraph("<b>Under the Guidance of :</b>", center_text))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("Asst. Prof. Sheela Satav", center_text))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 2: CERTIFICATE (Matches University Reference Image Exactly)
+    # =========================================================================
+    story.append(Spacer(1, 5))
+    if os.path.exists(logo_path):
+        story.append(RLImage(logo_path, width=160, height=48))
+        story.append(Spacer(1, 12))
+
+    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/><b>PUNE-412207</b>", center_bold))
+    story.append(Spacer(1, 20))
+
+    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=15, leading=19, alignment=TA_CENTER, textColor=colors.black)
+    story.append(Paragraph("<u><b>CERTIFICATE</b></u>", cert_heading))
+    story.append(Spacer(1, 28))
+
+    cert_text = (
+        "This is to certify that <b>Mr. Akash Rana (Roll No: ISTU25010120004)</b> and "
+        "<b>Mr. Shreyash Katke (Roll No: ISTU25010120003)</b>, students of <b>SY BBA CA</b>, "
+        "have satisfactorily completed their Project entitled <b>“Campus AI Chatbot”</b> and submitted "
+        "this project report in partial fulfillment of the requirements for the award of the degree of "
+        "<b>BBA CA</b> for the academic Year <b>2026-27</b>."
+    )
+    story.append(Paragraph(cert_text, body))
+    story.append(Spacer(1, 40))
+
+    guide_table_data = [
+        [Paragraph("Date: ____________________", tbl_cell), Paragraph("<b>Asst. Prof. Sheela Satav</b><br/>Project Guide", right_text)]
+    ]
+    t_guide = Table(guide_table_data, colWidths=[240, 240])
+    t_guide.setStyle(TableStyle([
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('LEFTPADDING', (0,0), (-1,-1), 0),
+        ('RIGHTPADDING', (0,0), (-1,-1), 0),
+    ]))
+    story.append(t_guide)
+    story.append(Spacer(1, 75))
+
+    exam_table_1 = [
+        [Paragraph("____________________<br/><b>Internal Examiner</b>", center_text), Paragraph("____________________<br/><b>External Examiner</b>", center_text)]
+    ]
+    t_exam_1 = Table(exam_table_1, colWidths=[240, 240])
+    t_exam_1.setStyle(TableStyle([
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+    ]))
+    story.append(t_exam_1)
+    story.append(Spacer(1, 65))
+
+    exam_table_2 = [
+        [Paragraph("____________________<br/><b>HOD</b>", center_text), Paragraph("____________________<br/><b>Dean</b>", center_text)]
+    ]
+    t_exam_2 = Table(exam_table_2, colWidths=[240, 240])
+    t_exam_2.setStyle(TableStyle([
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+    ]))
+    story.append(t_exam_2)
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 3: ACKNOWLEDGEMENT (Matches University Reference Image Exactly)
+    # =========================================================================
+    story.append(Spacer(1, 15))
+    story.append(Paragraph("<u><b>ACKNOWLEDGEMENT</b></u>", cert_heading))
+    story.append(Spacer(1, 20))
+
+    ack_p1 = (
+        "A successful project is always the result of sincere teamwork, persistent dedication, and the collective "
+        "guidance of esteemed mentors who provided technical insights and inspiration throughout our development journey."
+    )
+    story.append(Paragraph(ack_p1, body))
+    story.append(Spacer(1, 10))
+
+    ack_p2 = (
+        "First and foremost, we would like to express our deepest gratitude to our <b>Honourable Vice Chancellor DR. R. D. KHARADKAR</b> "
+        "for providing us the opportunity and state-of-the-art technological infrastructure to study and innovate at "
+        "<b>G H Raisoni International Skill Tech University, Pune</b>."
+    )
+    story.append(Paragraph(ack_p2, body))
+    story.append(Spacer(1, 10))
+
+    ack_p3 = (
+        "We are immensely grateful and indebted to our project guide, <b>Asst. Prof. Sheela Satav</b>, for her invaluable advice, "
+        "constant encouragement, rigorous scrutiny, and technical assistance during the design and implementation of the "
+        "<i>Campus AI Chatbot</i>. Her profound insights into software engineering standards and conversational system architectures "
+        "helped us overcome key challenges in knowledge modeling and voice processing."
+    )
+    story.append(Paragraph(ack_p3, body))
+    story.append(Spacer(1, 10))
+
+    ack_p4 = (
+        "We also extend our sincere appreciation to the <b>Head of Department (HOD)</b>, respected faculty members, "
+        "laboratory staff, and academic coordinators for their sustained cooperation and resources during the project lifecycle."
+    )
+    story.append(Paragraph(ack_p4, body))
+    story.append(Spacer(1, 10))
+
+    ack_p5 = (
+        "Last but not least, we express our heartfelt gratitude to the Almighty and our parents for their unconditional blessings, "
+        "patience, and moral support, without which this academic endeavor would not have been possible."
+    )
+    story.append(Paragraph(ack_p5, body))
+    story.append(Spacer(1, 40))
+
+    ack_sig_table = Table([
+        [Paragraph("", center_text), Paragraph("<b>Signature of Students:</b><br/><br/><b>Akash Rana (ISTU25010120004)</b><br/><b>Shreyash Katke (ISTU25010120003)</b>", right_text)]
+    ], colWidths=[220, 260])
+    ack_sig_table.setStyle(TableStyle([
+        ('ALIGN', (1,0), (1,0), 'RIGHT'),
+        ('LEFTPADDING', (0,0), (-1,-1), 0),
+        ('RIGHTPADDING', (0,0), (-1,-1), 0),
+    ]))
+    story.append(ack_sig_table)
     story.append(PageBreak())
 
     # =========================================================================
