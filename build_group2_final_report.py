@@ -822,11 +822,92 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # (PAGES 20-27 ARE DUMMY PLACEHOLDERS IN REPORTLAB, REPLACED BY VECTOR PAGES IN PYPDF)
+    # PAGE 20: TOPIC 14 - ER DIAGRAM
     # =========================================================================
-    for _ in range(8):
-        story.append(Spacer(1, 100))
-        story.append(PageBreak())
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>ER DIAGRAM :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    er_img = os.path.join(IMG_DIR, "campusai_er_diagram.png")
+    if os.path.exists(er_img):
+        story.append(RLImage(er_img, width=480, height=480))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 21: TOPIC 15 - USE CASE DIAGRAM
+    # =========================================================================
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>USE CASE DIAGRAM :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    uc_img = os.path.join(IMG_DIR, "campusai_use_case.png")
+    if os.path.exists(uc_img):
+        story.append(RLImage(uc_img, width=480, height=505))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 22: TOPIC 16 - CLASS DIAGRAM
+    # =========================================================================
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>CLASS DIAGRAM :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    cls_img = os.path.join(IMG_DIR, "campusai_class_diagram.png")
+    if os.path.exists(cls_img):
+        story.append(RLImage(cls_img, width=480, height=505))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 23: TOPIC 17 - OBJECT DIAGRAM
+    # =========================================================================
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>OBJECT DIAGRAM :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    obj_img = os.path.join(IMG_DIR, "campusai_object_diagram.png")
+    if os.path.exists(obj_img):
+        story.append(RLImage(obj_img, width=480, height=525))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 24: TOPIC 18 - SEQUENCE DIAGRAM
+    # =========================================================================
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>SEQUENCE DIAGRAM :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    seq_img = os.path.join(IMG_DIR, "campusai_sequence_diagram.png")
+    if os.path.exists(seq_img):
+        story.append(RLImage(seq_img, width=480, height=525))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 25: TOPIC 19 - ACTIVITY DIAGRAM
+    # =========================================================================
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>ACTIVITY DIAGRAM :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    act_img = os.path.join(IMG_DIR, "campusai_activity_diagram.png")
+    if os.path.exists(act_img):
+        story.append(RLImage(act_img, width=480, height=525))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 26: TOPIC 20 - COMPONENT DIAGRAM
+    # =========================================================================
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>COMPONENT DIAGRAM :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    comp_img = os.path.join(IMG_DIR, "campusai_component_diagram.png")
+    if os.path.exists(comp_img):
+        story.append(RLImage(comp_img, width=480, height=545))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 27: TOPIC 21 - DATA FLOW DIAGRAM
+    # =========================================================================
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>DATA FLOW DIAGRAM (DFD LEVEL 0 & LEVEL 1) :</b>", h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=6))
+    dfd_img = os.path.join(IMG_DIR, "campusai_dfd.png")
+    if os.path.exists(dfd_img):
+        story.append(RLImage(dfd_img, width=410, height=620))
+    story.append(PageBreak())
 
     # =========================================================================
     # PAGE 28: TOPIC 22 - HOME SCREEN UI
@@ -1067,46 +1148,24 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(Paragraph("10. World Wide Web Consortium (W3C). (2023). <i>Web Speech API Specification: SpeechRecognition and SpeechSynthesis</i>. Retrieved from https://www.w3.org/TR/speech-api/", bullet))
 
     doc.build(story, canvasmaker=AcademicDoubleBorderCanvas)
-    print(f"[✓] Generated ReportLab document: {temp_pdf_path} (35 pages)")
+    print(f"[✓] Generated ReportLab document: {temp_pdf_path}")
 
 
 def assemble_final_report(output_paths):
-    temp_rl = os.path.join(BASE_DIR, "scratch/temp_group2_final_rl.pdf")
-    os.makedirs(os.path.dirname(temp_rl), exist_ok=True)
-    generate_reportlab_pages(temp_rl)
+    final_pdf = output_paths[0]
+    os.makedirs(os.path.dirname(final_pdf), exist_ok=True)
+    generate_reportlab_pages(final_pdf)
 
-    rl_reader = pypdf.PdfReader(temp_rl)
-    ref_reader = pypdf.PdfReader(SRC_VECTOR_PDF)
-    writer = pypdf.PdfWriter()
+    reader = pypdf.PdfReader(final_pdf)
+    total_p = len(reader.pages)
+    print(f"[✓] Total verified pages: {total_p} (expected 35)")
+    assert total_p == 35, f"Expected 35 pages, but got {total_p} pages!"
 
-    # 1. Add Pages 1 to 19 from ReportLab (indices 0 to 18)
-    for i in range(19):
-        writer.add_page(rl_reader.pages[i])
-
-    # 2. Add Pages 20 to 27 from Vector Reference (indices 19 to 26) with centered headings
-    for p_num in range(20, 28):
-        page = ref_reader.pages[p_num - 1]
-        overlay = make_centered_heading_overlay(DIAGRAM_HEADINGS[p_num])
-        page.merge_page(overlay)
-        writer.add_page(page)
-
-    # 3. Replace Object Diagram images on Page 23 with Akash Rana credentials
-    im_akash = Image.open(os.path.join(BASE_DIR, "scratch/updated_stu_akash.png"))
-    im_msg = Image.open(os.path.join(BASE_DIR, "scratch/updated_msg_42.png"))
-    writer.pages[22].images['/X157'].replace(im_akash)
-    writer.pages[22].images['/X163'].replace(im_msg)
-
-    # 4. Add Pages 28 to 35 from ReportLab (indices 27 to 34)
-    for i in range(27, 35):
-        writer.add_page(rl_reader.pages[i])
-
-    print(f"Total compiled pages: {len(writer.pages)}")
-
-    for out_p in output_paths:
+    for out_p in output_paths[1:]:
         os.makedirs(os.path.dirname(out_p), exist_ok=True)
-        with open(out_p, 'wb') as f:
-            writer.write(f)
-        print(f"[✓] Successfully wrote: {out_p} ({os.path.getsize(out_p)} bytes)")
+        with open(final_pdf, 'rb') as src, open(out_p, 'wb') as dst:
+            dst.write(src.read())
+        print(f"[✓] Successfully wrote: {out_p} ({os.path.getsize(out_p)} bytes, {total_p} pages)")
 
 
 if __name__ == '__main__':
