@@ -650,7 +650,7 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=5))
     dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
     if os.path.exists(dt_img):
-        story.append(RLImage(dt_img, width=470, height=295))
+        story.append(RLImage(dt_img, width=470, height=263))
     story.append(Spacer(1, 3))
     story.append(Paragraph("Fig: Decision Tree of CampusAI Query Routing Engine", fig_caption))
     story.append(Paragraph("<b>Explanation</b>", desc_head))
