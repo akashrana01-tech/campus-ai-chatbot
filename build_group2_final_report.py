@@ -121,25 +121,26 @@ def generate_reportlab_pages(temp_pdf_path):
     right_text = ParagraphStyle('RightText', fontName='Times-Roman', fontSize=12.0, leading=16, alignment=TA_RIGHT, textColor=colors.black)
 
     # 1. Main Headings: Starting from page 3, set all main headings to font size 14 pt
-    h1 = ParagraphStyle('H1', fontName='Times-Bold', fontSize=14.0, leading=17.5, alignment=TA_CENTER, textColor=colors.black, spaceAfter=7)
-    h2 = ParagraphStyle('H2', fontName='Times-Bold', fontSize=12.5, leading=16.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=5, spaceAfter=2.5)
-    h3 = ParagraphStyle('H3', fontName='Times-Bold', fontSize=12.0, leading=15.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=4, spaceAfter=2)
+    h1 = ParagraphStyle('H1', fontName='Times-Bold', fontSize=17.5, leading=23.0, alignment=TA_CENTER, textColor=colors.black, spaceAfter=14)
+    h2 = ParagraphStyle('H2', fontName='Times-Bold', fontSize=13.5, leading=18.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=10, spaceAfter=6)
+    h3 = ParagraphStyle('H3', fontName='Times-Bold', fontSize=12.5, leading=16.5, alignment=TA_CENTER, textColor=colors.black, spaceBefore=6, spaceAfter=4)
 
     # 2. Main Text Content: Set body text, paragraphs, descriptions, and other regular text to font size 12 pt
-    desc_head = ParagraphStyle('DescHead', fontName='Times-Bold', fontSize=12.0, leading=15.0, alignment=TA_LEFT, textColor=colors.black, spaceBefore=3, spaceAfter=2)
-    desc_body = ParagraphStyle('DescBody', fontName='Times-Roman', fontSize=12.0, leading=15.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=2)
-    desc_bullet = ParagraphStyle('DescBullet', fontName='Times-Roman', fontSize=12.0, leading=15.0, alignment=TA_JUSTIFY, leftIndent=12, firstLineIndent=-8, textColor=colors.black, spaceAfter=2.0)
+    desc_head = ParagraphStyle('DescHead', fontName='Times-Bold', fontSize=12.5, leading=16.5, alignment=TA_LEFT, textColor=colors.black, spaceBefore=6, spaceAfter=3)
+    desc_body = ParagraphStyle('DescBody', fontName='Times-Roman', fontSize=12.0, leading=16.5, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=4)
+    desc_bullet = ParagraphStyle('DescBullet', fontName='Times-Roman', fontSize=12.0, leading=16.5, alignment=TA_JUSTIFY, leftIndent=12, firstLineIndent=-8, textColor=colors.black, spaceAfter=3.5)
     fig_caption = ParagraphStyle('FigCaption', fontName='Times-Italic', fontSize=9.5, leading=12.5, alignment=TA_CENTER, textColor=colors.black, spaceBefore=2, spaceAfter=3)
 
-    body = ParagraphStyle('Body', fontName='Times-Roman', fontSize=12.0, leading=15.2, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=4.5)
-    bullet = ParagraphStyle('Bullet', fontName='Times-Roman', fontSize=12.0, leading=15.2, alignment=TA_JUSTIFY, leftIndent=15, firstLineIndent=-10, textColor=colors.black, spaceAfter=2.5)
+    body = ParagraphStyle('Body', fontName='Times-Roman', fontSize=12.8, leading=18.2, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=10.0)
+    body_conc = ParagraphStyle('BodyConc', fontName='Times-Roman', fontSize=11.8, leading=15.8, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=5.0)
+    bullet = ParagraphStyle('Bullet', fontName='Times-Roman', fontSize=12.2, leading=17.5, alignment=TA_JUSTIFY, leftIndent=15, firstLineIndent=-10, textColor=colors.black, spaceAfter=8.0)
 
     # Page 2 Certificate preserved styles (original formatting preserved)
-    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=15, leading=19, alignment=TA_CENTER, textColor=colors.black)
+    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=16.5, leading=21.0, alignment=TA_CENTER, textColor=colors.black)
     cert_body = ParagraphStyle('CertBody', fontName='Times-Roman', fontSize=10.0, leading=14.8, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=6)
 
     # Page 3 Acknowledgement heading: 14 pt
-    ack_heading = ParagraphStyle('AckHeading', fontName='Times-Bold', fontSize=14.0, leading=18.0, alignment=TA_CENTER, textColor=colors.black)
+    ack_heading = ParagraphStyle('AckHeading', fontName='Times-Bold', fontSize=17.5, leading=23.0, alignment=TA_CENTER, textColor=colors.black)
 
     tbl_cell = ParagraphStyle('TblCell', fontName='Times-Roman', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
     tbl_cell_bold = ParagraphStyle('TblCellBold', fontName='Times-Bold', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
@@ -198,7 +199,7 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/><b>PUNE-412207</b>", center_bold))
     story.append(Spacer(1, 20))
 
-    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=15, leading=19, alignment=TA_CENTER, textColor=colors.black)
+    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=16.5, leading=21.0, alignment=TA_CENTER, textColor=colors.black)
     story.append(Paragraph("<u><b>CERTIFICATE</b></u>", cert_heading))
     story.append(Spacer(1, 28))
 
@@ -308,7 +309,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 15))
     story.append(Paragraph("<b>ABSTRACT</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=14))
+    story.append(Spacer(1, 16))
 
     abs_p1 = (
         "In modern collegiate ecosystems, academic administrations are perpetually flooded with repetitive, high-volume "
@@ -346,7 +347,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>TABLE OF CONTENT</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
+    story.append(Spacer(1, 12))
 
     toc_data = [
         [Paragraph("<b>Sr No</b>", tbl_hdr), Paragraph("<b>Topic</b>", tbl_hdr), Paragraph("<b>Page No</b>", tbl_hdr)],
@@ -397,7 +398,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>INTRODUCTION</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     intro_p1 = (
         "In modern higher education, dynamic communication between college administrations and students is essential. "
@@ -428,7 +429,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>PROBLEM DEFINITION</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     prob_p1 = (
         "Modern university ecosystems manage diverse academic operations simultaneously. During peak operational periods—such as "
@@ -451,7 +452,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>EXISTING SYSTEM & NEED FOR NEW SYSTEM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The current information dissemination framework at collegiate institutions relies primarily on traditional channels: "
@@ -476,7 +477,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>SCOPE OF SYSTEM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The primary scope of CampusAI is to establish a secure, authoritative, and responsive conversational portal for students, "
@@ -499,7 +500,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>FEASIBILITY STUDY</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "Before software development, a comprehensive four-dimensional feasibility study was conducted to evaluate the viability, "
@@ -542,7 +543,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>HARDWARE REQUIREMENTS</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The CampusAI architecture is engineered to be lightweight and accessible, imposing minimal hardware requirements on both "
@@ -563,11 +564,11 @@ def generate_reportlab_pages(temp_pdf_path):
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 3.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
+        ('TOPPADDING', (0,0), (-1,-1), 5.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
     story.append(t_hws)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph("<b>Client-Side Minimum Hardware Requirements:</b>", h2))
     hw_client = [
@@ -581,8 +582,8 @@ def generate_reportlab_pages(temp_pdf_path):
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 3.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
+        ('TOPPADDING', (0,0), (-1,-1), 5.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
     story.append(t_hwc)
     story.append(PageBreak())
@@ -592,7 +593,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>SOFTWARE REQUIREMENTS</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "CampusAI is built entirely with modern, industry-standard software tools that ensure cross-platform compatibility, "
@@ -630,7 +631,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>REQUIREMENT ANALYSIS</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "Requirement analysis formalizes what the system must accomplish from the perspective of both end users "
@@ -658,7 +659,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>DECISION TREE</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=5))
+    story.append(Spacer(1, 10))
     dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
     if os.path.exists(dt_img):
         story.append(RLImage(dt_img, width=475, height=243))
@@ -683,7 +684,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>DECISION TABLE</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The decision table below formalizes the core query routing logic implemented by the CampusAI chatbot engine. "
@@ -752,7 +753,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>NORMALIZED DATABASE DESIGN (3NF)</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The relational design of the system is shown below. In the SQLite implementation each table is "
@@ -775,8 +776,8 @@ def generate_reportlab_pages(temp_pdf_path):
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 3.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
+        ('TOPPADDING', (0,0), (-1,-1), 5.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
     story.append(t_adm)
     story.append(Spacer(1, 8))
@@ -794,8 +795,8 @@ def generate_reportlab_pages(temp_pdf_path):
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 3.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
+        ('TOPPADDING', (0,0), (-1,-1), 5.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
     story.append(t_sess)
     story.append(PageBreak())
@@ -805,7 +806,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>COLLEGE INFO (FAQS) TABLE</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The faqs table stores authoritative institutional information. Every record is indexed by category to support "
@@ -858,7 +859,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>CHAT HISTORY TABLE</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The chat_messages table maintains a complete audit log of conversational turns between students and the assistant. "
@@ -920,7 +921,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>ER DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     er_img = os.path.join(IMG_DIR, "campusai_er_diagram.png")
     if os.path.exists(er_img):
         story.append(RLImage(er_img, width=440, height=385))
@@ -939,7 +940,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>USE CASE DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     uc_img = os.path.join(IMG_DIR, "campusai_use_case.png")
     if os.path.exists(uc_img):
         story.append(RLImage(uc_img, width=440, height=385))
@@ -956,7 +957,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>CLASS DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     cls_img = os.path.join(IMG_DIR, "campusai_class_diagram.png")
     if os.path.exists(cls_img):
         story.append(RLImage(cls_img, width=440, height=385))
@@ -975,7 +976,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>OBJECT DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     obj_img = os.path.join(IMG_DIR, "campusai_object_diagram.png")
     if os.path.exists(obj_img):
         story.append(RLImage(obj_img, width=440, height=385))
@@ -993,7 +994,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>SEQUENCE DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     seq_img = os.path.join(IMG_DIR, "campusai_sequence_diagram.png")
     if os.path.exists(seq_img):
         story.append(RLImage(seq_img, width=440, height=385))
@@ -1011,7 +1012,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>ACTIVITY DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     act_img = os.path.join(IMG_DIR, "campusai_activity_diagram.png")
     if os.path.exists(act_img):
         story.append(RLImage(act_img, width=440, height=385))
@@ -1028,7 +1029,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>COMPONENT DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     comp_img = os.path.join(IMG_DIR, "campusai_component_diagram.png")
     if os.path.exists(comp_img):
         story.append(RLImage(comp_img, width=440, height=385))
@@ -1045,7 +1046,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<b>DATA FLOW DIAGRAM</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=4))
+    story.append(Spacer(1, 8))
     dfd_img = os.path.join(IMG_DIR, "campusai_dfd.png")
     if os.path.exists(dfd_img):
         story.append(RLImage(dfd_img, width=435, height=395))
@@ -1062,7 +1063,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>HOME SCREEN UI</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
+    story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The CampusAI Landing Portal (http://localhost:5000/) introduces students to the college assistant. "
         "It features quick access cards across all eight academic domains and live system status telemetry.", body
@@ -1097,7 +1098,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>STUDENT PORTAL & CHATBOT ASSISTANT UI</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
+    story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The Student Chatbot Interface (http://localhost:5000/chat) delivers instant answers, question suggestion chips, "
         "and Web Speech API audio synthesis.", body
@@ -1133,7 +1134,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>ADMIN COMMAND CENTER & MANAGEMENT UI</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=8))
+    story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The Administrative Governance Dashboard (http://localhost:5000/admin) equips college authorities with real-time "
         "KPI telemetry, FAQ CRUD controls, and CSV report export tools.", body
@@ -1168,7 +1169,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>TESTING AND IMPLEMENTATION</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "A rigorous multi-phase testing strategy was implemented to verify system correctness, security, and sub-second "
@@ -1212,7 +1213,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>DRAWBACKS AND LIMITATIONS</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "While CampusAI delivers high-accuracy academic assistance and sub-second retrieval, academic rigor requires an "
@@ -1233,7 +1234,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>PROPOSED ENHANCEMENTS</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "To build upon the successful implementation of CampusAI, several progressive enhancements are planned for future "
@@ -1254,19 +1255,19 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>CONCLUSION</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "CampusAI: Intelligent AI-Powered College Assistant Chatbot and Knowledge Base System is a smart and user-friendly "
         "conversational application designed to help college students, faculty, and visitors quickly obtain verified academic "
         "information. It simplifies campus inquiries by integrating authoritative knowledge base lookup, natural language "
         "understanding, audio voice synthesis, and real-time administrative telemetry into a unified platform. The system provides "
-        "an intuitive and reliable communication experience and possesses strong potential for future institutional enhancements.", body
+        "an intuitive and reliable communication experience and possesses strong potential for future institutional enhancements.", body_conc
     ))
     story.append(Paragraph(
         "This project has the potential to benefit students, administrative staff, and prospective applicants by providing "
         "an accessible, 24/7 digital front desk that eliminates physical counter congestion and guarantees factual accuracy "
-        "through its strict zero-hallucination guardrails.", body
+        "through its strict zero-hallucination guardrails.", body_conc
     ))
     story.append(Spacer(1, 4))
 
@@ -1276,7 +1277,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "studied, the requirements were thoroughly analyzed, and a complete system was engineered comprising seven modular "
         "components, a 3NF normalized SQLite database, and complete UML engineering diagrams. The system integrates lexical "
         "tokenization, Jaccard similarity scoring, Google Gemini 2.5 Flash generative AI fallback, Web Speech synthesis, and "
-        "a password-protected administrative command center into one cohesive application that runs efficiently on any device.", body
+        "a password-protected administrative command center into one cohesive application that runs efficiently on any device.", body_conc
     ))
     story.append(Spacer(1, 4))
 
@@ -1285,7 +1286,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "While developing this project, we learned full-stack web application development with Python and Flask, relational "
         "database engineering with SQLite and SQLAlchemy ORM, cloud API integration with Google GenAI SDK, front-end design "
         "with responsive CSS3 and asynchronous JavaScript fetch, UML modeling, and automated regression testing. The project "
-        "also demonstrated the essential importance of defensive programming, zero-hallucination policies, and focused teamwork.", body
+        "also demonstrated the essential importance of defensive programming, zero-hallucination policies, and focused teamwork.", body_conc
     ))
     story.append(Spacer(1, 4))
 
@@ -1295,7 +1296,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "designing a normalized 3NF database schema to support interaction audit logs, tuning NLP similarity thresholds to avoid "
         "false-positive answers, and integrating browser speech recognition with text-to-speech audio synthesis. These challenges "
         "were systematically solved by dividing the work into modules, testing every component with automated regression suites, "
-        "and following the dedicated guidance of our project mentor, Prof. Sheela Satav.", body
+        "and following the dedicated guidance of our project mentor, Prof. Sheela Satav.", body_conc
     ))
     story.append(PageBreak())
 
@@ -1304,7 +1305,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<b>BIBLIOGRAPHY</b>", h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#064e3b"), spaceAfter=10))
+    story.append(Spacer(1, 14))
 
     bib_items = [
         "1. Sommerville, I. (2015). <i>Software Engineering</i> (10th ed.). Pearson Education.",
@@ -1385,6 +1386,7 @@ def assemble_final_report(output_paths):
 if __name__ == '__main__':
     outputs = [
         os.path.join(BASE_DIR, "AI_Chatbot_College_Group2_Final.pdf"),
-        os.path.join(BASE_DIR, "momo ki topri/AI_Chatbot_College_Group2_Final.pdf")
+        os.path.join(BASE_DIR, "momo ki topri/AI_Chatbot_College_Group2_Final.pdf"),
+        os.path.join(BASE_DIR, "momo ki topri/CampusAI_Official_Report_Akash_Shreyash.pdf")
     ]
     assemble_final_report(outputs)
