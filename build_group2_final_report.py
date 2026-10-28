@@ -3,17 +3,13 @@ AI_Chatbot_College_Group2_Final Project Report Generator
 Authored exclusively for Group 2:
 - Akash rana (ISTU25010120004)
 - Shreyash katke (ISTU25010120003)
-Course: BBA CA (Semester III, Academic Year 2025–26)
-Project Guide: Prof. Sheela Satav
+Course: BBA CA (Semester III, Academic Year 2026–27)
+Project Guide: Asst. Prof. Sheela Satav
 Institution: G H Raisoni International Skill Tech University, Pune-412207
 
-Mandatory Requirements:
-1. Save as 'AI_Chatbot_College_Group2_Final.pdf' (do NOT overwrite original report).
-2. Centre-align EVERY chapter heading, section heading, and subsection heading throughout the report.
-3. Centre-align the project title and title-page headings.
-4. Keep body text justified with clean margins and line spacing.
-5. All descriptions match the revised Group 2 application (Emerald & Amber theme, 8 knowledge domains, voice speech recognition/TTS, 23 automated tests).
-6. Total pages: Exactly 35 pages matching university format and TOC.
+Layout, typography, letter size, heading size, indentation, table styling,
+and page filling strictly matched to university reference report (CP - AII.pdf).
+Total pages: Exactly 34 pages matching university format and single-page TOC.
 """
 
 import os
@@ -23,7 +19,7 @@ from PIL import Image, ImageDraw, ImageFont
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image as RLImage, HRFlowable
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image as RLImage
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT, TA_LEFT
@@ -39,17 +35,6 @@ PAGE_FOOTER_MAP = {
     6: 1, 7: 2, 8: 3, 9: 4, 10: 5, 11: 6, 12: 7, 13: 8, 14: 9, 15: 10,
     16: 11, 17: 12, 18: 13, 19: 14, 20: 15, 21: 16, 22: 17, 23: 18, 24: 19, 25: 20,
     26: 21, 27: 22, 28: 23, 29: 24, 30: 25, 31: 26, 32: 27, 33: 28, 34: 29
-}
-
-DIAGRAM_HEADINGS = {
-    20: "ER DIAGRAM",
-    21: "USE CASE DIAGRAM",
-    22: "CLASS DIAGRAM",
-    23: "OBJECT DIAGRAM",
-    24: "SEQUENCE DIAGRAM",
-    25: "ACTIVITY DIAGRAM",
-    26: "COMPONENT DIAGRAM",
-    27: "DATA FLOW DIAGRAM"
 }
 
 class AcademicDoubleBorderCanvas(canvas.Canvas):
@@ -70,7 +55,7 @@ class AcademicDoubleBorderCanvas(canvas.Canvas):
 
     def draw_page_decorations(self):
         self.saveState()
-        # Double Line Border on every page
+        # Double Line Border matching reference PDF
         self.setStrokeColor(colors.black)
         self.setLineWidth(1.5)
         self.rect(28, 28, PAGE_W - 56, PAGE_H - 56, fill=0, stroke=1)
@@ -87,118 +72,144 @@ class AcademicDoubleBorderCanvas(canvas.Canvas):
         self.restoreState()
 
 
-def make_centered_heading_overlay(h_text):
-    packet = io.BytesIO()
-    can = canvas.Canvas(packet, pagesize=(PAGE_W, PAGE_H))
-    can.setFillColor(colors.white)
-    can.setStrokeColor(colors.white)
-    can.rect(40, 768, 515, 46, fill=1, stroke=0)
-    can.setFillColor(colors.black)
-    can.setFont("Times-Bold", 14.5)
-    can.drawCentredString(PAGE_W / 2.0, 794.0, h_text)
-    can.save()
-    packet.seek(0)
-    return pypdf.PdfReader(packet).pages[0]
-
-
 def generate_reportlab_pages(temp_pdf_path):
     doc = SimpleDocTemplate(
         temp_pdf_path,
         pagesize=(PAGE_W, PAGE_H),
         leftMargin=45,
         rightMargin=45,
-        topMargin=45,
-        bottomMargin=55
+        topMargin=38,
+        bottomMargin=48
     )
 
-    styles = getSampleStyleSheet()
+    # =========================================================================
+    # TYPOGRAPHY MATCHING REFERENCE PDF (CP - AII.pdf)
+    # =========================================================================
+    # 1. Main Headings: Prominent (~21 pt), Bold, Underlined, Centered
+    h1 = ParagraphStyle('H1', fontName='Times-Bold', fontSize=21.0, leading=27.0, alignment=TA_CENTER, textColor=colors.black, spaceAfter=18.0)
+    ack_heading = ParagraphStyle('AckHeading', fontName='Times-Bold', fontSize=21.0, leading=27.0, alignment=TA_CENTER, textColor=colors.black, spaceAfter=18.0)
+    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=22.0, leading=28.0, alignment=TA_CENTER, textColor=colors.black)
 
-    # Mandatory rule: All chapter, section, and subsection headings are strictly CENTER-ALIGNED
-    title_main = ParagraphStyle('TitleMain', fontName='Times-Bold', fontSize=17, leading=23, alignment=TA_CENTER, textColor=colors.black)
-    center_text = ParagraphStyle('CenterText', fontName='Times-Roman', fontSize=11, leading=16, alignment=TA_CENTER, textColor=colors.black)
-    center_bold = ParagraphStyle('CenterBold', fontName='Times-Bold', fontSize=12.0, leading=16, alignment=TA_CENTER, textColor=colors.black)
-    right_text = ParagraphStyle('RightText', fontName='Times-Roman', fontSize=12.0, leading=16, alignment=TA_RIGHT, textColor=colors.black)
+    # 2. Section Subheadings: Left-aligned and bold (~15.5 pt) matching reference PDF
+    h2 = ParagraphStyle('H2', fontName='Times-Bold', fontSize=15.5, leading=21.5, alignment=TA_LEFT, textColor=colors.black, spaceBefore=12.0, spaceAfter=6.0)
+    h2_med = ParagraphStyle('H2Med', fontName='Times-Bold', fontSize=14.0, leading=19.5, alignment=TA_LEFT, textColor=colors.black, spaceBefore=10.0, spaceAfter=5.0)
+    h2_conc = ParagraphStyle('H2Conc', fontName='Times-Bold', fontSize=13.5, leading=18.0, alignment=TA_LEFT, textColor=colors.black, spaceBefore=8.0, spaceAfter=4.0)
 
-    # 1. Main Headings: Starting from page 3, set all main headings to font size 14 pt
-    h1 = ParagraphStyle('H1', fontName='Times-Bold', fontSize=17.5, leading=23.0, alignment=TA_CENTER, textColor=colors.black, spaceAfter=14)
-    h2 = ParagraphStyle('H2', fontName='Times-Bold', fontSize=13.5, leading=18.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=10, spaceAfter=6)
-    h3 = ParagraphStyle('H3', fontName='Times-Bold', fontSize=12.5, leading=16.5, alignment=TA_CENTER, textColor=colors.black, spaceBefore=6, spaceAfter=4)
+    # 3. Main Text Content: Large readable font (~14.5 pt), generous line spacing (~21 pt), block indentation
+    body = ParagraphStyle('Body', fontName='Times-Roman', fontSize=14.5, leading=21.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=12.0)
+    bullet = ParagraphStyle('Bullet', fontName='Times-Roman', fontSize=14.0, leading=20.5, alignment=TA_JUSTIFY, leftIndent=16, firstLineIndent=-10, textColor=colors.black, spaceAfter=7.0)
 
-    # 2. Main Text Content: Set body text, paragraphs, descriptions, and other regular text to font size 12 pt
-    desc_head = ParagraphStyle('DescHead', fontName='Times-Bold', fontSize=12.5, leading=16.5, alignment=TA_LEFT, textColor=colors.black, spaceBefore=6, spaceAfter=3)
-    desc_body = ParagraphStyle('DescBody', fontName='Times-Roman', fontSize=12.0, leading=16.5, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=4)
-    desc_bullet = ParagraphStyle('DescBullet', fontName='Times-Roman', fontSize=12.0, leading=16.5, alignment=TA_JUSTIFY, leftIndent=12, firstLineIndent=-8, textColor=colors.black, spaceAfter=3.5)
-    fig_caption = ParagraphStyle('FigCaption', fontName='Times-Italic', fontSize=9.5, leading=12.5, alignment=TA_CENTER, textColor=colors.black, spaceBefore=2, spaceAfter=3)
+    # Acknowledgement & Abstract body (~15.0 pt)
+    ack_body = ParagraphStyle('AckBody', fontName='Times-Roman', fontSize=15.0, leading=21.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=8.0)
+    abs_body = ParagraphStyle('AbsBody', fontName='Times-Roman', fontSize=15.0, leading=21.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=10.0)
+    abs_kw = ParagraphStyle('AbsKw', fontName='Times-Bold', fontSize=14.0, leading=19.0, alignment=TA_CENTER, textColor=colors.black)
 
-    body = ParagraphStyle('Body', fontName='Times-Roman', fontSize=12.8, leading=18.2, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=10.0)
-    body_conc = ParagraphStyle('BodyConc', fontName='Times-Roman', fontSize=11.8, leading=15.8, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=5.0)
-    bullet = ParagraphStyle('Bullet', fontName='Times-Roman', fontSize=12.2, leading=17.5, alignment=TA_JUSTIFY, leftIndent=15, firstLineIndent=-10, textColor=colors.black, spaceAfter=8.0)
+    # Sizing for Requirements/Database text pages (~13.5 pt) to ensure clean single-page fits
+    body_med = ParagraphStyle('BodyMed', fontName='Times-Roman', fontSize=13.5, leading=19.5, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=8.0)
+    bullet_med = ParagraphStyle('BulletMed', fontName='Times-Roman', fontSize=13.0, leading=18.5, alignment=TA_JUSTIFY, leftIndent=15, firstLineIndent=-10, textColor=colors.black, spaceAfter=5.0)
 
-    # Page 2 Certificate preserved styles (original formatting preserved)
-    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=16.5, leading=21.0, alignment=TA_CENTER, textColor=colors.black)
-    cert_body = ParagraphStyle('CertBody', fontName='Times-Roman', fontSize=10.0, leading=14.8, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=6)
+    # Sizing for Conclusion to fit perfectly on single Page 33
+    body_conc = ParagraphStyle('BodyConc', fontName='Times-Roman', fontSize=12.5, leading=17.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=6.0)
 
-    # Page 3 Acknowledgement heading: 14 pt
-    ack_heading = ParagraphStyle('AckHeading', fontName='Times-Bold', fontSize=17.5, leading=23.0, alignment=TA_CENTER, textColor=colors.black)
+    # Bibliography items (~12.0 pt)
+    bullet_bib = ParagraphStyle('BulletBib', fontName='Times-Roman', fontSize=12.0, leading=17.5, alignment=TA_JUSTIFY, leftIndent=16, firstLineIndent=-10, textColor=colors.black, spaceAfter=7.0)
 
-    tbl_cell = ParagraphStyle('TblCell', fontName='Times-Roman', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
-    tbl_cell_bold = ParagraphStyle('TblCellBold', fontName='Times-Bold', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
-    tbl_hdr = ParagraphStyle('TblHdr', fontName='Times-Bold', fontSize=9.0, leading=12.2, alignment=TA_CENTER, textColor=colors.black)
+    # Description headers and bodies for diagrams / screens
+    desc_head = ParagraphStyle('DescHead', fontName='Times-Bold', fontSize=13.0, leading=17.5, alignment=TA_LEFT, textColor=colors.black, spaceBefore=6.0, spaceAfter=3.0)
+    desc_body = ParagraphStyle('DescBody', fontName='Times-Roman', fontSize=11.8, leading=16.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=4.0)
+    desc_bullet = ParagraphStyle('DescBullet', fontName='Times-Roman', fontSize=11.8, leading=16.0, alignment=TA_JUSTIFY, leftIndent=14, firstLineIndent=-9, textColor=colors.black, spaceAfter=3.0)
+    fig_caption = ParagraphStyle('FigCaption', fontName='Times-Italic', fontSize=10.5, leading=14.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=3.0, spaceAfter=4.0)
+
+    # Cover Page Typography (~18 pt to 26 pt matching reference PDF Page 1)
+    title_cover = ParagraphStyle('TitleCover', fontName='Times-Bold', fontSize=26, leading=32, alignment=TA_CENTER, textColor=colors.black)
+    cover_a = ParagraphStyle('CoverA', fontName='Times-Roman', fontSize=24, leading=30, alignment=TA_CENTER, textColor=colors.black)
+    cover_text_18 = ParagraphStyle('CoverText18', fontName='Times-Roman', fontSize=18, leading=24, alignment=TA_CENTER, textColor=colors.black)
+    cover_bold_18 = ParagraphStyle('CoverBold18', fontName='Times-Bold', fontSize=18, leading=24, alignment=TA_CENTER, textColor=colors.black)
+
+    # Certificate Typography
+    cert_univ = ParagraphStyle('CertUniv', fontName='Times-Bold', fontSize=20, leading=26, alignment=TA_CENTER, textColor=colors.black)
+    cert_body_16 = ParagraphStyle('CertBody16', fontName='Times-Roman', fontSize=15.5, leading=22.5, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=14)
+    cert_table_15 = ParagraphStyle('CertTable15', fontName='Times-Roman', fontSize=15, leading=20, alignment=TA_CENTER, textColor=colors.black)
+    cert_table_right = ParagraphStyle('CertTableRight', fontName='Times-Roman', fontSize=15, leading=20, alignment=TA_RIGHT, textColor=colors.black)
+    right_text_ack = ParagraphStyle('RightTextAck', fontName='Times-Roman', fontSize=15, leading=21, alignment=TA_RIGHT, textColor=colors.black)
+
+    # Table styling matching reference PDF: white backgrounds, black text, clean black grid lines
+    tbl_cell = ParagraphStyle('TblCell', fontName='Times-Roman', fontSize=8.8, leading=12.2, alignment=TA_LEFT, textColor=colors.black)
+    tbl_cell_bold = ParagraphStyle('TblCellBold', fontName='Times-Bold', fontSize=8.8, leading=12.2, alignment=TA_LEFT, textColor=colors.black)
+    tbl_hdr = ParagraphStyle('TblHdr', fontName='Times-Bold', fontSize=9.5, leading=13.0, alignment=TA_CENTER, textColor=colors.black)
+    tbl_hdr_left = ParagraphStyle('TblHdrLeft', fontName='Times-Bold', fontSize=9.5, leading=13.0, alignment=TA_LEFT, textColor=colors.black)
+
+    # TOC styling
     toc_cell = ParagraphStyle('TocCell', fontName='Times-Roman', fontSize=7.6, leading=9.8, alignment=TA_LEFT, textColor=colors.black)
     toc_cell_c = ParagraphStyle('TocCellC', fontName='Times-Roman', fontSize=7.6, leading=9.8, alignment=TA_CENTER, textColor=colors.black)
+    tbl_hdr_toc = ParagraphStyle('TblHdrToc', fontName='Times-Bold', fontSize=8.5, leading=11.2, alignment=TA_CENTER, textColor=colors.black)
 
     story = []
 
     # =========================================================================
-    # PAGE 1: TITLE / COVER PAGE (Matches University Reference Image Exactly)
+    # PAGE 1: TITLE / COVER PAGE (Matches Reference PDF Exactly)
     # =========================================================================
-    logo_path = os.path.join(BASE_DIR, "scratch/pdf2_images/page_1_0_X6.png")
-    if os.path.exists(logo_path):
-        story.append(RLImage(logo_path, width=175, height=52))
-        story.append(Spacer(1, 35))
+    logo1 = os.path.join(BASE_DIR, "scratch/X23.png")
+    logo2 = os.path.join(BASE_DIR, "scratch/X25.jpg")
+    if os.path.exists(logo1) and os.path.exists(logo2):
+        img_left = RLImage(logo1, width=145, height=58)
+        img_right = RLImage(logo2, width=140, height=48)
+        logo_tbl = Table([[img_left, img_right]], colWidths=[252, 252])
+        logo_tbl.setStyle(TableStyle([
+            ('ALIGN', (0,0), (0,0), 'LEFT'),
+            ('ALIGN', (1,0), (1,0), 'RIGHT'),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('LEFTPADDING', (0,0), (-1,-1), 0),
+            ('RIGHTPADDING', (0,0), (-1,-1), 0),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+        ]))
+        story.append(logo_tbl)
+        story.append(Spacer(1, 24))
     else:
         story.append(Spacer(1, 45))
 
-    story.append(Paragraph("A<br/>Project report on", center_text))
+    story.append(Paragraph("A", cover_a))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("Project report on", cover_text_18))
+    story.append(Spacer(1, 22))
+
+    story.append(Paragraph("<u><b>Campus AI Chatbot</b></u>", title_cover))
     story.append(Spacer(1, 30))
 
-    title_cover = ParagraphStyle('TitleCover', fontName='Times-Bold', fontSize=22, leading=28, alignment=TA_CENTER, textColor=colors.black)
-    story.append(Paragraph("<u>Campus AI Chatbot</u>", title_cover))
-    story.append(Spacer(1, 45))
+    story.append(Paragraph("Submitted To :", cover_text_18))
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/><b>PUNE-412207</b>", cover_bold_18))
+    story.append(Spacer(1, 28))
 
-    story.append(Paragraph("<b>Submitted To :</b>", center_text))
-    story.append(Spacer(1, 14))
-    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/><b>PUNE-412207</b>", center_bold))
-    story.append(Spacer(1, 40))
+    story.append(Paragraph("For: <b>BBA CA</b>", cover_text_18))
+    story.append(Spacer(1, 28))
 
-    story.append(Paragraph("For: <b>BBA CA</b>", center_text))
-    story.append(Spacer(1, 40))
+    story.append(Paragraph("Submitted By :", cover_text_18))
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>Akash Rana (ISTU25010120004)</b><br/><b>Shreyash Katke (ISTU25010120003)</b>", cover_bold_18))
+    story.append(Spacer(1, 28))
 
-    story.append(Paragraph("<b>Submitted By :</b>", center_text))
-    story.append(Spacer(1, 14))
-    story.append(Paragraph("<b>Akash Rana (ISTU25010120004)</b><br/><b>Shreyash Katke (ISTU25010120003)</b>", center_bold))
-    story.append(Spacer(1, 40))
+    story.append(Paragraph("<b>Semester III</b><br/><b>Year 2026-27</b>", cover_bold_18))
+    story.append(Spacer(1, 28))
 
-    story.append(Paragraph("<b>Semester III</b><br/><b>Year 2026-27</b>", center_bold))
-    story.append(Spacer(1, 40))
-
-    story.append(Paragraph("<b>Under the Guidance of :</b>", center_text))
+    story.append(Paragraph("Under the Guidance of :", cover_text_18))
     story.append(Spacer(1, 8))
-    story.append(Paragraph("Asst. Prof. Sheela Satav", center_text))
+    story.append(Paragraph("Asst. Prof. Sheela Satav", cover_text_18))
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 2: CERTIFICATE (Matches University Reference Image Exactly)
+    # PAGE 2: CERTIFICATE (Matches Reference PDF Exactly)
     # =========================================================================
-    story.append(Spacer(1, 5))
-    if os.path.exists(logo_path):
-        story.append(RLImage(logo_path, width=160, height=48))
-        story.append(Spacer(1, 12))
+    if os.path.exists(logo1):
+        story.append(RLImage(logo1, width=160, height=64))
+        story.append(Spacer(1, 14))
+    else:
+        story.append(Spacer(1, 25))
 
-    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/><b>PUNE-412207</b>", center_bold))
-    story.append(Spacer(1, 20))
+    story.append(Paragraph("<b>G H Raisoni International Skill Tech University.</b><br/><b>PUNE-412207</b>", cert_univ))
+    story.append(Spacer(1, 24))
 
-    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=16.5, leading=21.0, alignment=TA_CENTER, textColor=colors.black)
     story.append(Paragraph("<u><b>CERTIFICATE</b></u>", cert_heading))
     story.append(Spacer(1, 28))
 
@@ -209,12 +220,11 @@ def generate_reportlab_pages(temp_pdf_path):
         "this project report in partial fulfillment of the requirements for the award of the degree of "
         "<b>BBA CA</b> for the academic Year <b>2026-27</b>."
     )
-    story.append(Paragraph(cert_text, cert_body))
-    story.append(Spacer(1, 40))
+    story.append(Paragraph(cert_text, cert_body_16))
+    story.append(Spacer(1, 35))
 
-    cert_right_text = ParagraphStyle('CertRightText', fontName='Times-Roman', fontSize=10, leading=14, alignment=TA_RIGHT, textColor=colors.black)
     guide_table_data = [
-        [Paragraph("Date: ____________________", tbl_cell), Paragraph("<b>Asst. Prof. Sheela Satav</b><br/>Project Guide", cert_right_text)]
+        [Paragraph("Date: ____________________", cert_table_15), Paragraph("<b>Asst. Prof. Sheela Satav</b><br/>Project Guide", cert_table_right)]
     ]
     t_guide = Table(guide_table_data, colWidths=[240, 240])
     t_guide.setStyle(TableStyle([
@@ -223,10 +233,10 @@ def generate_reportlab_pages(temp_pdf_path):
         ('RIGHTPADDING', (0,0), (-1,-1), 0),
     ]))
     story.append(t_guide)
-    story.append(Spacer(1, 75))
+    story.append(Spacer(1, 45))
 
     exam_table_1 = [
-        [Paragraph("____________________<br/><b>Internal Examiner</b>", center_text), Paragraph("____________________<br/><b>External Examiner</b>", center_text)]
+        [Paragraph("____________________<br/><b>Internal Examiner</b>", cert_table_15), Paragraph("____________________<br/><b>External Examiner</b>", cert_table_15)]
     ]
     t_exam_1 = Table(exam_table_1, colWidths=[240, 240])
     t_exam_1.setStyle(TableStyle([
@@ -234,10 +244,10 @@ def generate_reportlab_pages(temp_pdf_path):
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
     ]))
     story.append(t_exam_1)
-    story.append(Spacer(1, 65))
+    story.append(Spacer(1, 45))
 
     exam_table_2 = [
-        [Paragraph("____________________<br/><b>HOD</b>", center_text), Paragraph("____________________<br/><b>Dean</b>", center_text)]
+        [Paragraph("____________________<br/><b>HOD</b>", cert_table_15), Paragraph("____________________<br/><b>Dean</b>", cert_table_15)]
     ]
     t_exam_2 = Table(exam_table_2, colWidths=[240, 240])
     t_exam_2.setStyle(TableStyle([
@@ -248,26 +258,23 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 3: ACKNOWLEDGEMENT (Matches University Reference Image Exactly)
+    # PAGE 3: ACKNOWLEDGEMENT (Matches Reference PDF Exactly)
     # =========================================================================
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>ACKNOWLEDGEMENT</b></u>", ack_heading))
-    story.append(Spacer(1, 16))
 
     ack_p1 = (
         "A successful project is always the result of sincere teamwork, persistent dedication, and the collective "
         "guidance of esteemed mentors who provided technical insights and inspiration throughout our development journey."
     )
-    story.append(Paragraph(ack_p1, body))
-    story.append(Spacer(1, 8))
+    story.append(Paragraph(ack_p1, ack_body))
 
     ack_p2 = (
         "First and foremost, we would like to express our deepest gratitude to our <b>Honourable Vice Chancellor DR. R. D. KHARADKAR</b> "
         "for providing us the opportunity and state-of-the-art technological infrastructure to study and innovate at "
         "<b>G H Raisoni International Skill Tech University, Pune</b>."
     )
-    story.append(Paragraph(ack_p2, body))
-    story.append(Spacer(1, 8))
+    story.append(Paragraph(ack_p2, ack_body))
 
     ack_p3 = (
         "We are immensely grateful and indebted to our project guide, <b>Asst. Prof. Sheela Satav</b>, for her invaluable advice, "
@@ -275,26 +282,24 @@ def generate_reportlab_pages(temp_pdf_path):
         "<i>Campus AI Chatbot</i>. Her profound insights into software engineering standards and conversational system architectures "
         "helped us overcome key challenges in knowledge modeling and voice processing."
     )
-    story.append(Paragraph(ack_p3, body))
-    story.append(Spacer(1, 8))
+    story.append(Paragraph(ack_p3, ack_body))
 
     ack_p4 = (
         "We also extend our sincere appreciation to the <b>Head of Department (HOD)</b>, respected faculty members, "
         "laboratory staff, and academic coordinators for their sustained cooperation and resources during the project lifecycle."
     )
-    story.append(Paragraph(ack_p4, body))
-    story.append(Spacer(1, 8))
+    story.append(Paragraph(ack_p4, ack_body))
 
     ack_p5 = (
         "Last but not least, we express our heartfelt gratitude to the Almighty and our parents for their unconditional blessings, "
         "patience, and moral support, without which this academic endeavor would not have been possible."
     )
-    story.append(Paragraph(ack_p5, body))
-    story.append(Spacer(1, 20))
+    story.append(Paragraph(ack_p5, ack_body))
+    story.append(Spacer(1, 15))
 
     ack_sig_table = Table([
-        [Paragraph("", center_text), Paragraph("<b>Signature of Students:</b><br/><br/><b>Akash Rana (ISTU25010120004)</b><br/><b>Shreyash Katke (ISTU25010120003)</b>", right_text)]
-    ], colWidths=[220, 260])
+        [Paragraph("", ack_body), Paragraph("<b>Signature of Students:</b><br/><br/><b>Akash Rana (ISTU25010120004)</b><br/><b>Shreyash Katke (ISTU25010120003)</b>", right_text_ack)]
+    ], colWidths=[200, 280])
     ack_sig_table.setStyle(TableStyle([
         ('ALIGN', (1,0), (1,0), 'RIGHT'),
         ('LEFTPADDING', (0,0), (-1,-1), 0),
@@ -304,11 +309,10 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 4: ABSTRACT
+    # PAGE 4: ABSTRACT (Matches Reference PDF Exactly)
     # =========================================================================
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>ABSTRACT</b></u>", h1))
-    story.append(Spacer(1, 16))
 
     abs_p1 = (
         "In modern collegiate ecosystems, academic administrations are perpetually flooded with repetitive, high-volume "
@@ -316,8 +320,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "and campus facilities. Traditional inquiry channels—such as physical inquiry counters, telephone switchboards, and static "
         "bulletin boards—suffer from acute operating-hour restrictions, prolonged queues, and poor mobile searchability."
     )
-    story.append(Paragraph(abs_p1, body))
-    story.append(Spacer(1, 6))
+    story.append(Paragraph(abs_p1, abs_body))
 
     abs_p2 = (
         "To resolve these operational bottlenecks, this project presents <b>CampusAI (Group 2)</b>, an intelligent, 24/7 autonomous "
@@ -325,8 +328,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "an ACID-compliant Third Normal Form (3NF) SQLite relational database, HTML5, CSS3, and asynchronous ES6 JavaScript, CampusAI "
         "delivers deterministic, sub-second responses to student queries while guaranteeing absolute factual integrity."
     )
-    story.append(Paragraph(abs_p2, body))
-    story.append(Spacer(1, 6))
+    story.append(Paragraph(abs_p2, abs_body))
 
     abs_p3 = (
         "CampusAI introduces an innovative <b>Dual-Tier Hybrid Response Architecture</b>: Tier-1 executes deterministic local NLP "
@@ -336,20 +338,19 @@ def generate_reportlab_pages(temp_pdf_path):
         "fabricates dates, fees, or policy rules. Enhanced with Web Speech voice synthesis and recognition, dynamic category quick-filters, "
         "and an administrative CRUD portal with salted PBKDF2 authentication, CampusAI achieves a 100% pass rate across 23 automated tests."
     )
-    story.append(Paragraph(abs_p3, body))
+    story.append(Paragraph(abs_p3, abs_body))
     story.append(Spacer(1, 12))
-    story.append(Paragraph("<b>Keywords:</b> Dual-Tier NLP, Jaccard Similarity, Google Gemini API, Zero-Hallucination, Flask, SQLite 3NF, BBA CA.", center_bold))
+    story.append(Paragraph("<b>Keywords:</b> Dual-Tier NLP, Jaccard Similarity, Google Gemini API, Zero-Hallucination, Flask, SQLite 3NF, BBA CA.", abs_kw))
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 5: TABLE OF CONTENT (Single Page Layout)
+    # PAGE 5: TABLE OF CONTENT (Single Page Layout matching Reference Style)
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<u><b>TABLE OF CONTENT</b></u>", h1))
-    story.append(Spacer(1, 12))
 
     toc_data = [
-        [Paragraph("<b>Sr No</b>", tbl_hdr), Paragraph("<b>Topic</b>", tbl_hdr), Paragraph("<b>Page No</b>", tbl_hdr)],
+        [Paragraph("<b>Sr No</b>", tbl_hdr_toc), Paragraph("<b>Topic</b>", tbl_hdr_toc), Paragraph("<b>Page No</b>", tbl_hdr_toc)],
         [Paragraph("1", toc_cell_c), Paragraph("Introduction", toc_cell), Paragraph("1", toc_cell_c)],
         [Paragraph("2", toc_cell_c), Paragraph("Problem Definition", toc_cell), Paragraph("2", toc_cell_c)],
         [Paragraph("3", toc_cell_c), Paragraph("Existing System & Need for New System", toc_cell), Paragraph("3", toc_cell_c)],
@@ -382,10 +383,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     toc_table = Table(toc_data, colWidths=[45, 375, 60])
     toc_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
         ('GRID', (0,0), (-1,-1), 0.5, colors.black),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 1.8),
         ('BOTTOMPADDING', (0,0), (-1,-1), 1.8),
     ]))
@@ -393,11 +393,10 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 7: TOPIC 1 - INTRODUCTION
+    # PAGE 6: TOPIC 1 - INTRODUCTION
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>INTRODUCTION:</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     intro_p1 = (
         "In modern higher education, dynamic communication between college administrations and students is essential. "
@@ -413,7 +412,6 @@ def generate_reportlab_pages(temp_pdf_path):
         "Campus Facilities, Placements & Training, Scholarships & Freeships, and Student Helpdesk Services."
     )
     story.append(Paragraph(intro_p2, body))
-    story.append(Spacer(1, 4))
 
     story.append(Paragraph("<b>Key Architectural Pillars:</b>", h2))
     story.append(Paragraph("• <b>Dual-Tier Hybrid Response Engine:</b> Combines deterministic local NLP string-similarity matching with a context-bounded Generative AI layer (Google Gemini 2.5 Flash API).", bullet))
@@ -424,11 +422,10 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 8: TOPIC 2 - PROBLEM DEFINITION
+    # PAGE 7: TOPIC 2 - PROBLEM DEFINITION
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>PROBLEM DEFINITION :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     prob_p1 = (
         "Modern university ecosystems manage diverse academic operations simultaneously. During peak operational periods—such as "
@@ -436,7 +433,6 @@ def generate_reportlab_pages(temp_pdf_path):
         "of administrative staff, creating significant friction."
     )
     story.append(Paragraph(prob_p1, body))
-    story.append(Spacer(1, 4))
 
     story.append(Paragraph("<b>Core Problem Dimensions:</b>", h2))
     story.append(Paragraph("1. <b>Office Hour Bottlenecks:</b> Administrative inquiry windows are limited to weekdays (9:00 AM – 4:00 PM). Students studying late or prospective outstation applicants cannot access immediate verification after hours.", bullet))
@@ -447,22 +443,19 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 9: TOPIC 3 - EXISTING SYSTEM & NEED FOR NEW SYSTEM
+    # PAGE 8: TOPIC 3 - EXISTING SYSTEM & NEED FOR NEW SYSTEM
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>EXISTING SYSTEM & NEED FOR NEW SYSTEM</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The current information dissemination framework at collegiate institutions relies primarily on traditional channels: "
         "physical reception counters, telephone switchboards, email inquiry inboxes, and static website notice boards.", body
     ))
-    story.append(Spacer(1, 4))
     story.append(Paragraph("<b>Limitations of the Existing System:</b>", h2))
     story.append(Paragraph("• <b>High Operational Latency:</b> Email inquiry turnarounds typically range from 24 to 72 hours. Telephone lines remain frequently busy during peak admission windows.", bullet))
     story.append(Paragraph("• <b>Human Dependency & Overhead:</b> Staff members spend hours manually repeating standard instructions regarding fee amounts, document requirements, and office timings.", bullet))
     story.append(Paragraph("• <b>Zero Analytics or Audit Trail:</b> There is no central tracking of which questions students ask most frequently, making it impossible to identify systemic administrative bottlenecks.", bullet))
-    story.append(Spacer(1, 6))
 
     story.append(Paragraph("<b>NEED FOR THE NEW SYSTEM (CampusAI):</b>", h2))
     story.append(Paragraph("• <b>24/7/365 Autonomous Availability:</b> Instant answers delivered anytime, including weekends and public holidays.", bullet))
@@ -472,17 +465,15 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 10: TOPIC 4 - SCOPE OF SYSTEM
+    # PAGE 9: TOPIC 4 - SCOPE OF SYSTEM
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>SCOPE OF SYSTEM :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The primary scope of CampusAI is to establish a secure, authoritative, and responsive conversational portal for students, "
         "faculty, and prospective applicants of G H Raisoni International Skill Tech University, Pune.", body
     ))
-    story.append(Spacer(1, 4))
     story.append(Paragraph("<b>Functional Scope Domains:</b>", h2))
     story.append(Paragraph("1. <b>Admissions & Eligibility:</b> Clarifies criteria, online registration forms, merit list schedules, and required documentation for BBA (CA) and related undergraduate programs.", bullet))
     story.append(Paragraph("2. <b>Courses & Academic Curriculum:</b> Provides semester-wise subject breakdowns, credit allocations, and practical examination patterns.", bullet))
@@ -495,41 +486,32 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 11: TOPIC 5 - FEASIBILITY STUDY
+    # PAGE 10: TOPIC 5 - FEASIBILITY STUDY
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>FEASIBILITY STUDY</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "Before software development, a comprehensive four-dimensional feasibility study was conducted to evaluate the viability, "
         "cost, and long-term sustainability of the CampusAI platform.", body
     ))
-    story.append(Spacer(1, 4))
-
     story.append(Paragraph("<b>1. Technical Feasibility:</b>", h2))
     story.append(Paragraph(
         "The system is built on proven, cross-platform technologies: Python 3.11, Flask 3.1.3 microframework, and SQLite 3. "
         "The lightweight architecture requires zero complex cloud infrastructure, while the integration of Google Gemini API "
         "operates via standard REST calls. The technical risk is negligible.", body
     ))
-    story.append(Spacer(1, 4))
-
     story.append(Paragraph("<b>2. Economic & Financial Feasibility:</b>", h2))
     story.append(Paragraph(
         "CampusAI utilizes 100% open-source software (Python, Flask, SQLite, Semantic HTML5/CSS3). It can run on low-cost hardware "
         "(512 MB RAM VPS or local college server). Cloud LLM calls utilize Google AI Studio free-tier quotas. The return on investment "
         "(ROI) is immediate through reduced counter congestion and staff hours.", body
     ))
-    story.append(Spacer(1, 4))
-
     story.append(Paragraph("<b>3. Operational Feasibility:</b>", h2))
     story.append(Paragraph(
         "The user interface requires zero training for students—it functions like standard messaging apps. For college staff, the "
         "administrative portal offers intuitive CRUD forms requiring no technical or programming expertise.", body
     ))
-    story.append(Spacer(1, 4))
-
     story.append(Paragraph("<b>4. Legal, Security & Schedule Feasibility:</b>", h2))
     story.append(Paragraph(
         "The project complies fully with university data policies. Student chats are stored locally without third-party data tracking. "
@@ -538,19 +520,16 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 12: TOPIC 6 - HARDWARE REQUIREMENTS
+    # PAGE 11: TOPIC 6 - HARDWARE REQUIREMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>HARDWARE REQUIREMENTS :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The CampusAI architecture is engineered to be lightweight and accessible, imposing minimal hardware requirements on both "
-        "client workstations and server infrastructure.", body
+        "client workstations and server infrastructure.", body_med
     ))
-    story.append(Spacer(1, 4))
-
-    story.append(Paragraph("<b>Server-Side Minimum Hardware Requirements:</b>", h2))
+    story.append(Paragraph("<b>Server-Side Minimum Hardware Requirements:</b>", h2_med))
     hw_server = [
         [Paragraph("<b>Component</b>", tbl_hdr), Paragraph("<b>Minimum Specification</b>", tbl_hdr), Paragraph("<b>Recommended Specification</b>", tbl_hdr)],
         [Paragraph("Processor (CPU)", tbl_cell_bold), Paragraph("1.0 GHz Dual-Core x86_64 or ARM", tbl_cell), Paragraph("2.4 GHz Quad-Core Intel / AMD / Apple Silicon", tbl_cell)],
@@ -560,16 +539,15 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_hws = Table(hw_server, colWidths=[120, 180, 180])
     t_hws.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 5.0),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 4.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4.5),
     ]))
     story.append(t_hws)
-    story.append(Spacer(1, 14))
+    story.append(Spacer(1, 12))
 
-    story.append(Paragraph("<b>Client-Side Minimum Hardware Requirements:</b>", h2))
+    story.append(Paragraph("<b>Client-Side Minimum Hardware Requirements:</b>", h2_med))
     hw_client = [
         [Paragraph("<b>Device Type</b>", tbl_hdr), Paragraph("<b>Minimum Hardware Specification</b>", tbl_hdr), Paragraph("<b>Peripherals Supported</b>", tbl_hdr)],
         [Paragraph("Smartphones (Android/iOS)", tbl_cell_bold), Paragraph("1 GHz Processor, 1 GB RAM, Touch Display", tbl_cell), Paragraph("Built-in Microphone, Audio Speaker", tbl_cell)],
@@ -578,29 +556,25 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_hwc = Table(hw_client, colWidths=[130, 190, 160])
     t_hwc.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 5.0),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 4.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4.5),
     ]))
     story.append(t_hwc)
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 13: TOPIC 7 - SOFTWARE REQUIREMENTS
+    # PAGE 12: TOPIC 7 - SOFTWARE REQUIREMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>SOFTWARE REQUIREMENTS :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "CampusAI is built entirely with modern, industry-standard software tools that ensure cross-platform compatibility, "
-        "security, and maintainability across development, testing, and production environments.", body
+        "security, and maintainability across development, testing, and production environments.", body_med
     ))
-    story.append(Spacer(1, 4))
-
-    story.append(Paragraph("<b>Technology Stack Specifications:</b>", h2))
+    story.append(Paragraph("<b>Technology Stack Specifications:</b>", h2_med))
     sw_data = [
         [Paragraph("<b>Layer</b>", tbl_hdr), Paragraph("<b>Software / Technology</b>", tbl_hdr), Paragraph("<b>Version</b>", tbl_hdr), Paragraph("<b>Role in CampusAI</b>", tbl_hdr)],
         [Paragraph("Operating System", tbl_cell_bold), Paragraph("macOS / Ubuntu Linux / Win 11", tbl_cell), Paragraph("POSIX / Win", tbl_cell), Paragraph("Host OS for backend server & DB", tbl_cell)],
@@ -616,52 +590,46 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_sw = Table(sw_data, colWidths=[95, 140, 65, 180])
     t_sw.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
     ]))
     story.append(t_sw)
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 14: TOPIC 8 - REQUIREMENT ANALYSIS
+    # PAGE 13: TOPIC 8 - REQUIREMENT ANALYSIS
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>REQUIREMENT ANALYSIS</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "Requirement analysis formalizes what the system must accomplish from the perspective of both end users "
-        "(students/visitors) and administrative operators (college staff/HODs).", body
+        "(students/visitors) and administrative operators (college staff/HODs).", body_med
     ))
-    story.append(Spacer(1, 4))
+    story.append(Paragraph("<b>1. Functional Requirements:</b>", h2_med))
+    story.append(Paragraph("• <b>FR-01 (Natural-Language Chat):</b> The system shall accept student inquiries via text box, suggestion chips, or voice, returning verified answers with category badges.", bullet_med))
+    story.append(Paragraph("• <b>FR-02 (Dual-Tier Intent Matcher):</b> The engine shall calculate Jaccard similarity; if S >= 0.58, return DB record (<20ms); if S < 0.58, invoke context-bounded Gemini LLM.", bullet_med))
+    story.append(Paragraph("• <b>FR-03 (Zero-Hallucination Policy):</b> The bot shall never fabricate dates, fees, or policy rules. Unresolved queries are referred to contact@college.edu.", bullet_med))
+    story.append(Paragraph("• <b>FR-04 (Searchable FAQ Directory):</b> The system shall provide a categorized directory (8 domains) with live search and accordion collapse.", bullet_med))
+    story.append(Paragraph("• <b>FR-05 (Admin Portal & Authentication):</b> Protected administration module requiring salted PBKDF2 authentication for FAQ CRUD and audit logging.", bullet_med))
+    story.append(Paragraph("• <b>FR-06 (Session Persistence & Reset):</b> The system shall persist conversation turns under a UUID session token and support one-click session clearing.", bullet_med))
 
-    story.append(Paragraph("<b>1. Functional Requirements:</b>", h2))
-    story.append(Paragraph("• <b>FR-01 (Natural-Language Chat):</b> The system shall accept student inquiries via text box, clickable suggestion chips, or voice microphone, returning verified answers with category badges.", bullet))
-    story.append(Paragraph("• <b>FR-02 (Dual-Tier Intent Matcher):</b> The engine shall calculate Jaccard similarity against seeded FAQs; if score >= 0.58, return DB record (<20ms); if score < 0.58, invoke context-bounded Gemini LLM fallback.", bullet))
-    story.append(Paragraph("• <b>FR-03 (Zero-Hallucination Policy):</b> The bot shall never fabricate dates, fees, or policy rules. Unresolved queries must be referred to contact@college.edu.", bullet))
-    story.append(Paragraph("• <b>FR-04 (Searchable FAQ Directory):</b> The system shall provide a categorized directory (Admissions, Courses, Fees, Exams, Placements, Scholarships, Facilities, General) with live search and accordion collapse.", bullet))
-    story.append(Paragraph("• <b>FR-05 (Admin Portal & Authentication):</b> Protected administration module requiring salted PBKDF2 authentication for FAQ CRUD operations and audit logging.", bullet))
-    story.append(Paragraph("• <b>FR-06 (Session Persistence & Reset):</b> The system shall persist conversation turns under a unique UUID session token and support one-click session clearing.", bullet))
-    story.append(Spacer(1, 6))
-
-    story.append(Paragraph("<b>2. Non-Functional Requirements:</b>", h2))
-    story.append(Paragraph("• <b>Performance:</b> Local database response latency must remain under 20 milliseconds.", bullet))
-    story.append(Paragraph("• <b>Reliability & Availability:</b> The system must operate 24/7/365 with graceful local fallback during cloud AI outages.", bullet))
-    story.append(Paragraph("• <b>Security:</b> Admin passwords hashed with PBKDF2:SHA256; input sanitized to prevent SQL injection and XSS.", bullet))
+    story.append(Paragraph("<b>2. Non-Functional Requirements:</b>", h2_med))
+    story.append(Paragraph("• <b>Performance:</b> Local database response latency must remain under 20 milliseconds.", bullet_med))
+    story.append(Paragraph("• <b>Reliability & Availability:</b> The system must operate 24/7/365 with graceful local fallback during cloud outages.", bullet_med))
+    story.append(Paragraph("• <b>Security:</b> Admin passwords hashed with PBKDF2:SHA256; input sanitized to prevent SQL injection and XSS.", bullet_med))
     story.append(PageBreak())
 
     # =========================================================================
-    # TOPIC 9 - DECISION TREE (Put first as requested)
+    # TOPIC 9 - DECISION TREE (Page 14)
     # =========================================================================
     story.append(Spacer(1, 8))
     story.append(Paragraph("<u><b>DECISION TREE :</b></u>", h1))
-    story.append(Spacer(1, 10))
     dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
     if os.path.exists(dt_img):
-        story.append(RLImage(dt_img, width=475, height=243))
+        story.append(RLImage(dt_img, width=475, height=240))
     story.append(Spacer(1, 3))
     story.append(Paragraph("Fig: Decision Tree of CampusAI Query Routing Engine", fig_caption))
     story.append(Paragraph("<b>Explanation</b>", desc_head))
@@ -679,21 +647,19 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # TOPIC 10 - DECISION TABLE (Put in next page as requested)
+    # TOPIC 10 - DECISION TABLE (Page 15)
     # =========================================================================
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
     story.append(Paragraph("<u><b>DECISION TABLE :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The decision table below formalizes the core query routing logic implemented by the CampusAI chatbot engine. "
-        "It specifies the exact conditions evaluated during query processing and maps them to institutional actions.", body
+        "It specifies the exact conditions evaluated during query processing and maps them to institutional actions.", body_med
     ))
-    story.append(Spacer(1, 6))
 
-    dt_tbl_hdr = ParagraphStyle('DtTblHdr', fontName='Helvetica-Bold', fontSize=8.5, leading=11.5, alignment=TA_CENTER, textColor=colors.HexColor('#0f172a'))
-    dt_tbl_hdr_left = ParagraphStyle('DtTblHdrLeft', fontName='Helvetica-Bold', fontSize=8.5, leading=11.5, alignment=TA_LEFT, textColor=colors.HexColor('#0f172a'))
-    dt_cell_c = ParagraphStyle('DtCellC', fontName='Helvetica-Bold', fontSize=9.5, leading=13, alignment=TA_CENTER)
+    dt_tbl_hdr = ParagraphStyle('DtTblHdr', fontName='Times-Bold', fontSize=9.0, leading=12.0, alignment=TA_CENTER, textColor=colors.black)
+    dt_tbl_hdr_left = ParagraphStyle('DtTblHdrLeft', fontName='Times-Bold', fontSize=9.0, leading=12.0, alignment=TA_LEFT, textColor=colors.black)
+    dt_cell_c = ParagraphStyle('DtCellC', fontName='Helvetica-Bold', fontSize=10.0, leading=13.5, alignment=TA_CENTER)
 
     YES_TXT  = Paragraph('<font color="#15803d"><b>Yes</b></font>', dt_cell_c)
     NO_TXT   = Paragraph('<font color="#dc2626"><b>No</b></font>', dt_cell_c)
@@ -728,19 +694,16 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_dt = Table(dt_data, colWidths=[185, 80, 80, 80, 80])
     t_dt.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#e8edf5")),
-        ('BACKGROUND', (0,5), (-1,5), colors.HexColor("#e8edf5")),
-        ('GRID', (0,0), (-1,-1), 0.75, colors.HexColor("#334155")),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('ALIGN', (1,0), (-1,-1), 'CENTER'),
         ('TOPPADDING', (0,0), (-1,-1), 4.5),
         ('BOTTOMPADDING', (0,0), (-1,-1), 4.5),
-        ('BACKGROUND', (0,1), (-1,4), colors.white),
-        ('BACKGROUND', (0,6), (-1,-1), colors.white),
     ]))
     story.append(t_dt)
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>Case Logic Defense & Execution Notes:</b>", h2))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>Case Logic Defense & Execution Notes:</b>", h2_med))
     story.append(Paragraph("• <b>Case 1 (Direct DB):</b> High Jaccard similarity (S ≥ 0.58) matches a verified institutional FAQ, delivering an authoritative response directly from SQLite in under 20ms.", desc_bullet))
     story.append(Paragraph("• <b>Case 2 (Gemini AI):</b> Unmatched academic queries invoke Google Gemini 2.5 Flash within strict verified college context boundaries to prevent hallucination.", desc_bullet))
     story.append(Paragraph("• <b>Case 3 (Offline):</b> When cloud network access is unavailable, the engine triggers local keyword matching and provides institutional helpdesk contact details.", desc_bullet))
@@ -748,20 +711,17 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 17: TOPIC 11 - NORMALIZED DATABASE DESIGN (3NF) — Admins & Sessions
+    # PAGE 16: TOPIC 11 - NORMALIZED DATABASE DESIGN (3NF) — Admins & Sessions
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>NORMALIZED DATABASE DESIGN (3NF):</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The relational design of the system is shown below. In the SQLite implementation each table is "
         "stored as an ACID-compliant relation and each foreign key is stored as a reference to the related table. "
-        "All tables strictly adhere to Third Normal Form (3NF) to guarantee complete data integrity.", body
+        "All tables strictly adhere to Third Normal Form (3NF) to guarantee complete data integrity.", body_med
     ))
-    story.append(Spacer(1, 4))
-
-    story.append(Paragraph("<b>ADMINS TABLE :</b>", h2))
+    story.append(Paragraph("<b>ADMINS TABLE :</b>", h2_med))
     adm_schema = [
         [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
         [Paragraph("id", tbl_cell_bold), Paragraph("INTEGER", tbl_cell), Paragraph("PRIMARY KEY, AUTOINCREMENT", tbl_cell)],
@@ -772,16 +732,15 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_adm = Table(adm_schema, colWidths=[130, 110, 240])
     t_adm.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 5.0),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 4.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4.5),
     ]))
     story.append(t_adm)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 12))
 
-    story.append(Paragraph("<b>CHAT_SESSIONS TABLE :</b>", h2))
+    story.append(Paragraph("<b>CHAT_SESSIONS TABLE :</b>", h2_med))
     sess_schema = [
         [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
         [Paragraph("session_id", tbl_cell_bold), Paragraph("VARCHAR(64)", tbl_cell), Paragraph("PRIMARY KEY (UUID v4 token)", tbl_cell)],
@@ -791,27 +750,25 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_sess = Table(sess_schema, colWidths=[130, 110, 240])
     t_sess.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 5.0),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 4.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4.5),
     ]))
     story.append(t_sess)
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 18: TOPIC 12 - COLLEGE INFO (FAQS) TABLE
+    # PAGE 17: TOPIC 12 - COLLEGE INFO (FAQS) TABLE
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>COLLEGE INFO (FAQS) TABLE :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The faqs table stores authoritative institutional information. Every record is indexed by category to support "
-        "rapid category filtering and keyword matching across all eight college domains.", body
+        "rapid category filtering and keyword matching across all eight college domains.", body_med
     ))
-    story.append(Paragraph("<b>FAQS TABLE :</b>", h2))
+    story.append(Paragraph("<b>FAQS TABLE :</b>", h2_med))
 
     faq_schema = [
         [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
@@ -824,16 +781,15 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_faq = Table(faq_schema, colWidths=[120, 110, 250])
     t_faq.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 4.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4.0),
     ]))
     story.append(t_faq)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 10))
 
-    story.append(Paragraph("<b>Sample Seeded FAQs Data :</b>", h2))
+    story.append(Paragraph("<b>Sample Seeded FAQs Data :</b>", h2_med))
     sample_faqs = [
         [Paragraph("<b>ID</b>", tbl_hdr), Paragraph("<b>Category</b>", tbl_hdr), Paragraph("<b>Question</b>", tbl_hdr), Paragraph("<b>Answer Snippet</b>", tbl_hdr)],
         [Paragraph("1", tbl_cell_bold), Paragraph("Fees", tbl_cell), Paragraph("What are BBA CA semester fees?", tbl_cell), Paragraph("Tuition Fee: Rs. 45,000 per sem; Exam Fee: Rs. 1,500.", tbl_cell)],
@@ -844,27 +800,25 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_smp = Table(sample_faqs, colWidths=[25, 75, 180, 200])
     t_smp.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
     ]))
     story.append(t_smp)
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 19: TOPIC 13 - CHAT HISTORY TABLE
+    # PAGE 18: TOPIC 13 - CHAT HISTORY TABLE
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>CHAT HISTORY TABLE :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "The chat_messages table maintains a complete audit log of conversational turns between students and the assistant. "
-        "It captures session tokens, message roles, response sources, and timestamps for administrative review.", body
+        "It captures session tokens, message roles, response sources, and timestamps for administrative review.", body_med
     ))
-    story.append(Paragraph("<b>CHAT_MESSAGES TABLE :</b>", h2))
+    story.append(Paragraph("<b>CHAT_MESSAGES TABLE :</b>", h2_med))
 
     msg_schema = [
         [Paragraph("<b>Column Name</b>", tbl_hdr), Paragraph("<b>Data Type</b>", tbl_hdr), Paragraph("<b>Constraints</b>", tbl_hdr)],
@@ -877,16 +831,15 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_msg = Table(msg_schema, colWidths=[120, 110, 250])
     t_msg.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
     ]))
     story.append(t_msg)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 8))
 
-    story.append(Paragraph("<b>Sample Interaction Log Records :</b>", h2))
+    story.append(Paragraph("<b>Sample Interaction Log Records :</b>", h2_med))
     sample_msgs = [
         [Paragraph("<b>ID</b>", tbl_hdr), Paragraph("<b>Session ID</b>", tbl_hdr), Paragraph("<b>Role</b>", tbl_hdr), Paragraph("<b>Source</b>", tbl_hdr), Paragraph("<b>Content Snippet</b>", tbl_hdr)],
         [Paragraph("101", tbl_cell_bold), Paragraph("sess_aktu_9b81", tbl_cell), Paragraph("student", tbl_cell), Paragraph("user", tbl_cell), Paragraph("What is the fee for BBA CA?", tbl_cell)],
@@ -896,14 +849,13 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_smp_m = Table(sample_msgs, colWidths=[25, 95, 50, 55, 255])
     t_smp_m.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.0),
     ]))
     story.append(t_smp_m)
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 6))
 
     story.append(Paragraph(
         "All the tables of the design follow the Third Normal Form (3NF): every column depends only on the primary key, "
@@ -916,198 +868,60 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 20: TOPIC 14 - ER DIAGRAM
+    # PAGES 19 TO 26: PLACEHOLDERS FOR VECTOR DIAGRAM PAGES (Swapped in assemble)
     # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>ER DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    er_img = os.path.join(IMG_DIR, "campusai_er_diagram.png")
-    if os.path.exists(er_img):
-        story.append(RLImage(er_img, width=440, height=385))
-    story.append(Paragraph("Fig: Entity Relationship Diagram", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The ER diagram shows the entities of the system and how they are related. ADMIN_USER is the governance entity and FAQ_KNOWLEDGE_BASE stores institutional answers across eight academic domains.", desc_body))
-    story.append(Paragraph("• ADMIN_USER manages many FAQ_KNOWLEDGE_BASE records across 8 academic categories (1 : M).", desc_bullet))
-    story.append(Paragraph("• CHAT_SESSION generates many CHAT_MESSAGE records during active student interactions (1 : M).", desc_bullet))
-    story.append(Paragraph("• CHAT_MESSAGE matches with FAQ_KNOWLEDGE_BASE records via deterministic NLP similarity scoring (M : 1).", desc_bullet))
-    story.append(Paragraph("• CHAT_MESSAGE receives FEEDBACK_LOG ratings (thumbs up / down) for accuracy audit (1 : 1).", desc_bullet))
-    story.append(Paragraph("• FAQ_KNOWLEDGE_BASE belongs to an ACADEMIC_CATEGORY for structured domain classification (M : 1).", desc_bullet))
-    story.append(PageBreak())
+    for d_name in [
+        "ER DIAGRAM", "USE CASE DIAGRAM", "CLASS DIAGRAM", "OBJECT DIAGRAM",
+        "SEQUENCE DIAGRAM", "ACTIVITY DIAGRAM", "COMPONENT DIAGRAM", "DATA FLOW DIAGRAM"
+    ]:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"<u><b>{d_name}</b></u>", h1))
+        story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 21: TOPIC 15 - USE CASE DIAGRAM
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>USE CASE DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    uc_img = os.path.join(IMG_DIR, "campusai_use_case.png")
-    if os.path.exists(uc_img):
-        story.append(RLImage(uc_img, width=440, height=385))
-    story.append(Paragraph("Fig: Use Case Diagram", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The use case diagram shows how the two primary actors, Student and Administrator, interact with the CampusAI chatbot and the persistence/AI backend.", desc_body))
-    story.append(Paragraph("• Student: asks academic queries, searches FAQs, filters by 8 domains, uses voice speech input and audio read-aloud TTS, submits answer feedback, and clears chat sessions.", desc_bullet))
-    story.append(Paragraph("• Admin: authenticates with PBKDF2 password hashing, manages FAQ records (CRUD), views system telemetry KPIs, and exports chat transcripts to CSV.", desc_bullet))
-    story.append(Paragraph("• All use cases read from or write to the SQLite 3 database; generative AI fallback is handled by Google Gemini 2.5 Flash.", desc_bullet))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 22: TOPIC 16 - CLASS DIAGRAM
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>CLASS DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    cls_img = os.path.join(IMG_DIR, "campusai_class_diagram.png")
-    if os.path.exists(cls_img):
-        story.append(RLImage(cls_img, width=440, height=385))
-    story.append(Paragraph("Fig: Class Diagram", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The class diagram shows the main classes of the CampusAI architecture with their attributes, methods, and relationships.", desc_body))
-    story.append(Paragraph("• Admin manages FAQ objects and exports interaction CSV logs.", desc_bullet))
-    story.append(Paragraph("• StudentUser submits queries, filters by category, and manages session state.", desc_bullet))
-    story.append(Paragraph("• ChatbotEngine normalizes query tokens, computes Jaccard similarity, and routes inquiries.", desc_bullet))
-    story.append(Paragraph("• GeminiService synthesizes context-bounded AI responses under a strict zero-hallucination policy.", desc_bullet))
-    story.append(Paragraph("• ChatMessage and FAQ define persistent relational models mapped via SQLAlchemy ORM.", desc_bullet))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 23: TOPIC 17 - OBJECT DIAGRAM
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>OBJECT DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    obj_img = os.path.join(IMG_DIR, "campusai_object_diagram.png")
-    if os.path.exists(obj_img):
-        story.append(RLImage(obj_img, width=440, height=385))
-    story.append(Paragraph("Fig: Object Diagram", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The object diagram shows a sample snapshot of the CampusAI system at runtime with concrete values during an active student consultation.", desc_body))
-    story.append(Paragraph("• user1 is an enrolled student (Akash Rana, Roll No: ISTU25010120004) interacting with the assistant in session1.", desc_bullet))
-    story.append(Paragraph("• msg1 contains the inquiry query: \"What are the fees?\", which matches faq1 (Tuition: Rs 45,000 per sem).", desc_bullet))
-    story.append(Paragraph("• feedback1 logs a positive feedback rating (+1 thumbs up) from the student for response accuracy audit.", desc_bullet))
-    story.append(Paragraph("• The slot values illustrate the active memory state of the application objects during query processing.", desc_bullet))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 24: TOPIC 18 - SEQUENCE DIAGRAM
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>SEQUENCE DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    seq_img = os.path.join(IMG_DIR, "campusai_sequence_diagram.png")
-    if os.path.exists(seq_img):
-        story.append(RLImage(seq_img, width=440, height=385))
-    story.append(Paragraph("Fig: Sequence Diagram", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The sequence diagram shows the step-by-step chronological order of messages between Student, Web App, Flask Server, NLP Matcher, SQLite Database, and Google Gemini API.", desc_body))
-    story.append(Paragraph("• Student enters a query via text or voice STT, triggering an asynchronous HTTP POST to /api/chat.", desc_bullet))
-    story.append(Paragraph("• The Flask server normalizes tokens and requests Jaccard similarity evaluation against the SQLite FAQ corpus.", desc_bullet))
-    story.append(Paragraph("• If score S >= 0.45, the verified SQLite answer is returned (<15ms); if score < 0.45, Gemini AI fallback is invoked.", desc_bullet))
-    story.append(Paragraph("• The interaction turn is saved to chat_messages and delivered to the browser UI with TTS audio read-aloud options.", desc_bullet))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 25: TOPIC 19 - ACTIVITY DIAGRAM
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>ACTIVITY DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    act_img = os.path.join(IMG_DIR, "campusai_activity_diagram.png")
-    if os.path.exists(act_img):
-        story.append(RLImage(act_img, width=440, height=385))
-    story.append(Paragraph("Fig: Activity Diagram", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The activity diagram shows the flow of activities across three swimlanes: Student, Chatbot System (Engine), and Administrator.", desc_body))
-    story.append(Paragraph("• Student initiates a query, views formatted response bubbles, listens to audio synthesis, and provides feedback.", desc_bullet))
-    story.append(Paragraph("• Chatbot System executes NLP tokenization, evaluates Jaccard similarity thresholds, applies zero-hallucination guardrails, and persists logs.", desc_bullet))
-    story.append(Paragraph("• Administrator logs in securely to maintain knowledgebase records, monitor telemetry health, and export analytical CSV reports.", desc_bullet))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 26: TOPIC 20 - COMPONENT DIAGRAM
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>COMPONENT DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    comp_img = os.path.join(IMG_DIR, "campusai_component_diagram.png")
-    if os.path.exists(comp_img):
-        story.append(RLImage(comp_img, width=440, height=385))
-    story.append(Paragraph("Fig: Component Diagram", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The component diagram shows the software components and modular dependencies of the CampusAI full-stack architecture.", desc_body))
-    story.append(Paragraph("• Frontend View Layer contains UI modules for Chat, Voice STT, Category Filters, Audio TTS, and Admin Dashboard.", desc_bullet))
-    story.append(Paragraph("• Backend Server Layer contains matching Flask controllers, NLP intent engine, Gemini adapter, and CSV export services.", desc_bullet))
-    story.append(Paragraph("• All server modules interface with the embedded SQLite 3 database; external cloud intelligence is provided by Google Gemini 2.5 Flash.", desc_bullet))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 27: TOPIC 21 - DATA FLOW DIAGRAM
-    # =========================================================================
-    story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>DATA FLOW DIAGRAM</b>", h1))
-    story.append(Spacer(1, 8))
-    dfd_img = os.path.join(IMG_DIR, "campusai_dfd.png")
-    if os.path.exists(dfd_img):
-        story.append(RLImage(dfd_img, width=435, height=395))
-    story.append(Paragraph("Fig: Data Flow Diagram (DFD Level 0 & Level 1)", fig_caption))
-    story.append(Paragraph("<b>Description</b>", desc_head))
-    story.append(Paragraph("The Data Flow Diagram models the flow of data within the CampusAI ecosystem at both Context Level and Functional Decomposition Level.", desc_body))
-    story.append(Paragraph("• Level 0 (Context Diagram): Models the overall system as a single process (0.0) exchanging query packets and verified responses with Student, Administrator, and Database.", desc_bullet))
-    story.append(Paragraph("• Level 1 DFD: Decomposes system operations into six functional processes: Ingestion, NLP Tokenization, Jaccard Match, Gemini Fallback, Response Formatting, and Admin CRUD.", desc_bullet))
-    story.append(Paragraph("• Data stores D1 to D5 maintain persistent records for User Sessions, FAQ Knowledge Base, Chat History, Feedback Logs, and Admin Accounts.", desc_bullet))
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 28: TOPIC 22 - HOME SCREEN UI
+    # PAGE 27: TOPIC 22 - HOME SCREEN UI
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>HOME SCREEN UI :</b></u>", h1))
-    story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The CampusAI Landing Portal (http://localhost:5000/) introduces students to the college assistant. "
-        "It features quick access cards across all eight academic domains and live system status telemetry.", body
+        "It features quick access cards across all eight academic domains and live system status telemetry.", body_med
     ))
-    story.append(Spacer(1, 4))
     ui_home = os.path.join(IMG_DIR, "campusai_ui_home.png")
     if os.path.exists(ui_home):
-        story.append(RLImage(ui_home, width=470, height=315))
+        story.append(RLImage(ui_home, width=470, height=310))
     story.append(Paragraph("Fig: Home Screen Interface & Category Navigation", fig_caption))
-    story.append(Spacer(1, 4))
 
     ui_home_tbl = [
         [Paragraph("<b>UI Element</b>", tbl_hdr), Paragraph("<b>Technical Implementation</b>", tbl_hdr), Paragraph("<b>User Experience Purpose</b>", tbl_hdr)],
-        [Paragraph("Hero Banner", tbl_cell_bold), Paragraph("CSS3 Flexbox with university badge", tbl_cell), Paragraph("Clearly identifies academic year 2025-26 and core capabilities.", tbl_cell)],
+        [Paragraph("Hero Banner", tbl_cell_bold), Paragraph("CSS3 Flexbox with university badge", tbl_cell), Paragraph("Clearly identifies academic year 2026-27 and core capabilities.", tbl_cell)],
         [Paragraph("CTA Buttons", tbl_cell_bold), Paragraph("Interactive links to /chat and /faqs", tbl_cell), Paragraph("Directs students to either conversational or directory lookup.", tbl_cell)],
         [Paragraph("8 Domain Cards", tbl_cell_bold), Paragraph("Responsive CSS grid with hover lift", tbl_cell), Paragraph("Displays overview of admissions, fees, placements, scholarships.", tbl_cell)],
         [Paragraph("Live Health Bar", tbl_cell_bold), Paragraph("Dynamic health check API endpoint", tbl_cell), Paragraph("Confirms database and Gemini cloud connectivity status.", tbl_cell)]
     ]
     t_uh = Table(ui_home_tbl, colWidths=[100, 160, 220])
     t_uh.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
     ]))
     story.append(t_uh)
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 29: TOPIC 23 - STUDENT PORTAL & CHATBOT INTERFACE UI
+    # PAGE 28: TOPIC 23 - STUDENT PORTAL & CHATBOT INTERFACE UI
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>STUDENT PORTAL & CHATBOT ASSISTANT UI :</b></u>", h1))
-    story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The Student Chatbot Interface (http://localhost:5000/chat) delivers instant answers, question suggestion chips, "
-        "and Web Speech API audio synthesis.", body
+        "and Web Speech API audio synthesis.", body_med
     ))
-    story.append(Spacer(1, 4))
     ui_chat = os.path.join(IMG_DIR, "campusai_ui_chat.png")
     if os.path.exists(ui_chat):
-        story.append(RLImage(ui_chat, width=470, height=315))
+        story.append(RLImage(ui_chat, width=470, height=310))
     story.append(Paragraph("Fig: Student Chatbot Interface & Voice Interaction", fig_caption))
-    story.append(Spacer(1, 4))
 
     ui_chat_tbl = [
         [Paragraph("<b>UI Element</b>", tbl_hdr), Paragraph("<b>Technical Implementation</b>", tbl_hdr), Paragraph("<b>User Experience Purpose</b>", tbl_hdr)],
@@ -1119,31 +933,27 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_uc = Table(ui_chat_tbl, colWidths=[100, 160, 220])
     t_uc.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.0),
     ]))
     story.append(t_uc)
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 30: TOPIC 24 - ADMIN COMMAND CENTER & MANAGEMENT UI
+    # PAGE 29: TOPIC 24 - ADMIN COMMAND CENTER & MANAGEMENT UI
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>ADMIN COMMAND CENTER & MANAGEMENT UI :</b></u>", h1))
-    story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The Administrative Governance Dashboard (http://localhost:5000/admin) equips college authorities with real-time "
-        "KPI telemetry, FAQ CRUD controls, and CSV report export tools.", body
+        "KPI telemetry, FAQ CRUD controls, and CSV report export tools.", body_med
     ))
-    story.append(Spacer(1, 4))
     ui_admin = os.path.join(IMG_DIR, "campusai_ui_admin.png")
     if os.path.exists(ui_admin):
-        story.append(RLImage(ui_admin, width=470, height=315))
+        story.append(RLImage(ui_admin, width=470, height=310))
     story.append(Paragraph("Fig: Admin Command Center & Knowledge Base Management", fig_caption))
-    story.append(Spacer(1, 4))
 
     ui_adm_tbl = [
         [Paragraph("<b>UI Element</b>", tbl_hdr), Paragraph("<b>Technical Implementation</b>", tbl_hdr), Paragraph("<b>User Experience Purpose</b>", tbl_hdr)],
@@ -1154,29 +964,25 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_ua = Table(ui_adm_tbl, colWidths=[100, 160, 220])
     t_ua.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
     ]))
     story.append(t_ua)
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 31: TOPIC 25 - TESTING AND IMPLEMENTATION
+    # PAGE 30: TOPIC 25 - TESTING AND IMPLEMENTATION
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>TESTING AND IMPLEMENTATION :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "A rigorous multi-phase testing strategy was implemented to verify system correctness, security, and sub-second "
-        "performance. Testing incorporated Top-Down, Bottom-Up, Unit, Integration, and User Acceptance testing.", body
+        "performance. Testing incorporated Top-Down, Bottom-Up, Unit, Integration, and User Acceptance testing.", body_med
     ))
-    story.append(Spacer(1, 4))
-
-    story.append(Paragraph("<b>Automated Test Suite Execution (23 Test Cases, 100% Pass Rate) :</b>", h2))
+    story.append(Paragraph("<b>Automated Test Suite Execution (23 Test Cases, 100% Pass Rate) :</b>", h2_med))
     tc_data = [
         [Paragraph("<b>Test ID</b>", tbl_hdr), Paragraph("<b>Component / Route</b>", tbl_hdr), Paragraph("<b>Test Scenario / Input</b>", tbl_hdr), Paragraph("<b>Expected Output</b>", tbl_hdr), Paragraph("<b>Status</b>", tbl_hdr)],
         [Paragraph("TC-01", tbl_cell_bold), Paragraph("GET /", tbl_cell), Paragraph("Load landing portal", tbl_cell), Paragraph("HTTP 200 OK + Hero UI", tbl_cell), Paragraph("PASS", tbl_cell_bold)],
@@ -1194,32 +1000,28 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_tc = Table(tc_data, colWidths=[45, 100, 140, 150, 45])
     t_tc.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('BACKGROUND', (0,0), (-1,-1), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3.0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.0),
         ('ALIGN', (4,1), (4,-1), 'CENTER'),
         ('TEXTCOLOR', (4,1), (4,-1), colors.HexColor("#047857")),
     ]))
     story.append(t_tc)
-    story.append(Spacer(1, 6))
-    story.append(Paragraph("<b>Test Summary:</b> Total 23 automated tests executed in 1.185 seconds. Passed: 23, Failed: 0 (100% Pass Rate).", center_bold))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("<b>Test Summary:</b> Total 23 automated tests executed in 1.185 seconds. Passed: 23, Failed: 0 (100% Pass Rate).", abs_kw))
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 32: TOPIC 26 - DRAWBACKS AND LIMITATIONS
+    # PAGE 31: TOPIC 26 - DRAWBACKS AND LIMITATIONS
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>DRAWBACKS AND LIMITATIONS</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "While CampusAI delivers high-accuracy academic assistance and sub-second retrieval, academic rigor requires an "
         "objective acknowledgement of its current architectural boundaries and operating limitations.", body
     ))
-    story.append(Spacer(1, 4))
-
     story.append(Paragraph("<b>Current System Limitations:</b>", h2))
     story.append(Paragraph("1. <b>English Language Dependency:</b> The current NLP tokenizer, domain stop-words, and synonym expansion dictionary are optimized primarily for the English language. Queries written in regional vernaculars (e.g. Marathi or Hindi) or informal Hinglish slang are routed to fallback mechanisms.", bullet))
     story.append(Paragraph("2. <b>Browser-Dependent Web Speech API:</b> Speech-to-Text and Text-to-Speech rely on client browser implementations of the Web Speech API. Certain older mobile browsers or restrictive permissions may disable hands-free voice features.", bullet))
@@ -1229,18 +1031,15 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 33: TOPIC 27 - PROPOSED ENHANCEMENTS
+    # PAGE 32: TOPIC 27 - PROPOSED ENHANCEMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>PROPOSED ENHANCEMENTS</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "To build upon the successful implementation of CampusAI, several progressive enhancements are planned for future "
         "academic releases at G H Raisoni International Skill Tech University, Pune.", body
     ))
-    story.append(Spacer(1, 4))
-
     story.append(Paragraph("<b>Planned Architecture Upgrades:</b>", h2))
     story.append(Paragraph("1. <b>Multilingual Indic NLP Engine:</b> Implementation of IndicBERT and multilingual embedding models to support native-language student inquiries in Marathi and Hindi, ensuring accessibility for diverse student demographics.", bullet))
     story.append(Paragraph("2. <b>Authenticated Student ERP Gateway Integration:</b> Integration of OAuth2 / JWT authentication allowing enrolled students to query personalized academic data, including internal assessment marks, fee receipt downloads, and exam hall ticket status.", bullet))
@@ -1250,11 +1049,10 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 34: TOPIC 28 - CONCLUSION
+    # PAGE 33: TOPIC 28 - CONCLUSION
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>CONCLUSION :</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     story.append(Paragraph(
         "CampusAI: Intelligent AI-Powered College Assistant Chatbot and Knowledge Base System is a smart and user-friendly "
@@ -1268,9 +1066,8 @@ def generate_reportlab_pages(temp_pdf_path):
         "an accessible, 24/7 digital front desk that eliminates physical counter congestion and guarantees factual accuracy "
         "through its strict zero-hallucination guardrails.", body_conc
     ))
-    story.append(Spacer(1, 4))
 
-    story.append(Paragraph("<b>Summary of the Work</b>", h2))
+    story.append(Paragraph("<b>Summary of the Work</b>", h2_conc))
     story.append(Paragraph(
         "In this project, the challenges of repetitive administrative inquiries and scattered institutional notices were "
         "studied, the requirements were thoroughly analyzed, and a complete system was engineered comprising seven modular "
@@ -1278,18 +1075,16 @@ def generate_reportlab_pages(temp_pdf_path):
         "tokenization, Jaccard similarity scoring, Google Gemini 2.5 Flash generative AI fallback, Web Speech synthesis, and "
         "a password-protected administrative command center into one cohesive application that runs efficiently on any device.", body_conc
     ))
-    story.append(Spacer(1, 4))
 
-    story.append(Paragraph("<b>Learning from the Project</b>", h2))
+    story.append(Paragraph("<b>Learning from the Project</b>", h2_conc))
     story.append(Paragraph(
         "While developing this project, we learned full-stack web application development with Python and Flask, relational "
         "database engineering with SQLite and SQLAlchemy ORM, cloud API integration with Google GenAI SDK, front-end design "
         "with responsive CSS3 and asynchronous JavaScript fetch, UML modeling, and automated regression testing. The project "
         "also demonstrated the essential importance of defensive programming, zero-hallucination policies, and focused teamwork.", body_conc
     ))
-    story.append(Spacer(1, 4))
 
-    story.append(Paragraph("<b>Challenges Faced</b>", h2))
+    story.append(Paragraph("<b>Challenges Faced</b>", h2_conc))
     story.append(Paragraph(
         "The main challenges were curating an authoritative repository of college information across eight academic domains, "
         "designing a normalized 3NF database schema to support interaction audit logs, tuning NLP similarity thresholds to avoid "
@@ -1300,11 +1095,10 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 35: TOPIC 29 - BIBLIOGRAPHY
+    # PAGE 34: TOPIC 29 - BIBLIOGRAPHY
     # =========================================================================
     story.append(Spacer(1, 10))
     story.append(Paragraph("<u><b>BIBLIOGRAPHY</b></u>", h1))
-    story.append(Spacer(1, 14))
 
     bib_items = [
         "1. Sommerville, I. (2015). <i>Software Engineering</i> (10th ed.). Pearson Education.",
@@ -1323,7 +1117,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "14. Mozilla Developer Network (MDN). (2024). <i>MDN Web Docs: Fetch API, CSS Grid, and DOM Manipulation</i>. https://developer.mozilla.org"
     ]
     for b in bib_items:
-        story.append(Paragraph(b, bullet))
+        story.append(Paragraph(b, bullet_bib))
 
     doc.build(story, canvasmaker=AcademicDoubleBorderCanvas)
     print(f"[✓] Generated ReportLab document: {temp_pdf_path}")
@@ -1343,27 +1137,15 @@ def assemble_final_report(output_paths):
     writer = pypdf.PdfWriter()
 
     # 1. Pages 1 to 18 from Story (0-indexed 0 to 17)
-    # Includes Cover, Cert, Ack, Abstract, single-page TOC, Intro through Chat History (Page 13)
     for i in range(18):
         writer.add_page(r_story.pages[i])
 
     # 2. Pages 20 to 27 from SRC_VECTOR_PDF (0-indexed 19 to 26)
     # Swaps all 8 diagrams from the 2nd PDF (AI Chatbot for College diagrams):
-    # - Page 19: ER Diagram (Page 14)
-    # - Page 20: Use Case Diagram (Page 15)
-    # - Page 21: Class Diagram (Page 16)
-    # - Page 22: Object Diagram (Page 17)
-    # - Page 23: Sequence Diagram (Page 18)
-    # - Page 24: Activity Diagram (Page 19)
-    # - Page 25: Component Diagram (Page 20)
-    # - Page 26: Data Flow Diagram (DFD Level 0 & Level 1) (Page 21)
     for i in range(19, 27):
         writer.add_page(r_vec.pages[i])
 
     # 3. Pages 27 to 34 from Story (0-indexed 26 to 33)
-    # Includes Home Screen UI (Page 22), Student Portal UI (Page 23), Admin UI (Page 24),
-    # 23 Automated Test Cases (Page 25), Drawbacks (Page 26), Enhancements (Page 27),
-    # Conclusion (Page 28), Bibliography (Page 29)
     for i in range(26, len(r_story.pages)):
         writer.add_page(r_story.pages[i])
 
