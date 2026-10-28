@@ -31,7 +31,7 @@ from reportlab.pdfgen import canvas
 
 BASE_DIR = "/Users/kanishksingh/Downloads/momo ai chat bot "
 IMG_DIR = os.path.join(BASE_DIR, "scratch/campusai_diagrams")
-SRC_VECTOR_PDF = "/Users/kanishksingh/.gemini/antigravity/brain/60288257-9f14-453a-bf1a-fc74825b030f/.user_uploaded/media_1793003039133_537ddeaa.pdf"
+SRC_VECTOR_PDF = "/Users/kanishksingh/.gemini/antigravity/brain/60288257-9f14-453a-bf1a-fc74825b030f/.user_uploaded/media_1793171036172_009f4c26.pdf"
 
 PAGE_W, PAGE_H = 594.96, 841.92
 
@@ -1321,11 +1321,47 @@ def generate_reportlab_pages(temp_pdf_path):
 def assemble_final_report(output_paths):
     final_pdf = output_paths[0]
     os.makedirs(os.path.dirname(final_pdf), exist_ok=True)
-    generate_reportlab_pages(final_pdf)
+
+    raw_temp_pdf = os.path.join(BASE_DIR, "scratch/raw_story_build.pdf")
+    os.makedirs(os.path.dirname(raw_temp_pdf), exist_ok=True)
+    generate_reportlab_pages(raw_temp_pdf)
+
+    r_story = pypdf.PdfReader(raw_temp_pdf)
+    r_vec = pypdf.PdfReader(SRC_VECTOR_PDF)
+
+    writer = pypdf.PdfWriter()
+
+    # 1. Pages 1 to 18 from Story (0-indexed 0 to 17)
+    # Includes Cover, Cert, Ack, Abstract, single-page TOC, Intro through Chat History (Page 13)
+    for i in range(18):
+        writer.add_page(r_story.pages[i])
+
+    # 2. Pages 20 to 27 from SRC_VECTOR_PDF (0-indexed 19 to 26)
+    # Swaps all 8 diagrams from the 2nd PDF (AI Chatbot for College diagrams):
+    # - Page 19: ER Diagram (Page 14)
+    # - Page 20: Use Case Diagram (Page 15)
+    # - Page 21: Class Diagram (Page 16)
+    # - Page 22: Object Diagram (Page 17)
+    # - Page 23: Sequence Diagram (Page 18)
+    # - Page 24: Activity Diagram (Page 19)
+    # - Page 25: Component Diagram (Page 20)
+    # - Page 26: Data Flow Diagram (DFD Level 0 & Level 1) (Page 21)
+    for i in range(19, 27):
+        writer.add_page(r_vec.pages[i])
+
+    # 3. Pages 27 to 34 from Story (0-indexed 26 to 33)
+    # Includes Home Screen UI (Page 22), Student Portal UI (Page 23), Admin UI (Page 24),
+    # 23 Automated Test Cases (Page 25), Drawbacks (Page 26), Enhancements (Page 27),
+    # Conclusion (Page 28), Bibliography (Page 29)
+    for i in range(26, len(r_story.pages)):
+        writer.add_page(r_story.pages[i])
+
+    with open(final_pdf, 'wb') as f:
+        writer.write(f)
 
     reader = pypdf.PdfReader(final_pdf)
     total_p = len(reader.pages)
-    print(f"[✓] Total verified pages: {total_p} (expected 35)")
+    print(f"[✓] Total verified pages: {total_p} (expected 34)")
     assert total_p == 34, f"Expected 34 pages, but got {total_p} pages!"
 
     for out_p in output_paths[1:]:
