@@ -117,20 +117,30 @@ def generate_reportlab_pages(temp_pdf_path):
     # Mandatory rule: All chapter, section, and subsection headings are strictly CENTER-ALIGNED
     title_main = ParagraphStyle('TitleMain', fontName='Times-Bold', fontSize=17, leading=23, alignment=TA_CENTER, textColor=colors.black)
     center_text = ParagraphStyle('CenterText', fontName='Times-Roman', fontSize=11, leading=16, alignment=TA_CENTER, textColor=colors.black)
-    center_bold = ParagraphStyle('CenterBold', fontName='Times-Bold', fontSize=11.5, leading=16, alignment=TA_CENTER, textColor=colors.black)
-    right_text = ParagraphStyle('RightText', fontName='Times-Roman', fontSize=10, leading=14, alignment=TA_RIGHT, textColor=colors.black)
+    center_bold = ParagraphStyle('CenterBold', fontName='Times-Bold', fontSize=12.0, leading=16, alignment=TA_CENTER, textColor=colors.black)
+    right_text = ParagraphStyle('RightText', fontName='Times-Roman', fontSize=12.0, leading=16, alignment=TA_RIGHT, textColor=colors.black)
 
-    h1 = ParagraphStyle('H1', fontName='Times-Bold', fontSize=14.5, leading=19, alignment=TA_CENTER, textColor=colors.black, spaceAfter=8)
-    h2 = ParagraphStyle('H2', fontName='Times-Bold', fontSize=11.5, leading=16, alignment=TA_CENTER, textColor=colors.black, spaceBefore=7, spaceAfter=4)
-    h3 = ParagraphStyle('H3', fontName='Times-Bold', fontSize=10.5, leading=14, alignment=TA_CENTER, textColor=colors.black, spaceBefore=5, spaceAfter=3)
+    # 1. Main Headings: Starting from page 3, set all main headings to font size 14 pt
+    h1 = ParagraphStyle('H1', fontName='Times-Bold', fontSize=14.0, leading=17.5, alignment=TA_CENTER, textColor=colors.black, spaceAfter=7)
+    h2 = ParagraphStyle('H2', fontName='Times-Bold', fontSize=12.5, leading=16.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=5, spaceAfter=2.5)
+    h3 = ParagraphStyle('H3', fontName='Times-Bold', fontSize=12.0, leading=15.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=4, spaceAfter=2)
 
-    desc_head = ParagraphStyle('DescHead', fontName='Times-Bold', fontSize=9.5, leading=12, alignment=TA_LEFT, textColor=colors.black, spaceBefore=3, spaceAfter=2)
-    desc_body = ParagraphStyle('DescBody', fontName='Times-Roman', fontSize=8.2, leading=11.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=2)
-    desc_bullet = ParagraphStyle('DescBullet', fontName='Times-Roman', fontSize=7.8, leading=10.5, alignment=TA_JUSTIFY, leftIndent=12, firstLineIndent=-8, textColor=colors.black, spaceAfter=1.5)
-    fig_caption = ParagraphStyle('FigCaption', fontName='Times-Italic', fontSize=8.0, leading=11.0, alignment=TA_CENTER, textColor=colors.black, spaceBefore=2, spaceAfter=3)
+    # 2. Main Text Content: Set body text, paragraphs, descriptions, and other regular text to font size 12 pt
+    desc_head = ParagraphStyle('DescHead', fontName='Times-Bold', fontSize=12.0, leading=15.0, alignment=TA_LEFT, textColor=colors.black, spaceBefore=3, spaceAfter=2)
+    desc_body = ParagraphStyle('DescBody', fontName='Times-Roman', fontSize=12.0, leading=15.0, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=2)
+    desc_bullet = ParagraphStyle('DescBullet', fontName='Times-Roman', fontSize=12.0, leading=15.0, alignment=TA_JUSTIFY, leftIndent=12, firstLineIndent=-8, textColor=colors.black, spaceAfter=2.0)
+    fig_caption = ParagraphStyle('FigCaption', fontName='Times-Italic', fontSize=9.5, leading=12.5, alignment=TA_CENTER, textColor=colors.black, spaceBefore=2, spaceAfter=3)
 
-    body = ParagraphStyle('Body', fontName='Times-Roman', fontSize=10.0, leading=14.8, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=6)
-    bullet = ParagraphStyle('Bullet', fontName='Times-Roman', fontSize=9.5, leading=13.8, alignment=TA_JUSTIFY, leftIndent=15, firstLineIndent=-10, textColor=colors.black, spaceAfter=3)
+    body = ParagraphStyle('Body', fontName='Times-Roman', fontSize=12.0, leading=15.2, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=4.5)
+    bullet = ParagraphStyle('Bullet', fontName='Times-Roman', fontSize=12.0, leading=15.2, alignment=TA_JUSTIFY, leftIndent=15, firstLineIndent=-10, textColor=colors.black, spaceAfter=2.5)
+
+    # Page 2 Certificate preserved styles (original formatting preserved)
+    cert_heading = ParagraphStyle('CertHeading', fontName='Times-Bold', fontSize=15, leading=19, alignment=TA_CENTER, textColor=colors.black)
+    cert_body = ParagraphStyle('CertBody', fontName='Times-Roman', fontSize=10.0, leading=14.8, alignment=TA_JUSTIFY, textColor=colors.black, spaceAfter=6)
+
+    # Page 3 Acknowledgement heading: 14 pt
+    ack_heading = ParagraphStyle('AckHeading', fontName='Times-Bold', fontSize=14.0, leading=18.0, alignment=TA_CENTER, textColor=colors.black)
+
     tbl_cell = ParagraphStyle('TblCell', fontName='Times-Roman', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
     tbl_cell_bold = ParagraphStyle('TblCellBold', fontName='Times-Bold', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
     tbl_hdr = ParagraphStyle('TblHdr', fontName='Times-Bold', fontSize=8.5, leading=11.5, alignment=TA_CENTER, textColor=colors.white)
@@ -199,11 +209,12 @@ def generate_reportlab_pages(temp_pdf_path):
         "this project report in partial fulfillment of the requirements for the award of the degree of "
         "<b>BBA CA</b> for the academic Year <b>2026-27</b>."
     )
-    story.append(Paragraph(cert_text, body))
+    story.append(Paragraph(cert_text, cert_body))
     story.append(Spacer(1, 40))
 
+    cert_right_text = ParagraphStyle('CertRightText', fontName='Times-Roman', fontSize=10, leading=14, alignment=TA_RIGHT, textColor=colors.black)
     guide_table_data = [
-        [Paragraph("Date: ____________________", tbl_cell), Paragraph("<b>Asst. Prof. Sheela Satav</b><br/>Project Guide", right_text)]
+        [Paragraph("Date: ____________________", tbl_cell), Paragraph("<b>Asst. Prof. Sheela Satav</b><br/>Project Guide", cert_right_text)]
     ]
     t_guide = Table(guide_table_data, colWidths=[240, 240])
     t_guide.setStyle(TableStyle([
@@ -240,15 +251,15 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 3: ACKNOWLEDGEMENT (Matches University Reference Image Exactly)
     # =========================================================================
     story.append(Spacer(1, 15))
-    story.append(Paragraph("<u><b>ACKNOWLEDGEMENT</b></u>", cert_heading))
-    story.append(Spacer(1, 20))
+    story.append(Paragraph("<u><b>ACKNOWLEDGEMENT</b></u>", ack_heading))
+    story.append(Spacer(1, 16))
 
     ack_p1 = (
         "A successful project is always the result of sincere teamwork, persistent dedication, and the collective "
         "guidance of esteemed mentors who provided technical insights and inspiration throughout our development journey."
     )
     story.append(Paragraph(ack_p1, body))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
     ack_p2 = (
         "First and foremost, we would like to express our deepest gratitude to our <b>Honourable Vice Chancellor DR. R. D. KHARADKAR</b> "
@@ -256,7 +267,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "<b>G H Raisoni International Skill Tech University, Pune</b>."
     )
     story.append(Paragraph(ack_p2, body))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
     ack_p3 = (
         "We are immensely grateful and indebted to our project guide, <b>Asst. Prof. Sheela Satav</b>, for her invaluable advice, "
@@ -265,21 +276,21 @@ def generate_reportlab_pages(temp_pdf_path):
         "helped us overcome key challenges in knowledge modeling and voice processing."
     )
     story.append(Paragraph(ack_p3, body))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
     ack_p4 = (
         "We also extend our sincere appreciation to the <b>Head of Department (HOD)</b>, respected faculty members, "
         "laboratory staff, and academic coordinators for their sustained cooperation and resources during the project lifecycle."
     )
     story.append(Paragraph(ack_p4, body))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
     ack_p5 = (
         "Last but not least, we express our heartfelt gratitude to the Almighty and our parents for their unconditional blessings, "
         "patience, and moral support, without which this academic endeavor would not have been possible."
     )
     story.append(Paragraph(ack_p5, body))
-    story.append(Spacer(1, 40))
+    story.append(Spacer(1, 20))
 
     ack_sig_table = Table([
         [Paragraph("", center_text), Paragraph("<b>Signature of Students:</b><br/><br/><b>Akash Rana (ISTU25010120004)</b><br/><b>Shreyash Katke (ISTU25010120003)</b>", right_text)]
