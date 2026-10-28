@@ -680,32 +680,60 @@ def generate_reportlab_pages(temp_pdf_path):
     ))
     story.append(Spacer(1, 6))
 
+    dt_tbl_hdr = ParagraphStyle('DtTblHdr', fontName='Helvetica-Bold', fontSize=8.5, leading=11.5, alignment=TA_CENTER, textColor=colors.HexColor('#0f172a'))
+    dt_tbl_hdr_left = ParagraphStyle('DtTblHdrLeft', fontName='Helvetica-Bold', fontSize=8.5, leading=11.5, alignment=TA_LEFT, textColor=colors.HexColor('#0f172a'))
+    dt_cell_c = ParagraphStyle('DtCellC', fontName='Helvetica-Bold', fontSize=9.5, leading=13, alignment=TA_CENTER)
+
+    YES_TXT  = Paragraph('<font color="#15803d"><b>Yes</b></font>', dt_cell_c)
+    NO_TXT   = Paragraph('<font color="#dc2626"><b>No</b></font>', dt_cell_c)
+    TICK_TXT = Paragraph('<font color="#15803d" size="12"><b>✔</b></font>', dt_cell_c)
+    CROSS_TXT= Paragraph('<font color="#dc2626" size="12"><b>✘</b></font>', dt_cell_c)
+
     dt_data = [
-        [Paragraph("<b>Conditions Evaluated</b>", tbl_hdr), Paragraph("<b>Case 1 (Direct DB)</b>", tbl_hdr), Paragraph("<b>Case 2 (Gemini AI)</b>", tbl_hdr), Paragraph("<b>Case 3 (Offline)</b>", tbl_hdr), Paragraph("<b>Case 4 (Out-of-Scope)</b>", tbl_hdr)],
-        [Paragraph("Jaccard Overlap Score S >= 0.58", tbl_cell_bold), Paragraph("YES", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell)],
-        [Paragraph("Exact Domain Keyword Match Found", tbl_cell_bold), Paragraph("YES", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell)],
-        [Paragraph("Google Gemini API Online & Key Valid", tbl_cell_bold), Paragraph("—", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("YES", tbl_cell)],
-        [Paragraph("Verified College Context Available", tbl_cell_bold), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("NO", tbl_cell)],
-        [Paragraph("<b>Actions Executed by System</b>", tbl_hdr), Paragraph("<b>Action 1</b>", tbl_hdr), Paragraph("<b>Action 2</b>", tbl_hdr), Paragraph("<b>Action 3</b>", tbl_hdr), Paragraph("<b>Action 4</b>", tbl_hdr)],
-        [Paragraph("Serve Authoritative SQLite Record (<20ms)", tbl_cell_bold), Paragraph("YES", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell)],
-        [Paragraph("Synthesize Bounded Gemini AI Answer", tbl_cell_bold), Paragraph("NO", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell)],
-        [Paragraph("Apply Local Keyword Fallback Referral", tbl_cell_bold), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("NO", tbl_cell)],
-        [Paragraph("Enforce Zero-Hallucination Office Referral", tbl_cell_bold), Paragraph("NO", tbl_cell), Paragraph("NO", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell)],
-        [Paragraph("Render Rich Response Bubble & Chips", tbl_cell_bold), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell)],
-        [Paragraph("Persist Interaction Turn to SQLite DB", tbl_cell_bold), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell), Paragraph("YES", tbl_cell)]
+        [
+            Paragraph("<b>Conditions Evaluated</b>", dt_tbl_hdr_left),
+            Paragraph("<b>Case 1<br/>(Direct DB)</b>", dt_tbl_hdr),
+            Paragraph("<b>Case 2<br/>(Gemini AI)</b>", dt_tbl_hdr),
+            Paragraph("<b>Case 3<br/>(Offline)</b>", dt_tbl_hdr),
+            Paragraph("<b>Case 4<br/>(Out-of-Scope)</b>", dt_tbl_hdr)
+        ],
+        [Paragraph("High Jaccard Overlap (Score S ≥ 0.58)", tbl_cell_bold), YES_TXT, NO_TXT, NO_TXT, NO_TXT],
+        [Paragraph("Context-Bounded Gemini AI Online & Valid", tbl_cell_bold), NO_TXT, YES_TXT, NO_TXT, NO_TXT],
+        [Paragraph("Local Offline Keyword Fallback Triggered", tbl_cell_bold), NO_TXT, NO_TXT, YES_TXT, NO_TXT],
+        [Paragraph("Out-of-Scope / Non-Academic Query", tbl_cell_bold), NO_TXT, NO_TXT, NO_TXT, YES_TXT],
+        [
+            Paragraph("<b>Actions Executed by System</b>", dt_tbl_hdr_left),
+            Paragraph("<b>Action 1</b>", dt_tbl_hdr),
+            Paragraph("<b>Action 2</b>", dt_tbl_hdr),
+            Paragraph("<b>Action 3</b>", dt_tbl_hdr),
+            Paragraph("<b>Action 4</b>", dt_tbl_hdr)
+        ],
+        [Paragraph("Serve Authoritative SQLite Record (&lt;20ms)", tbl_cell_bold), TICK_TXT, CROSS_TXT, CROSS_TXT, CROSS_TXT],
+        [Paragraph("Synthesize Bounded Gemini AI Answer", tbl_cell_bold), CROSS_TXT, TICK_TXT, CROSS_TXT, CROSS_TXT],
+        [Paragraph("Apply Local Keyword Fallback Referral", tbl_cell_bold), CROSS_TXT, CROSS_TXT, TICK_TXT, CROSS_TXT],
+        [Paragraph("Enforce Zero-Hallucination Office Referral", tbl_cell_bold), CROSS_TXT, CROSS_TXT, CROSS_TXT, TICK_TXT],
+        [Paragraph("Render Rich Response Bubble & Chips", tbl_cell_bold), TICK_TXT, TICK_TXT, TICK_TXT, TICK_TXT],
+        [Paragraph("Persist Interaction Turn to SQLite DB", tbl_cell_bold), TICK_TXT, TICK_TXT, TICK_TXT, TICK_TXT]
     ]
-    t_dt = Table(dt_data, colWidths=[180, 75, 75, 75, 75])
+    t_dt = Table(dt_data, colWidths=[185, 80, 80, 80, 80])
     t_dt.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('BACKGROUND', (0,5), (-1,5), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#e8edf5")),
+        ('BACKGROUND', (0,5), (-1,5), colors.HexColor("#e8edf5")),
+        ('GRID', (0,0), (-1,-1), 0.75, colors.HexColor("#334155")),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0,1), (-1,4), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('ROWBACKGROUNDS', (0,6), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-        ('TOPPADDING', (0,0), (-1,-1), 4),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('ALIGN', (1,0), (-1,-1), 'CENTER'),
+        ('TOPPADDING', (0,0), (-1,-1), 4.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4.5),
+        ('BACKGROUND', (0,1), (-1,4), colors.white),
+        ('BACKGROUND', (0,6), (-1,-1), colors.white),
     ]))
     story.append(t_dt)
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>Case Logic Defense & Execution Notes:</b>", h2))
+    story.append(Paragraph("• <b>Case 1 (Direct DB):</b> High Jaccard similarity (S ≥ 0.58) matches a verified institutional FAQ, delivering an authoritative response directly from SQLite in under 20ms.", desc_bullet))
+    story.append(Paragraph("• <b>Case 2 (Gemini AI):</b> Unmatched academic queries invoke Google Gemini 2.5 Flash within strict verified college context boundaries to prevent hallucination.", desc_bullet))
+    story.append(Paragraph("• <b>Case 3 (Offline):</b> When cloud network access is unavailable, the engine triggers local keyword matching and provides institutional helpdesk contact details.", desc_bullet))
+    story.append(Paragraph("• <b>Case 4 (Out-of-Scope):</b> Non-academic or invalid queries prompt the student with 8 domain suggestion chips and an official office referral.", desc_bullet))
     story.append(PageBreak())
 
     # =========================================================================
