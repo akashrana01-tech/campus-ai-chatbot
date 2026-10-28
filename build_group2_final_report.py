@@ -77,14 +77,13 @@ class AcademicDoubleBorderCanvas(canvas.Canvas):
         self.setLineWidth(0.6)
         self.rect(32, 32, PAGE_W - 64, PAGE_H - 64, fill=0, stroke=1)
 
-        # Running Footer for content pages 7 to 35
+        # Running Footer matching reference PDF: Page X centered at bottom
         p_num = self._pageNumber
         if p_num in PAGE_FOOTER_MAP:
             toc_page = PAGE_FOOTER_MAP[p_num]
-            self.setFont("Times-Roman", 9)
-            self.setFillColor(colors.HexColor("#0f172a"))
-            self.drawString(45, 38, "G H Raisoni International Skill Tech University, Pune")
-            self.drawRightString(PAGE_W - 45, 38, f"Page {toc_page}")
+            self.setFont("Times-Roman", 10.5)
+            self.setFillColor(colors.black)
+            self.drawCentredString(PAGE_W / 2.0, 36, f"Page {toc_page}")
         self.restoreState()
 
 
@@ -144,7 +143,7 @@ def generate_reportlab_pages(temp_pdf_path):
 
     tbl_cell = ParagraphStyle('TblCell', fontName='Times-Roman', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
     tbl_cell_bold = ParagraphStyle('TblCellBold', fontName='Times-Bold', fontSize=8.2, leading=11.2, alignment=TA_LEFT, textColor=colors.black)
-    tbl_hdr = ParagraphStyle('TblHdr', fontName='Times-Bold', fontSize=8.5, leading=11.5, alignment=TA_CENTER, textColor=colors.white)
+    tbl_hdr = ParagraphStyle('TblHdr', fontName='Times-Bold', fontSize=9.0, leading=12.2, alignment=TA_CENTER, textColor=colors.black)
     toc_cell = ParagraphStyle('TocCell', fontName='Times-Roman', fontSize=7.6, leading=9.8, alignment=TA_LEFT, textColor=colors.black)
     toc_cell_c = ParagraphStyle('TocCellC', fontName='Times-Roman', fontSize=7.6, leading=9.8, alignment=TA_CENTER, textColor=colors.black)
 
@@ -308,7 +307,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 4: ABSTRACT
     # =========================================================================
     story.append(Spacer(1, 15))
-    story.append(Paragraph("<b>ABSTRACT</b>", h1))
+    story.append(Paragraph("<u><b>ABSTRACT</b></u>", h1))
     story.append(Spacer(1, 16))
 
     abs_p1 = (
@@ -346,7 +345,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 5: TABLE OF CONTENT (Single Page Layout)
     # =========================================================================
     story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>TABLE OF CONTENT</b>", h1))
+    story.append(Paragraph("<u><b>TABLE OF CONTENT</b></u>", h1))
     story.append(Spacer(1, 12))
 
     toc_data = [
@@ -383,10 +382,10 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     toc_table = Table(toc_data, colWidths=[45, 375, 60])
     toc_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 1.8),
         ('BOTTOMPADDING', (0,0), (-1,-1), 1.8),
     ]))
@@ -397,7 +396,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 7: TOPIC 1 - INTRODUCTION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>INTRODUCTION</b>", h1))
+    story.append(Paragraph("<u><b>INTRODUCTION:</b></u>", h1))
     story.append(Spacer(1, 14))
 
     intro_p1 = (
@@ -428,7 +427,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 8: TOPIC 2 - PROBLEM DEFINITION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>PROBLEM DEFINITION</b>", h1))
+    story.append(Paragraph("<u><b>PROBLEM DEFINITION :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     prob_p1 = (
@@ -451,7 +450,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 9: TOPIC 3 - EXISTING SYSTEM & NEED FOR NEW SYSTEM
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>EXISTING SYSTEM & NEED FOR NEW SYSTEM</b>", h1))
+    story.append(Paragraph("<u><b>EXISTING SYSTEM & NEED FOR NEW SYSTEM</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -476,7 +475,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 10: TOPIC 4 - SCOPE OF SYSTEM
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>SCOPE OF SYSTEM</b>", h1))
+    story.append(Paragraph("<u><b>SCOPE OF SYSTEM :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -499,7 +498,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 11: TOPIC 5 - FEASIBILITY STUDY
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>FEASIBILITY STUDY</b>", h1))
+    story.append(Paragraph("<u><b>FEASIBILITY STUDY</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -542,7 +541,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 12: TOPIC 6 - HARDWARE REQUIREMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>HARDWARE REQUIREMENTS</b>", h1))
+    story.append(Paragraph("<u><b>HARDWARE REQUIREMENTS :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -561,9 +560,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_hws = Table(hw_server, colWidths=[120, 180, 180])
     t_hws.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 5.0),
         ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
@@ -579,9 +578,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_hwc = Table(hw_client, colWidths=[130, 190, 160])
     t_hwc.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 5.0),
         ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
@@ -592,7 +591,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 13: TOPIC 7 - SOFTWARE REQUIREMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>SOFTWARE REQUIREMENTS</b>", h1))
+    story.append(Paragraph("<u><b>SOFTWARE REQUIREMENTS :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -617,9 +616,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_sw = Table(sw_data, colWidths=[95, 140, 65, 180])
     t_sw.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 3),
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
@@ -630,7 +629,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 14: TOPIC 8 - REQUIREMENT ANALYSIS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>REQUIREMENT ANALYSIS</b>", h1))
+    story.append(Paragraph("<u><b>REQUIREMENT ANALYSIS</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -658,7 +657,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # TOPIC 9 - DECISION TREE (Put first as requested)
     # =========================================================================
     story.append(Spacer(1, 8))
-    story.append(Paragraph("<b>DECISION TREE</b>", h1))
+    story.append(Paragraph("<u><b>DECISION TREE :</b></u>", h1))
     story.append(Spacer(1, 10))
     dt_img = os.path.join(IMG_DIR, "campusai_decision_tree.png")
     if os.path.exists(dt_img):
@@ -683,7 +682,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # TOPIC 10 - DECISION TABLE (Put in next page as requested)
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>DECISION TABLE</b>", h1))
+    story.append(Paragraph("<u><b>DECISION TABLE :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -752,7 +751,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 17: TOPIC 11 - NORMALIZED DATABASE DESIGN (3NF) — Admins & Sessions
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>NORMALIZED DATABASE DESIGN (3NF)</b>", h1))
+    story.append(Paragraph("<u><b>NORMALIZED DATABASE DESIGN (3NF):</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -773,9 +772,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_adm = Table(adm_schema, colWidths=[130, 110, 240])
     t_adm.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 5.0),
         ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
@@ -792,9 +791,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_sess = Table(sess_schema, colWidths=[130, 110, 240])
     t_sess.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 5.0),
         ('BOTTOMPADDING', (0,0), (-1,-1), 5.0),
     ]))
@@ -805,7 +804,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 18: TOPIC 12 - COLLEGE INFO (FAQS) TABLE
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>COLLEGE INFO (FAQS) TABLE</b>", h1))
+    story.append(Paragraph("<u><b>COLLEGE INFO (FAQS) TABLE :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -825,9 +824,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_faq = Table(faq_schema, colWidths=[120, 110, 250])
     t_faq.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 3),
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
@@ -845,9 +844,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_smp = Table(sample_faqs, colWidths=[25, 75, 180, 200])
     t_smp.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 3),
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
@@ -858,7 +857,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 19: TOPIC 13 - CHAT HISTORY TABLE
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>CHAT HISTORY TABLE</b>", h1))
+    story.append(Paragraph("<u><b>CHAT HISTORY TABLE :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -878,9 +877,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_msg = Table(msg_schema, colWidths=[120, 110, 250])
     t_msg.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 3),
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
@@ -897,9 +896,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_smp_m = Table(sample_msgs, colWidths=[25, 95, 50, 55, 255])
     t_smp_m.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 2.5),
         ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
     ]))
@@ -1062,7 +1061,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 28: TOPIC 22 - HOME SCREEN UI
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>HOME SCREEN UI</b>", h1))
+    story.append(Paragraph("<u><b>HOME SCREEN UI :</b></u>", h1))
     story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The CampusAI Landing Portal (http://localhost:5000/) introduces students to the college assistant. "
@@ -1084,9 +1083,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_uh = Table(ui_home_tbl, colWidths=[100, 160, 220])
     t_uh.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 3),
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
@@ -1097,7 +1096,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 29: TOPIC 23 - STUDENT PORTAL & CHATBOT INTERFACE UI
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>STUDENT PORTAL & CHATBOT ASSISTANT UI</b>", h1))
+    story.append(Paragraph("<u><b>STUDENT PORTAL & CHATBOT ASSISTANT UI :</b></u>", h1))
     story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The Student Chatbot Interface (http://localhost:5000/chat) delivers instant answers, question suggestion chips, "
@@ -1120,9 +1119,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_uc = Table(ui_chat_tbl, colWidths=[100, 160, 220])
     t_uc.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 2.5),
         ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
     ]))
@@ -1133,7 +1132,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 30: TOPIC 24 - ADMIN COMMAND CENTER & MANAGEMENT UI
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>ADMIN COMMAND CENTER & MANAGEMENT UI</b>", h1))
+    story.append(Paragraph("<u><b>ADMIN COMMAND CENTER & MANAGEMENT UI :</b></u>", h1))
     story.append(Spacer(1, 12))
     story.append(Paragraph(
         "The Administrative Governance Dashboard (http://localhost:5000/admin) equips college authorities with real-time "
@@ -1155,9 +1154,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_ua = Table(ui_adm_tbl, colWidths=[100, 160, 220])
     t_ua.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 3),
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
@@ -1168,7 +1167,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 31: TOPIC 25 - TESTING AND IMPLEMENTATION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>TESTING AND IMPLEMENTATION</b>", h1))
+    story.append(Paragraph("<u><b>TESTING AND IMPLEMENTATION :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -1195,9 +1194,9 @@ def generate_reportlab_pages(temp_pdf_path):
     ]
     t_tc = Table(tc_data, colWidths=[45, 100, 140, 150, 45])
     t_tc.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#064e3b")),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#cbd5e1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#ffffff"), colors.white]),
         ('TOPPADDING', (0,0), (-1,-1), 2.5),
         ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
         ('ALIGN', (4,1), (4,-1), 'CENTER'),
@@ -1212,7 +1211,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 32: TOPIC 26 - DRAWBACKS AND LIMITATIONS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>DRAWBACKS AND LIMITATIONS</b>", h1))
+    story.append(Paragraph("<u><b>DRAWBACKS AND LIMITATIONS</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -1233,7 +1232,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 33: TOPIC 27 - PROPOSED ENHANCEMENTS
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>PROPOSED ENHANCEMENTS</b>", h1))
+    story.append(Paragraph("<u><b>PROPOSED ENHANCEMENTS</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -1254,7 +1253,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 34: TOPIC 28 - CONCLUSION
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>CONCLUSION</b>", h1))
+    story.append(Paragraph("<u><b>CONCLUSION :</b></u>", h1))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(
@@ -1304,7 +1303,7 @@ def generate_reportlab_pages(temp_pdf_path):
     # PAGE 35: TOPIC 29 - BIBLIOGRAPHY
     # =========================================================================
     story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>BIBLIOGRAPHY</b>", h1))
+    story.append(Paragraph("<u><b>BIBLIOGRAPHY</b></u>", h1))
     story.append(Spacer(1, 14))
 
     bib_items = [
