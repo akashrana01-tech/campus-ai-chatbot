@@ -270,7 +270,7 @@ def generate_reportlab_pages(temp_pdf_path):
     story.append(Paragraph(ack_p1, ack_body))
 
     ack_p2 = (
-        "First and foremost, we would like to express our deepest gratitude to our <b>Honourable Vice Chancellor DR. R. D. KHARADKAR</b> "
+        "First and foremost, we would like to express our deepest gratitude to our <b>Honourable Vice Chancellor</b> "
         "for providing us the opportunity and state-of-the-art technological infrastructure to study and innovate at "
         "<b>G H Raisoni International Skill Tech University, Pune</b>."
     )
@@ -875,7 +875,7 @@ def generate_reportlab_pages(temp_pdf_path):
         "SEQUENCE DIAGRAM", "ACTIVITY DIAGRAM", "COMPONENT DIAGRAM", "DATA FLOW DIAGRAM"
     ]:
         story.append(Spacer(1, 10))
-        story.append(Paragraph(f"<u><b>{d_name}</b></u>", h1))
+        story.append(Paragraph(f"<u><b>{d_name} :</b></u>", h1))
         story.append(PageBreak())
 
     # =========================================================================
@@ -1140,10 +1140,27 @@ def assemble_final_report(output_paths):
     for i in range(18):
         writer.add_page(r_story.pages[i])
 
-    # 2. Pages 20 to 27 from SRC_VECTOR_PDF (0-indexed 19 to 26)
-    # Swaps all 8 diagrams from the 2nd PDF (AI Chatbot for College diagrams):
-    for i in range(19, 27):
-        writer.add_page(r_vec.pages[i])
+    # 2. Pages 19 to 26: Calibrated Vector Diagrams merged onto Story Pages
+    # Crops the vector diagram and translates it upwards by dy pt, eliminating the 170+ pt gap
+    diag_specs = [
+        (18, 19, (35, 175, 560, 638), 95),   # ER Diagram
+        (19, 20, (35, 175, 560, 646), 90),   # Use Case Diagram
+        (20, 21, (35, 175, 560, 646), 90),   # Class Diagram
+        (21, 22, (35, 175, 560, 646), 90),   # Object Diagram
+        (22, 23, (35, 150, 560, 646), 90),   # Sequence Diagram
+        (23, 24, (35, 175, 560, 646), 90),   # Activity Diagram
+        (24, 25, (35, 175, 560, 648), 88),   # Component Diagram
+        (25, 26, (35, 150, 560, 646), 90),   # Data Flow Diagram
+    ]
+
+    for s_idx, v_idx, crop, dy in diag_specs:
+        base = r_story.pages[s_idx]
+        diag = r_vec.pages[v_idx]
+        diag.cropbox.lower_left = (crop[0], crop[1])
+        diag.cropbox.upper_right = (crop[2], crop[3])
+        t = pypdf.Transformation().translate(0, dy)
+        base.merge_transformed_page(diag, t, over=True)
+        writer.add_page(base)
 
     # 3. Pages 27 to 34 from Story (0-indexed 26 to 33)
     for i in range(26, len(r_story.pages)):
